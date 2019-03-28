@@ -37,7 +37,6 @@ class CreateStoryForm extends React.Component {
     };
 
     componentDidMount() {
-        console.log(this.props);
         if (!this.props.isAuth) {
             this.props.history.push({
                 pathname: '/login',
@@ -45,32 +44,34 @@ class CreateStoryForm extends React.Component {
             });
         }
 
-        if (this.props.location.pathname === '/challenges/add_story') {
+        if (this.props.location.pathname === '/challenges/create_story') {
             this.props.Crud.getAllChallenges().then((challenges) => {
-                let challenge = challenges.body.find(x => x.name === this.props.location.state);
+                let challenge = challenges.find(x => x.name === this.props.location.state);
 
                 this.setState(({fields}) => ({
-                    fields: {...fields, challenge: {label: challenge.name, value: challenge._id}},
+                    fields: {...fields, challenge: {label: challenge.name, value: challenge.id}},
                 }));
             }).catch((err) => {
                 message.error('Error');
             });
         }
 
-        if (this.props.location.pathname === '/story/create') {
+        if (this.props.location.pathname === '/groups/create_story') {
+            console.log(this.props);
             if (this.props.location.state !== undefined) {
                 this.props.Crud.getAllGroups().then((groups) => {
-                    let group = groups.body.find(x => x.name === this.props.location.state);
+                    console.log(groups);
+                    let group = groups.find(x => x.name === this.props.location.state);
 
                     this.setState(({fields}) => ({
-                        fields: {...fields, group: {label: group.name, value: group._id}},
+                        fields: {...fields, group: {label: group.name, value: group.id}},
                     }));
                 });
             } else {
                 this.props.Crud.getAllGroups().then((res) => {
-                    for (const group of res.body) {
+                    for (const group of res) {
                         let label = group.name;
-                        let value = group._id;
+                        let value = group.id;
 
                         this.setState(({fields}) => ({
                             fields: {...fields, groups: [...fields.groups, {label, value}]},
@@ -82,30 +83,21 @@ class CreateStoryForm extends React.Component {
             }
         }
 
-        if (this.props.match.path === '/story/edit/:id') {
+        if (this.props.match.path === '/groups/edit_story/:id') {
+
             this.props.Crud.getStoryById(this.props.match.params.id).then((res) => {
-                if (res.success) {
-                    this.props.Crud.getGroupById(res.body.group).then((groupInfo) => {
-                        let groupName = groupInfo.body.name;
-
-                        this.setState(this.props.Helper.storyFormInitialState(res, groupName));
-                    });
-                }
-
+                this.setState(this.props.Helper.storyFormInitialState(res))
+                console.log(this.state);
             }).catch((err) => {
                 message.error('Error');
             });
         }
 
-        if (this.props.match.path === '/challenge/edit/:id') {
+        if (this.props.match.path === '/challenges/edit_story/:id') {
             this.props.Crud.getStoryById(this.props.match.params.id).then((res) => {
-                if (res.success) {
-                    this.props.Crud.getChallengeById(res.body.challenge).then((challengeInfo) => {
-                        let challengeName = challengeInfo.body.name;
-
-                        this.setState(this.props.Helper.storyFormInitialState(res, '', challengeName));
-                    });
-                }
+                this.props.Crud.getChallengeById(res.challengeId).then((challengeInfo) => {
+                    this.setState(this.props.Helper.storyFormInitialState(res));
+                });
 
             }).catch((err) => {
                 message.error('Error');
@@ -143,8 +135,10 @@ class CreateStoryForm extends React.Component {
         }
 
         if (this.state.fields.cover.value.hasOwnProperty('base64')) {
-            editProps.cover = this.state.fields.cover.value;
+            editProps.cover = this.state.fields.cover.value.base64;
         }
+
+        console.log(editProps);
 
         message.loading('Please wait while editing your story', 0);
         let res = await this.props.Crud.editStoryInfo(storyId, editProps);
@@ -157,32 +151,31 @@ class CreateStoryForm extends React.Component {
 
     handleSubmit = async () => {
 
-        let createdBy = await this.props.Auth.getProfile().id;
-
-        this.setState(({fields}) => ({
-            fields: {...fields, createdBy},
-        }));
+        let createdBy = await this.props.Auth.getProfile();
 
         if (createdBy) {
             let {fields} = this.state;
 
-            if (this.props.match.path === '/story/create') {
-                message.loading('Please wait while creating your story', 0);
-                let res = await this.props.Crud.addStoryToOpenGroup(fields);
-                if (res.success) {
-                    message.destroy();
-                    message.success('You have successfully created a new story');
-                    this.props.history.push('/dashboard');
-                }
-            } else if (this.props.match.path === '/challenges/add_story') {
-                message.loading('Please wait while creating your story', 0);
-                let res = await this.props.Crud.addStoryToOpenChallenge(fields);
-                if (res.success) {
-                    message.destroy();
-                    message.success('You have successfully created a new story');
-                    this.props.history.push('/dashboard');
-                }
+            let payload = {
+                name: fields.name.value,
+                challenge: fields.challenge.value,
+                group: fields.group.value,
+                cover: fields.src.value,
+                crop: JSON.stringify(fields.crop.value),
+                info: fields.info.value,
+                userByUsername: createdBy.username,
+                storyLine: JSON.stringify(fields.storyline.value)
             }
+
+            message.loading('Please wait while creating your story', 0);
+
+            let res = await this.props.Crud.createStory(payload);
+            if (res.success) {
+                message.destroy();
+                message.success('You have successfully created a new story');
+                this.props.history.push('/dashboard');
+            }
+
         }
 
     };
@@ -297,8 +290,8 @@ class CreateStoryForm extends React.Component {
         const {currentStep} = this.state;
 
         const steps = [{
-            title: this.props.match.path === '/story/edit/:id' || '/challenge/edit/:id' ? 'Edit Story info' : 'Add Story Info',
-            header: this.props.match.path === '/story/edit/:id' || '/challenge/edit/:id' ?
+            title: this.props.match.path === '/groups/edit_story/:id' || '/challenges/edit_story/:id' ? 'Edit Story info' : 'Add Story Info',
+            header: this.props.match.path === '/groups/edit_story/:id' || '/challenges/edit_story/:id' ?
                 <h3 align="center">Please edit your story info</h3> :
                 <h3 align="center">Please select info for your story</h3>,
             content: <WrappedNewStepOneForm {...fields} {...this.props}
@@ -326,12 +319,12 @@ class CreateStoryForm extends React.Component {
         return (
             <Row type="flex" justify="space-around">
                 <div align="center" style={{marginBottom: 30, fontSize: 40}}>
-                    {this.props.match.path === '/story/edit/:id' ? 'Create your Chatq story' : 'Add your story to our challenge'}
+                    {this.props.match.path === '/groups/edit_story/:id' ? 'Create your Chatq story' : 'Add your story to our challenge'}
                 </div>
                 <Col span={18}>
                     <div className='login-form'>
                         <Col span={12} offset={6} style={{marginTop: 30}}>
-                            {this.props.match.path === '/story/edit/:id' ? null :
+                            {this.props.match.path === '/groups/edit_story/:id' ? null :
                                 <Steps current={currentStep}>
                                     {steps.map(item => <Step key={item.title} title={item.title}/>)}
                                 </Steps>}

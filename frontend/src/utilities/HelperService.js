@@ -4,6 +4,26 @@
 
 class HelperService {
 
+    groupFormInitialState(res){
+        if (res === undefined) {
+            res = {
+                body: {
+                    info: '',
+                    cover: '',
+                    name: '',
+                }
+            }
+        }
+
+        return ({
+            info: res.body.info,
+            cover: res.body.cover,
+            name: res.body.name,
+            loading: false,
+            sliderValue: false
+        })
+    }
+
     dashboardInitialState() {
         return (
             {
@@ -33,7 +53,7 @@ class HelperService {
         )
     }
 
-    storyFormInitialState(res, groupName, challengeName) {
+    storyFormInitialState(res) {
         if (res === undefined) {
             res = {
                 body: {
@@ -52,22 +72,22 @@ class HelperService {
                 loading: false,
                 fields: {
                     cover: {
-                        value: res.body.cover
+                        value: res.cover
                     },
                     name: {
-                        value: res.body.name
+                        value: res.name
                     },
                     info: {
-                        value: res.body.info
+                        value: res.info
                     },
                     groups: [],
                     group: {
-                        value: res.body.group,
-                        label: groupName
+                        value: res.groupId,
+                        label: res.group_name
                     },
                     challenge: {
-                        value: res.body.challenge,
-                        label: challengeName
+                        value: res.challengeId,
+                        label: res.challenge_name
                     },
                     storyline: {
                         value: ""

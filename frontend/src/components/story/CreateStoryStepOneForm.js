@@ -58,8 +58,8 @@ const WrappedNewStepOneForm = Form.create({
     },
 })((props) => {
     const {getFieldDecorator} = props.form;
-    let fromStoryEdit = props.match.path === '/story/edit/:id'
-    let fromChallengeEdit = props.match.path === '/challenge/edit/:id'
+    let fromStoryEdit = props.match.path === '/groups/edit_story/:id'
+    let fromChallengeEdit = props.match.path === '/challenges/edit_story/:id'
     let fromEdit = fromChallengeEdit || fromStoryEdit
 
     const coverField = <Form.Item

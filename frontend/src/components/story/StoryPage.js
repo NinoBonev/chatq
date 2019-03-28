@@ -3,8 +3,10 @@
  */
 
 import React from 'react';
-import {Carousel, Row, Col, Icon} from 'antd';
+import {Carousel, Row, Col, Icon, Tabs} from 'antd';
+import BasicComments from '../comment/BasicCommentList'
 
+const {TabPane} = Tabs
 
 //TODO Put arrows in the middle
 export default class StoryPage extends React.Component {
@@ -13,10 +15,11 @@ export default class StoryPage extends React.Component {
 
         this.state = {
             storyLines: [],
+            activeKey: '1',
+            count: 0
         };
 
-        this.handleResponse = this.handleResponse.bind(this);
-
+        this.setKey = this.setKey.bind(this);
         this.next = this.next.bind(this);
         this.previous = this.previous.bind(this);
         this.carousel = React.createRef();
@@ -24,32 +27,30 @@ export default class StoryPage extends React.Component {
 
     next() {
         this.carousel.next();
+        this.setState(prevState => ({
+            count: prevState.count + 1
+        }))
     }
+
     previous() {
         this.carousel.prev();
+        this.setState(prevState => ({
+            count: prevState.count - 1
+        }))
     }
 
-    handleResponse(res) {
-        if (res.success) {
+    setKey(key) {
+        this.setState({activeKey: key});
+    }
+
+    componentDidMount() {
+        this.props.Crud.getStoryById(this.props.id).then((story) => {
             this.setState({
-                storyLines: res.body.storyLine,
+                storyLines: story.storyLine,
             });
-        } else {
-            console.log(res.message);
-        }
+        })
+
     }
-
-
-    async componentDidMount() {
-        console.log(this.props);
-        let res = await this.props.Crud.getStoryById(this.props.id)
-
-        if (res.success){
-            this.handleResponse(res);
-        }
-    }
-
-
 
     render() {
         const settings = {
@@ -60,26 +61,39 @@ export default class StoryPage extends React.Component {
             slidesToScroll: 1,
         };
 
+        const sortedStoryLine = this.state.storyLines.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+
         return (
             <div>
                 <Row gutter={8}>
-                    <Carousel ref={node => (this.carousel = node)}  {...settings}>
-                        {this.state.storyLines.map((str) =>
-                            <div key={str._id}>
-                                <Col style={{padding: 0, margin: 0}} span={1}>
-                                    <p align="middle"><Icon onClick={this.previous} style={{fontSize: 50}} type="caret-left" /></p>
-                                </Col>
-                                <Col style={{padding: 0, margin: 0}} span={15} >
-                                    {<img src={str.cover} alt="" style={{width: '100%'}} />}
-                                </Col>
-                                <Col style={{padding: 0, margin: 0}} span={1}>
-                                    <p align="middle"><Icon onClick={this.next} style={{fontSize: 50}} type="caret-right" /></p>
-                                </Col>
-                                <Col style={{padding: 0, margin: 0}} span={7}>
-                                    <div>{str.info}</div>
-                                </Col>
-                            </div>)}
-                    </Carousel>
+                    <Tabs onChange={this.setKey} activeKey={this.state.activeKey}>
+                        <TabPane tab={<span><Icon type="read"/>Storyline</span>} key="1">
+                            <Carousel ref={node => (this.carousel = node)}  {...settings}>
+                                {sortedStoryLine.map((str) =>
+                                    <div key={str._id}>
+                                        <Col style={{padding: 0, margin: 0}} span={1}>
+                                            {this.state.count === 0 ? null :
+                                                <p align="middle"><Icon onClick={this.previous} style={{fontSize: 50}}
+                                                                        type="caret-left"/></p>}
+                                        </Col>
+                                        <Col style={{padding: 0, margin: 0}} span={15}>
+                                            {<img src={str.cover} alt="" style={{width: '100%'}}/>}
+                                        </Col>
+                                        <Col style={{padding: 0, margin: 0}} span={1}>
+                                            {this.state.count === 3 ? null :
+                                                <p align="middle"><Icon onClick={this.next} style={{fontSize: 50}}
+                                                                        type="caret-right"/></p>}
+                                        </Col>
+                                        <Col style={{padding: 0, margin: 0}} span={7}>
+                                            <div>{str.info}</div>
+                                        </Col>
+                                    </div>)}
+                            </Carousel>
+                        </TabPane>
+                        <TabPane tab={<span><Icon type="message"/>Comments</span>} key="2">
+                            <BasicComments {...this.props} storyId={this.props.id}/>
+                        </TabPane>
+                    </Tabs>
                 </Row>
             </div>
         );

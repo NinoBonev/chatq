@@ -26,21 +26,18 @@ class BasicSingleGroup extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state);
-        this.props.Crud.getGroupById(this.props.match.params.id).then((res) => {
-            if (res.success) {
-                for (let story of res.body.stories) {
-                   this.props.Crud.getUserInfo(story.createdBy).then((user) => {
-                        story.avatar = user.body.avatar;
-                        story.username = user.body.username;
+        this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
+            for (let str of res.storiesById) {
+                this.props.Crud.getStoryById(str).then((story) => {
+                    console.log(story);
+                    this.props.Crud.getUserInfo(story.username).then((user) => {
+                        story.avatar = user.avatar;
 
                         this.setState(prevState => ({
                             stories: [...prevState.stories, story]
                         }));
-                   });
-                }
-            } else {
-                message.error(res.message);
+                    });
+                })
             }
 
         }).catch((err) => {
@@ -61,6 +58,8 @@ class BasicSingleGroup extends Component {
     }
 
     render() {
+        let storiesSortedByDateCreate = this.state.stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         return (
             <div className='default-panel'>
 
@@ -72,14 +71,15 @@ class BasicSingleGroup extends Component {
                         <GroupRules {...this.state} toggleCollapsed={this.toggleCollapsedRules.bind(this)}/>
                     </Col>
                     <Col span={6}>
-                        {this.props.userId &&
+                        {this.props.username &&
                         <div align="center" style={{marginTop: 40}}>
                             {this.props.following ?
                                 <div style={{fontStyle: 'italic', color: '#40a9ff'}}>
                                     Don't want to follow this group anymore?
                                     <div style={{marginTop: 5}}>
                                         <Button type='primary'
-                                                onClick={() => this.props.stopFollowing(this.props.location.state.groupId, this.props.userId)} className='Create' icon='create'>Stop
+                                                onClick={() => this.props.stopFollowing(this.props.location.state.groupName, this.props.username)}
+                                                className='Create' icon='create'>Stop
                                             Following</Button>
                                     </div>
                                 </div>
@@ -88,7 +88,8 @@ class BasicSingleGroup extends Component {
                                     Like this group? Why not follow then
                                     <div style={{marginTop: 5}}>
                                         <Button type='primary'
-                                                onClick={() => this.props.startFollowing(this.props.location.state.groupId, this.props.userId)} className='Create'
+                                                onClick={() => this.props.startFollowing(this.props.location.state.groupName, this.props.username)}
+                                                className='Create'
                                                 icon='create'>Follow</Button>
                                     </div>
                                 </div>
@@ -98,7 +99,7 @@ class BasicSingleGroup extends Component {
                                 <div style={{marginTop: 5}}>
                                     <Button type='danger'
                                             onClick={() => this.props.history.push({
-                                                pathname: '/story/create',
+                                                pathname: '/groups/create_story',
                                                 state: this.props.group_name
                                             })} className='Create' icon='create'>Add Story</Button>
                                 </div>
@@ -113,7 +114,7 @@ class BasicSingleGroup extends Component {
                 </Row>
                 <Row gutter={16}>
                     <div style={{marginLeft: 20, marginRight: 20}}>
-                        <ListAllGroupStories {...this.props} {...this.state}/>
+                        <ListAllGroupStories {...this.props} {...this.state} data={storiesSortedByDateCreate}/>
                     </div>
                 </Row>
             </div>

@@ -11,19 +11,21 @@ function withFollowing(WrappedComponent) {
             super(props);
         }
 
-        componentDidMount(){
-            this.props.Crud.getGroupById(this.props.match.params.id).then((res) => {
+        async componentDidMount(){
+            this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
                 if (this.props.isAuth) {
-                    let user = this.props.Auth.getProfile();
                     let following = false;
 
-                    if (res.body.followers !== undefined && res.body.followers.indexOf(user.id) > -1) {
-                        following = true;
-                    }
-                    this.setState({
-                        group_name: res.body.name,
-                        userId: user.id,
-                        following
+                    this.props.Auth.getProfile().then((user) => {
+                        if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(user.username) > -1) {
+                            following = true;
+                        }
+
+                        this.setState({
+                            group_name: res.name,
+                            username: user.username,
+                            following
+                        });
                     });
                 }
             }).catch((err) => {
@@ -31,8 +33,8 @@ function withFollowing(WrappedComponent) {
             });
         }
 
-        startFollowing = (groupId, userId) => {
-            this.props.Crud.startFollowGroup(groupId, userId).then((res) => {
+        startFollowing = (group_name, username) => {
+            this.props.Crud.startFollowGroup(group_name, username).then((res) => {
                 if (res.success) {
                     message.success(`You are now following group ${this.state.group_name}`,)
                     this.setState({
@@ -43,8 +45,8 @@ function withFollowing(WrappedComponent) {
 
         };
 
-        stopFollowing = (groupId, userId) => {
-            this.props.Crud.stopFollowGroup(groupId, userId).then((res) => {
+        stopFollowing = (group_name, username) => {
+            this.props.Crud.stopFollowGroup(group_name, username).then((res) => {
                 if (res.success) {
                     message.success(`You are no longer following group ${this.state.group_name}`,)
                     this.setState({

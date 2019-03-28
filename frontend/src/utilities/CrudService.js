@@ -9,8 +9,7 @@ let Request = new RequestService();
 class CrudService {
     constructor() {
         this.addChallenge = this.addChallenge.bind(this);
-        this.addStoryToOpenGroup = this.addStoryToOpenGroup.bind(this)
-        this.addStoryToOpenChallenge = this.addStoryToOpenChallenge.bind(this)
+        this.createStory = this.createStory.bind(this)
 
         this.getAllChallenges = this.getAllChallenges.bind(this);
         this.getAllGroups = this.getAllGroups.bind(this);
@@ -48,20 +47,21 @@ class CrudService {
         })
     }
 
-    getUserInfo(id){
-        return Request.get(`/users/${id}`).then((res) => {
+    getUserInfo(username){
+        const token = this._getToken();
+        return Request.get(`/users/${username}`, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getAllUsers(){
-        return Request.get(`/admin/users/all`).then((res) => {
+        const token = this._getToken();
+        return Request.get(`/admin/users/all`, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     deleteUserById(id){
-        console.log(id);
         const token = this._getToken();
         return Request.delete(`/admin/users/delete/${id}`, token).then((res) => {
             return Promise.resolve(res);
@@ -70,49 +70,68 @@ class CrudService {
 
     addChallenge(payload){
         const token = this._getToken();
-        return Request.post('/admin/challenges/create', payload, token).then((res) => {
+        return Request.post('/admin/challenges/create_challenge', payload, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    addGroup(payload){
+        const token = this._getToken();
+        return Request.post('/admin/groups/create_group', payload, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getAllChallenges() {
-        return Request.get('/challenges').then((res) => {
+        const token = this._getToken();
+        return Request.get('/challenges', token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getChallengeById(id){
-        return Request.get(`/challenges/${id}`).then((res) => {
-            return Promise.resolve(res);
-        });
-    }
-
-    addStoryToOpenChallenge(payload){
         const token = this._getToken();
-        return Request.post('/challenges/add_story', payload, token).then((res) => {
+        return Request.get(`/challenges/${id}`, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getAllGroups() {
-        return Request.get('/groups').then((res) => {
+        const token = this._getToken();
+        return Request.get('/groups', token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getGroupById(id) {
-        return Request.get(`/groups/${id}`).then((res) => {
+        const token = this._getToken();
+        return Request.get(`/groups/${id}`, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    getGroupByName(name) {
+        const token = this._getToken();
+        return Request.get(`/groups/${name}`, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    deleteGroupById(id) {
+        const token = this._getToken();
+        return Request.delete(`/groups/delete/${id}`, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
     getStoryById(id){
-        return Request.get(`/story/${id}`).then((res) => {
+        const token = this._getToken();
+        return Request.get(`/story/${id}`, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
-    addStoryToOpenGroup(payload){
+    createStory(payload){
         const token = this._getToken();
         return Request.post('/story/create', payload, token).then((res) => {
             return Promise.resolve(res);
@@ -121,21 +140,28 @@ class CrudService {
 
     editStoryInfo(id, payload) {
         const token = this._getToken();
-        return Request.update(`/story/editInfo/${id}`, payload, token).then((res) => {
+        return Request.post(`/story/editInfo/${id}`, payload, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
-    deleteStoryFromGroupById(id){
+    deleteStoryById(id){
         const token = this._getToken();
-        return Request.delete(`/story/delete_from_group/${id}`, token).then((res) => {
+        return Request.post(`/story/delete/${id}`, {}, token).then((res) => {
             return Promise.resolve(res);
         });
     }
 
-    deleteStoryFromChallengeById(id){
+    addCommentToStory(payload){
         const token = this._getToken();
-        return Request.delete(`/story/delete_from_challenge/${id}`, token).then((res) => {
+        return Request.post('/story/add_comment', payload, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    getCommentById(id){
+        const token = this._getToken();
+        return Request.get(`/comments/${id}`, token).then((res) => {
             return Promise.resolve(res);
         });
     }

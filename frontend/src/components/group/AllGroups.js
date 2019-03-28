@@ -19,14 +19,11 @@ export default class AllGroups extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
         this.props.Crud.getAllGroups().then((res) => {
-            if (res.success) {
-                this.setState({
-                    groups: res.body
-                });
-            } else {
-                message.error(res.message);
-            }
+            this.setState({
+                groups: res
+            })
         }).catch((err) => {
             message.error("Error");
         });
@@ -39,10 +36,10 @@ export default class AllGroups extends React.Component {
                     <p align="center" style={{fontSize: 30, fontWeight: 'bold', fontFamily: 'Palatino'}}>Browse our Chatq groups</p>
                     {this.state.groups.map((group) => <Col span={8}>
                         <Link to={{
-                            pathname: `/groups/${group._id}`,
-                            state: {groupId: group._id}
+                            pathname: `/groups/${group.name.toLowerCase()}`,
+                            state: {groupName: group.name}
                         }}
-                              style={{marginBottom: 20}} key={group._id}>
+                              style={{marginBottom: 20}} key={group.id}>
                             <Card
                                 hoverable
                                 cover={<img src={group.cover} alt=""  />}
@@ -50,10 +47,17 @@ export default class AllGroups extends React.Component {
                                                                      onClick={console.log('delete')}/>,
                                     <Icon type="edit" onClick={console.log('edit')}/>] : ''}
                             > <Meta style={{minHeight: 120}} title={group.name}
-                                    description={group.info}/>
+                                    description={<div style={{
+                                marginTop: 20,
+                                minHeight: 150
+                            }}>{group.info.substring(0, 300) !== group.info ?
+                                group.info.substring(0, 300) + '...'
+
+                                :
+                                group.info}</div>} />
                                 <p style={{fontStyle: 'italic', color: '#91d5ff'}} align="center">
-                                    <span><Icon style={{marginRight: 10}} type="paper-clip" />Stories in group: <strong>{group.stories.length}</strong></span>
-                                    <span style={{marginLeft: 20}}><Icon style={{marginRight: 10}}  type="team" />Followers: <strong>{group.followers.length}</strong></span>
+                                    <span><Icon style={{marginRight: 10}} type="paper-clip" />Stories in group: <strong>{group.storiesById.length}</strong></span>
+                                    <span style={{marginLeft: 20}}><Icon style={{marginRight: 10}}  type="team" />Followers: <strong>{group.followersByUsername.length}</strong></span>
                                 </p>
                             </Card>
                         </Link>

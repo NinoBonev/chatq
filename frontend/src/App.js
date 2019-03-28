@@ -17,6 +17,7 @@ const Auth = new AuthService();
 const Crud = new CrudService();
 const Helper = new HelperService();
 
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +27,6 @@ class App extends Component {
         };
 
         this.toggleCollapsed = this.toggleCollapsed.bind(this)
-
     }
 
     toggleCollapsed = () => {

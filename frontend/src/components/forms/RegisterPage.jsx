@@ -22,7 +22,6 @@ class RegisterPage extends React.Component {
     handleSubmit = async event => {
         event.preventDefault();
 
-        console.log(this.props.form.getFieldsValue());
         let validated = false;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
@@ -31,18 +30,21 @@ class RegisterPage extends React.Component {
         });
 
         if (validated){
+            this.setState({
+                loading: true
+            });
+
             const res = await Auth.register(this.props.form.getFieldsValue());
 
             if (res.success) {
-                this.setState({
-                    loading: true
-                })
-
                 await Auth.login(this.props.form.getFieldsValue());
-                message.success(res.message)
+                message.success(res.body)
                 this.props.history.push('/');
             } else {
-                message.error(res.message)
+                this.setState({
+                    loading: false
+                });
+                message.error(res.body)
             }
         }
     };

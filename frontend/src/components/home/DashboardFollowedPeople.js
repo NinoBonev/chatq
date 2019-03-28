@@ -6,7 +6,7 @@ import React from 'react'
 import {Col, List, Avatar, Skeleton, Tooltip} from 'antd';
 import {Link} from 'react-router-dom';
 
-import BasicModal from "./BasicModal";
+import BasicModal from "../story/BasicModal";
 
 const DashboardFollowedPeople = (props) => {
     let storiesFromPeopleSortedByDateCreate = props.storiesFromPeople.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -41,9 +41,9 @@ const DashboardFollowedPeople = (props) => {
                         >
                             <Skeleton loading={false} active>
                                 <List.Item.Meta
-                                    avatar={<img onClick={() => props.showModal(item._id)}
+                                    avatar={<img onClick={() => props.showModal(item.id)}
                                                  src={item.cover} alt="" style={{height: 140}}/>}
-                                    title={<a style={{color: 'black'}} onClick={() => props.showModal(item._id)}>
+                                    title={<a style={{color: 'black'}} onClick={() => props.showModal(item.id)}>
                                         {item.name}
                                     </a>}
                                     description={item.info.substring(0, 200) !== item.info ?

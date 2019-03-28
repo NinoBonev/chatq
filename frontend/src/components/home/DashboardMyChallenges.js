@@ -4,7 +4,7 @@
 
 import React from 'react'
 import {Row, Col, Card, Icon, Popconfirm, message} from 'antd'
-import BasicModal from './BasicModal'
+import BasicModal from '../story/BasicModal'
 import moment from 'moment'
 
 const {Meta} = Card;
@@ -18,23 +18,21 @@ export default class DashboardMyChallenges extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         console.log(this.props);
-        this.fetchAllStories()
+        await this.fetchAllStories()
         this.setState({isLoading: false})
     }
 
     fetchAllStories(){
-        for (let challenge of this.props.myChallenges) {
-            this.props.Crud.getStoryById(challenge).then((res) => {
-                if (res.success) {
-                    this.props.Crud.getChallengeById(res.body.challenge).then((challengeInfo) => {
-                        res.body.deadlineDate = challengeInfo.body.deadlineDate
+        for (let story of this.props.myChallenges) {
+                this.props.Crud.getChallengeById(story.challengeId).then((challengeInfo) => {
+                    story.deadlineDate = challengeInfo.deadlineDate
                         this.setState(prevState => (
-                            { challenges: [...prevState.challenges , res.body]
+                            { challenges: [...prevState.challenges , story]
                             }));
-                    })
-                }
+
+
             }).catch((err) => {
                 message.error("Error");
             });
@@ -43,7 +41,7 @@ export default class DashboardMyChallenges extends React.Component {
 
     handleDelete(id){
         console.log(id);
-        this.props.Crud.deleteStoryFromChallengeById(id).then((res) => {
+        this.props.Crud.deleteStoryById(id).then((res) => {
             if(res.success){
                 message.success("Story deleted successfully")
                 this.setState({
@@ -64,16 +62,16 @@ export default class DashboardMyChallenges extends React.Component {
                     <Card
                         style={{marginBottom: 20}}
                         hoverable
-                        cover={<img onClick={() => this.props.showModal(chal._id)}
+                        cover={<img onClick={() => this.props.showModal(chal.id)}
                                     src={chal.cover} alt="" style={{width: '100%'}}/>}
-                        actions={moment(chal.deadlineDate).isAfter(moment.now()) ? [<Popconfirm title="Are you sure delete this story?" onConfirm={() => this.handleDelete(chal._id)} okText="Yes" cancelText="No">
+                        actions={moment(chal.deadlineDate).isAfter(moment.now()) ? [<Popconfirm title="Are you sure delete this story?" onConfirm={() => this.handleDelete(chal.id)} okText="Yes" cancelText="No">
                             <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                         </Popconfirm>,
-                            <Popconfirm title="Are you sure edit this story?" onConfirm={() => this.props.history.push({pathname: `/challenge/edit/${chal._id}`})} okText="Yes" cancelText="No">
+                            <Popconfirm title="Are you sure edit this story?" onConfirm={() => this.props.history.push({pathname: `/challenges/edit_story/${chal.id}`})} okText="Yes" cancelText="No">
                                 <Icon type="edit"/><span style={{marginLeft: 10}}>edit</span>
                             </Popconfirm>] : [<div style={{fontStyle: 'italic', fontSize: 12}}>You can not edit stories from closed challenges</div>]}
                     > <Meta
-                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(chal._id)}>
+                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(chal.id)}>
                             {chal.name}
                             </a>}
                     />

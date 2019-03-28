@@ -1,7 +1,11 @@
 package com.nbonev.chatq.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nbonev.chatq.entity.*;
+import com.nbonev.chatq.sections.challenges.entities.Challenge;
+import com.nbonev.chatq.sections.comments.entities.Comment;
+import com.nbonev.chatq.sections.groups.entities.Group;
+import com.nbonev.chatq.sections.stories.entities.Story;
+import com.nbonev.chatq.sections.users.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,24 +34,22 @@ public class UserPrincipal implements UserDetails {
     @JsonIgnore
     private String password;
 
-//    private Set<Story> stories;
-//
-//    private Set<Challenge> challenges;
-//
-//    private Set<Comment> comments;
+    private Set<Story> stories;
+
+    private Set<Comment> comments;
 
     private Set<User> followingUsers;
 
     private Set<User> followers;
 
- //   private Set<Group> followingGroups;
+    private Set<Group> followingGroups;
 
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(Long id, String name, String username, String avatar, String email, String password,
-//                         Set<Story> stories, Set<Challenge> challenges,
- //                        Set<Comment> comments,
-//                         Set<User> followingUsers, Set<User> followers,Set<Group> followingGroups,
+                         Set<Story> stories,
+                         Set<Comment> comments,
+                         Set<User> followingUsers, Set<User> followers,Set<Group> followingGroups,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
@@ -55,17 +57,16 @@ public class UserPrincipal implements UserDetails {
         this.avatar = avatar;
         this.email = email;
         this.password = password;
-//        this.stories = stories;
-//        this.challenges = challenges;
-   //     this.comments = comments;
-//        this.followingUsers = followingUsers;
-//        this.followers = followers;
-//        this.followingGroups = followingGroups;
+        this.stories = stories;
+        this.comments = comments;
+        this.followingUsers = followingUsers;
+        this.followers = followers;
+        this.followingGroups = followingGroups;
         this.authorities = authorities;
     }
     public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-                new SimpleGrantedAuthority(role.getName().name())
+        List<GrantedAuthority> authorities = user.getAuthorities().stream().map(authority ->
+                new SimpleGrantedAuthority(authority.getAuthority())
         ).collect(Collectors.toList());
 
         return new UserPrincipal(
@@ -75,12 +76,11 @@ public class UserPrincipal implements UserDetails {
                 user.getAvatar(),
                 user.getEmail(),
                 user.getPassword(),
-//                user.getStories(),
-//                user.getChallenges(),
-                //user.getComments(),
-//                user.getFollowingUsers(),
-//                user.getFollowers(),
-//                user.getFollowingGroups(),
+                user.getStories(),
+                user.getComments(),
+                user.getFollowingUsers(),
+                user.getFollowers(),
+                user.getFollowingGroups(),
                 authorities
         );
     }
@@ -89,17 +89,13 @@ public class UserPrincipal implements UserDetails {
         return avatar;
     }
 
-//    public Set<Story> getStories() {
-//        return stories;
-//    }
-//
-//    public Set<Challenge> getChallenges() {
-//        return challenges;
-//    }
-//
-//    public Set<Comment> getComments() {
-//        return comments;
-//    }
+    public Set<Story> getStories() {
+        return stories;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
 
     public Set<User> getFollowingUsers() {
         return followingUsers;
@@ -109,9 +105,9 @@ public class UserPrincipal implements UserDetails {
         return followers;
     }
 
-//    public Set<Group> getFollowingGroups() {
-//        return followingGroups;
-//    }
+    public Set<Group> getFollowingGroups() {
+        return followingGroups;
+    }
 
     public Long getId() {
         return id;

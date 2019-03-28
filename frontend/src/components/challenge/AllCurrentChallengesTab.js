@@ -3,9 +3,11 @@
  */
 
 import React from 'react';
-import {List, Row, Skeleton, Avatar} from 'antd';
+import {List, Row, Skeleton, Avatar, Progress} from 'antd';
 import {Link} from 'react-router-dom'
 import moment from 'moment';
+
+
 
 const AllCurrentChallengesTab = (props) => {
         return (
@@ -28,13 +30,14 @@ const AllCurrentChallengesTab = (props) => {
                             >
                                 <Skeleton loading={false} active>
                                     <List.Item.Meta
-                                        avatar={<Link style={{fontSize: 24}} to={{pathname: `/challenges/current/${item._id}`}} >
+                                        avatar={<Link style={{fontSize: 24}} to={{pathname: `/challenges/current/${item.id}`}} >
                                             <Avatar size={200} shape='square' alt="logo" src={item.cover}/>
                                         </Link>}
-                                        title={<Link style={{fontSize: 24}} to={{pathname: `/challenges/current/${item._id}`}} >{item.name}</Link>}
+                                        title={<Link style={{fontSize: 24}} to={{pathname: `/challenges/current/${item.id}`}} >{item.name}</Link>}
                                         description={item.info}
                                     />
                                     <div>
+                                        <Progress type="circle" percent={moment(item.deadlineDate).diff(moment(item.createdAt), "days")} format={percent => `${percent} Days`} />
                                         <div style={{fontSize: 20}}>Deadline date:</div>
                                         <p align="center">{moment(item.deadlineDate).utc().format('DD MMMM YYYY')}</p>
                                     </div>

@@ -21,18 +21,12 @@ class SingleCurrentChallengeInfo extends Component {
 
     componentDidMount() {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
-            if (res.success) {
-
                 this.setState(prevState => ({
-                    name: res.body.name,
-                    cover: res.body.cover,
-                    info: res.body.info,
-                    deadlineDate: res.body.deadlineDate,
+                    name: res.name,
+                    cover: res.cover,
+                    info: res.info,
+                    deadlineDate: res.deadlineDate,
                 }));
-
-            } else {
-                message.error(res.message);
-            }
         }).catch((err) => {
             message.error('Error');
         });
@@ -57,7 +51,7 @@ class SingleCurrentChallengeInfo extends Component {
                             <div style={{fontSize: 18, marginTop: 10, color: 'red'}}>Have your great story to add?</div>
                             <Button type='danger' style={{marginTop: 10}}
                                     onClick={() => this.props.history.push({
-                                        pathname: '/challenges/add_story',
+                                        pathname: '/challenges/create_story',
                                         state: this.state.name
                                     })}
                                     className='Create' icon='create'>

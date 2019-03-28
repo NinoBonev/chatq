@@ -25,7 +25,7 @@ import SingleOldChallenge from './components/challenge/SingleOldChallenge'
 
 import WrappedAdminCreateChallenge from './components/admin/AdminCreateChallenge';
 import AdminAllUsersPane from './components/admin/AdminAllUsersPane'
-import TestComp from "./components/home/TestComp";
+import WrappedAdminCreateGroup from './components/admin/AdminCreateGroup';
 
 
 
@@ -37,8 +37,6 @@ const AppRouter = (props) => {
 
     return (
         <Switch>
-
-            <Route exact path='/api/hello' render={(props) => <TestComp Crud={Crud} />}/>
 
             <Route exact path='/' render={(props) => isAuth ? <Redirect to="/dashboard"/> :
                 <HomePage/>
@@ -64,6 +62,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/dashboard' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <Dashboard
+                    isAuth={isAuth}
+                    isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
                     Crud={Crud}
@@ -71,7 +71,7 @@ const AppRouter = (props) => {
                 />
             }/>
 
-            <Route exact path='/story/create' render={(props) => !isAuth ? <Redirect to="/" /> :
+            <Route exact path='/groups/create_story' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
                     isAuth={isAuth}
                     Auth={Auth}
@@ -81,7 +81,7 @@ const AppRouter = (props) => {
                 />}
             />
 
-            <Route exact path='/story/edit/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
+            <Route exact path='/groups/edit_story/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
                     isAuth={isAuth}
                     Auth={Auth}
@@ -91,7 +91,7 @@ const AppRouter = (props) => {
                 />
             }/>
 
-            <Route exact path='/challenge/edit/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
+            <Route exact path='/challenges/edit_story/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
                     isAuth={isAuth}
                     Auth={Auth}
@@ -115,6 +115,7 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/current/:id" render={(props) =>
                 <SingleCurrentChallengeTabs
+                    isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -125,6 +126,7 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/old/:id" render={(props) =>
                 <SingleOldChallenge
+                    isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -133,7 +135,7 @@ const AppRouter = (props) => {
                 />
             }/>
 
-            <Route exact path='/challenges/add_story' render={(props) =>
+            <Route exact path='/challenges/create_story' render={(props) =>
                 <CreateStoryForm
                     isAuth={isAuth}
                     Auth={Auth}
@@ -152,8 +154,28 @@ const AppRouter = (props) => {
                 />
             }/>
 
-            <Route  path="/groups/:groupId/:storyId" render={(props) =>
+            <Route exact path='/admin/groups/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
+                <WrappedAdminCreateGroup
+                    Helper={Helper}
+                    Auth={Auth}
+                    Crud={Crud}
+                    {...props}
+                />
+            }/>
+
+            <Route exact path='/groups/edit/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
+                <WrappedAdminCreateGroup
+                    isAuth={isAuth}
+                    Auth={Auth}
+                    Crud={Crud}
+                    Helper={Helper}
+                    {...props}
+                />
+            }/>
+
+            <Route exact path="/groups/:groupId/:storyId" render={(props) =>
                 <StoryPage
+                    isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -162,7 +184,7 @@ const AppRouter = (props) => {
                 />
             }/>
 
-            <Route path="/groups/:id" render={(props) =>
+            <Route exact path="/groups/:name" render={(props) =>
                 <SingleGroup
                     Auth={Auth}
                     isAuth={isAuth}
@@ -175,6 +197,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups' render={(props) =>
                 <AllGroups
+                    isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -183,8 +206,9 @@ const AppRouter = (props) => {
                 />}
             />
 
-            <Route exact path='/users/:id' render={(props) =>
+            <Route exact path='/users/:name' render={(props) =>
                 <AllUserStories
+                    isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}

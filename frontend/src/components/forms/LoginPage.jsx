@@ -20,8 +20,9 @@ class LoginPage extends React.Component {
         });
 
         if (validated){
-            const success = await Auth.login(this.props.form.getFieldsValue());
-            if (success){
+            const res = await Auth.login(this.props.form.getFieldsValue());
+
+            if (res.success){
                 this.props.history.push('/dashboard');
             } else {
                 message.error("Username or password are incorrect")

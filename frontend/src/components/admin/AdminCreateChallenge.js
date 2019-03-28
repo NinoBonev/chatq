@@ -7,28 +7,17 @@ import FileBase64 from 'react-file-base64'
 import ReactCrop from 'react-image-crop';
 import * as loadImage from 'blueimp-load-image'
 import 'react-image-crop/dist/ReactCrop.css';
+import withImageCrop from '../hoc/withImageCrop';
 
 import {Input, Button, Col, Row, Form, message} from 'antd';
 
 import {DatePicker} from 'antd';
-
 const {TextArea} = Input;
-
 
 class AdminCreateChallenge extends React.Component {
     state = {
-        croppedImageUrl: '',
-        file: '',
-        src: null,
-        crop: {
-            aspect: 1,
-            width: 50,
-            x: 0,
-            y: 0,
-        },
         loading: false
-    };
-
+    }
     handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -41,9 +30,10 @@ class AdminCreateChallenge extends React.Component {
 
         if (validated){
 
-            let createdAt = Date.now();
             let data = this.props.form.getFieldsValue();
-            data.createdAt = createdAt;
+            data.cover = this.props.cover.base64
+
+            console.log(data);
 
             this.setState({
                 loading: true
@@ -61,84 +51,10 @@ class AdminCreateChallenge extends React.Component {
         }
     }
 
-    setFile =(file) => {
-
-        this.setState({src: file.base64})
-        this.props.form.setFields({
-            cover: {
-                value: file
-            },
-        });
-    }
-
-    onImageLoaded = (image, pixelCrop) => {
-        this.imageRef = loadImage(image, (img) => {
-            this.setState({
-                file: img
-            });
-        }, {orientation: true});
-    }
-
-
-    onCropComplete = (crop, pixelCrop) => {
-
-        this.makeClientCrop(crop, pixelCrop);
-    };
-
-    onCropChange = crop => {
-        this.setState({crop});
-    };
-
-    async makeClientCrop(crop, pixelCrop) {
-        if (this.state.file && crop.width && crop.height) {
-            const croppedImageUrl = await this.getCroppedImg(
-                this.state.file,
-                pixelCrop,
-                'newFile.jpeg',
-            );
-
-            this.setState({croppedImageUrl});
-        }
-    }
-
-
-    getCroppedImg(image, pixelCrop, fileName) {
-        const canvas = document.createElement('canvas');
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
-        const ctx = canvas.getContext('2d');
-
-        ctx.drawImage(
-            image,
-            pixelCrop.x,
-            pixelCrop.y,
-            pixelCrop.width,
-            pixelCrop.height,
-            0,
-            0,
-            pixelCrop.width,
-            pixelCrop.height,
-        );
-
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(blob => {
-                if (!blob) {
-                    //reject(new Error('Canvas is empty'));
-                    console.error('Canvas is empty');
-                    return;
-                }
-                blob.name = fileName;
-                window.URL.revokeObjectURL(this.fileUrl);
-                this.fileUrl = window.URL.createObjectURL(blob);
-                resolve(this.fileUrl);
-            }, 'image/jpeg');
-        });
-    }
-
     render() {
         const {getFieldDecorator} = this.props.form;
         const {loading} = this.state
-        const {crop, src} = this.state;
+        const {crop, src} = this.props;
 
         return (
             <Row type="flex" justify="space-around">
@@ -199,27 +115,27 @@ class AdminCreateChallenge extends React.Component {
                                     >
                                         {getFieldDecorator('cover', {
                                         })(
-                                            <FileBase64 name='name' type="file" multiple={false} onDone={ this.setFile }/>
+                                            <FileBase64 name='name' type="file" multiple={false} onDone={this.props.setFile }/>
                                         )}
                                     </Form.Item>
                                 </Col>
                                 <Col span={16} offset={4}>
-                                    {src && (
-                                            <Form.Item
-                                                label="Croped Image"
-                                            >
-                                                {getFieldDecorator('croppedImageUrl', {
-                                                    rules: [{required: true, message: 'Please select end date for the event!'}],
-                                                })(
-                                                    <ReactCrop
-                                                        src={src}
-                                                        crop={crop}
-                                                        onImageLoaded={this.onImageLoaded}
-                                                        onComplete={this.onCropComplete}
-                                                        onChange={this.onCropChange}
-                                                    />
-                                                )}
-                                            </Form.Item>
+                                    {this.props.src && (
+                                        <Form.Item
+                                            label="Croped Image"
+                                        >
+                                            {getFieldDecorator('croppedImageUrl', {
+                                                rules: [{required: true, message: 'Please select end date for the event!'}],
+                                            })(
+                                                <ReactCrop
+                                                    src={this.props.src}
+                                                    crop={this.props.crop}
+                                                    onImageLoaded={this.props.onImageLoaded}
+                                                    onComplete={this.props.onCropComplete}
+                                                    onChange={this.props.onCropChange}
+                                                />
+                                            )}
+                                        </Form.Item>
                                     )}
                                 </Col>
                                 <Col span={10} offset={7}>
@@ -242,6 +158,7 @@ class AdminCreateChallenge extends React.Component {
     }
 }
 
-const WrappedAdminCreateChallenge = Form.create({name: 'normal_login'})(AdminCreateChallenge);
+let WrappedAdminCreateChallenge = Form.create({name: 'normal_login'})(AdminCreateChallenge);
+WrappedAdminCreateChallenge = withImageCrop(WrappedAdminCreateChallenge)
 
 export default WrappedAdminCreateChallenge;

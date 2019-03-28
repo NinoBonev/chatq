@@ -32,24 +32,20 @@ export default class AllChallengesPage extends React.Component {
 
     componentDidMount() {
         this.props.Crud.getAllChallenges().then((res) => {
-            if (res.success) {
-                for (let challenge of res.body) {
+            for (let challenge of res) {
                     let date = moment(challenge.deadlineDate).utc();
-                    console.log(date);
+
                     if (!date.isSameOrBefore(moment.now())) {
                         this.setState(prevState => ({
                             activeChallenges: [...prevState.activeChallenges, challenge]
                         }));
+                        console.log(this.state);
                     } else {
                         this.setState(prevState => ({
                             oldChallenges: [...prevState.oldChallenges, challenge]
                         }));
                     }
                 }
-
-            } else {
-                message.error(res.message);
-            }
         }).catch((err) => {
             message.error('Error');
         });

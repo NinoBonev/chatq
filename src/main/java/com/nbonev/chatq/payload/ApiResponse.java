@@ -6,11 +6,11 @@ package com.nbonev.chatq.payload;
 public class ApiResponse {
 
     private Boolean success;
-    private String message;
+    private Object body;
 
-    public ApiResponse(Boolean success, String message) {
+    public ApiResponse(Boolean success, Object body) {
         this.success = success;
-        this.message = message;
+        this.body = body;
     }
 
     public Boolean getSuccess() {
@@ -21,11 +21,11 @@ public class ApiResponse {
         this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public Object getBody() {
+        return body;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setBody(String body) {
+        this.body = body;
     }
 }

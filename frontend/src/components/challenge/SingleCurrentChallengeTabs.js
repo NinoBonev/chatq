@@ -7,8 +7,10 @@ import {Tabs} from 'antd'
 import SingleCurrentChallengeInfo from './SingleCurrentChallengeInfo'
 import {message} from 'antd/lib/index';
 import AllGroupStories from '../group/AllGroupStories';
+import withModal from "../hoc/withModal";
 
 const TabPane = Tabs.TabPane;
+const ListAllGroupStories = withModal(AllGroupStories)
 
 class SingleCurrentChallengeTabs extends React.Component{
     constructor(props) {
@@ -23,25 +25,20 @@ class SingleCurrentChallengeTabs extends React.Component{
 
     componentDidMount() {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
-            if (res.success) {
-                for (let story of res.body.stories) {
-                    this.props.Crud.getStoryById(story).then((getStory) => {
 
-                        this.props.Crud.getUserInfo(getStory.body.createdBy).then((user) => {
-                            getStory.body.avatar = user.body.avatar;
-                            getStory.body.username = user.body.username;
+                for (let storyById of res.storiesById) {
+                    this.props.Crud.getStoryById(storyById).then((story) => {
+                        console.log(story);
+                        this.props.Crud.getUserInfo(story.username).then((user) => {
+                            story.avatar = user.avatar;
 
                             this.setState(prevState => ({
-                                stories: [...prevState.stories, getStory.body]
+                                stories: [...prevState.stories, story]
                             }));
                         });
                     })
 
                 }
-
-            } else {
-                message.error(res.message);
-            }
         }).catch((err) => {
             message.error("Error");
         });
@@ -62,7 +59,7 @@ class SingleCurrentChallengeTabs extends React.Component{
                 </TabPane>
                 {this.props.isAdmin ?
                     <TabPane tab="See current stories" key="2">
-                        <AllGroupStories {...this.props} stories={storiesSortedByDateCreate}/>
+                        <ListAllGroupStories {...this.props} data={storiesSortedByDateCreate}/>
                     </TabPane>
 
                     :

@@ -9,7 +9,7 @@ import {Link} from 'react-router-dom'
 import withModal from '../hoc/withModal'
 
 import StoryPage from '../story/StoryPage'
-import BasicModal from "../home/BasicModal";
+import BasicModal from "../story/BasicModal";
 
 const {Meta} = Card;
 
@@ -24,26 +24,19 @@ class BasicSingleOldChallenge extends Component {
 
     componentDidMount() {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
-            if (res.success) {
-                for (let story of res.body.stories) {
-                    this.props.Crud.getStoryById(story).then((currentStory) => {
-
-                        this.props.Crud.getUserInfo(currentStory.body.createdBy).then((user) => {
-
-                            currentStory.body.avatar = user.body.avatar;
-                            currentStory.body.username = user.body.username;
-                            currentStory.body.createdBy = user.body._id;
+                for (let storyById of res.storiesById) {
+                    this.props.Crud.getStoryById(storyById).then((story) => {
+                        console.log(story);
+                        this.props.Crud.getUserInfo(story.username).then((user) => {
+                            story.avatar = user.avatar;
 
                             this.setState(prevState => (
-                                { stories: [...prevState.stories , currentStory.body]
+                                { stories: [...prevState.stories , story]
                                 }));
                         });
                     })
 
                 }
-            } else {
-                message.error(res.message);
-            }
         }).catch((err) => {
             message.error("Error");
         });
@@ -51,7 +44,7 @@ class BasicSingleOldChallenge extends Component {
 
 
     render() {
-        let sorted = this.state.stories.sort((a, b) => a.currentStory._id - b.currentStory._id)
+        let sorted = this.state.stories.sort((a, b) => a.createdAt.id - b.createdAt.id)
 
         return (
 
@@ -62,7 +55,7 @@ class BasicSingleOldChallenge extends Component {
                                 <div>
                                     <Card
                                         hoverable
-                                        cover={ <img onClick={() => this.props.showModal(str._id)}
+                                        cover={ <img onClick={() => this.props.showModal(str.id)}
                                                      src={str.cover} alt="" style={{width: '100%'}}/>}
                                         actions={this.props.isAdmin ? [<Icon
                                             type="delete" onClick={this.delete}/>,
@@ -70,10 +63,10 @@ class BasicSingleOldChallenge extends Component {
                                     > <Meta
                                         avatar={<Tooltip placement="top"
                                                          title={'Click to see all ' + str.username + ' stories'}><Link
-                                            to={{pathname: `/users/${str.createdBy}`}}>
+                                            to={{pathname: `/users/${str.username}`}}>
                                             <Avatar size={55} src={str.avatar}/>
                                         </Link></Tooltip>}
-                                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(str._id)}>
+                                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(str.id)}>
                                                   {str.name}
                                             </a>}
                                     />

@@ -1,8 +1,8 @@
 package com.nbonev.chatq.security;
 
-import com.nbonev.chatq.entity.User;
+import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
-import com.nbonev.chatq.repository.UserRepository;
+import com.nbonev.chatq.sections.users.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,8 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional

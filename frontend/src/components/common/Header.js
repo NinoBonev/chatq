@@ -16,7 +16,8 @@ const {Header} = Layout;
 
 class HeaderBase extends React.Component {
     render() {
-        const user = Auth.getProfile() || '';
+
+        const user = Auth.getProfile()|| '';
 
         return (
             <Header style={{height: '50px', background: '#000000', padding: 0}}>
@@ -29,7 +30,7 @@ class HeaderBase extends React.Component {
                     <Link to='/logout' onClick={Auth.logout}>Log Out</Link>
                 </span>
                 <span className='header-item-right'><Avatar style={{marginBottom: 20}} size={40} src={user.avatar} alt=""/></span>
-                <span className='header-user-welcome'>{'Welocome back, ' + user.name}</span>
+                <span className='header-user-welcome'>{'Welocome back, ' + user.username}</span>
             </Header>
         );
     }

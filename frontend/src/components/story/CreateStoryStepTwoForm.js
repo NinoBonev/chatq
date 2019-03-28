@@ -54,14 +54,10 @@ class CreateStoryStepTwoForm extends React.Component {
 
                     if(comment === name){
                         let current = currentFiles.findIndex(el => el.name === file.name)
-                        console.log(current);
                         currentFiles[current].info = this.props.form.getFieldsValue()[comment][extension]
                     }
                 }
             }
-
-            console.log(currentFiles);
-
             this.props.done(currentFiles);
 
             this.props.onSubmit()
@@ -98,12 +94,10 @@ class CreateStoryStepTwoForm extends React.Component {
             beforeUpload: (file) => {
 
                 if(this.state.files.findIndex(el => el.name === file.name) < 0){
-                    console.log(file);
-                    getBase64(file).then((image) => {
+                    getBase64(file).then((cover) => {
                         this.setState(state => ({
-                            files: [...state.files, {name: file.name, image}],
+                            files: [...state.files, {name: file.name, cover}],
                         }));
-                        console.log(this.state);
                         //return false;
                     });
                     return false;
@@ -140,7 +134,9 @@ class CreateStoryStepTwoForm extends React.Component {
                                 return <div style={{margin: 15}}>
                                     <Form.Item>
                                         {getFieldDecorator(file.name, {
-                                            rules: [{required: true, message: 'Please add info for your picture'}],
+                                            rules: [{
+                                                min: 21,
+                                                required: true, message: 'Please add info for your picture'}],
                                         })(
                                             <TextArea
                                                       placeholder={'Add info for picture number ' + count++} rows={4}/>

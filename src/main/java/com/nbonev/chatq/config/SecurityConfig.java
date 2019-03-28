@@ -87,10 +87,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers("/api/auth/**")
                         .permitAll()
-                    .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
+                    .antMatchers("/api/groups/**")
                         .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
+                    .antMatchers("/api/story/{id}")
                         .permitAll()
+                    .antMatchers("/api/challenges/**")
+                        .permitAll()
+                    .antMatchers("/api/comments/**")
+                        .permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/users/**")
+                        .permitAll() //TODO: hasAnyRole
+//                    .antMatchers("/api/admin/**")
+//                .permitAll() //TODO: Admin role
                     .anyRequest()
                     .authenticated();
 

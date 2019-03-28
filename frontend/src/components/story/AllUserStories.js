@@ -17,75 +17,71 @@ export default class AllUserStories extends React.Component {
         super(props);
 
         this.state = this.props.Helper.allUserStoriesInitialState();
-
     }
 
     componentDidMount() {
-        if (!this.props.Auth.isLoggedIn()) {
+        console.log(this.props);
+        if (!this.props.isAuth) {
             this.props.history.push({
                 pathname: '/login',
                 state: 'Please log in or register to use the full functionality'
             });
+        } else {
+            this.fetchAllUserStories();
         }
-
-        this.fetchAllUserStories();
     }
 
     fetchAllUserStories() {
-        this.props.Crud.getUserInfo(this.props.match.params.id).then((res) => {
+        this.props.Crud.getUserInfo(this.props.match.params.name).then((res) => {
+                let myUsername = this.props.Auth.getUsername();
 
-            if (res.success) {
-                let myId = this.props.Auth.getProfile().id;
                 let followCurrentUser = false;
                 let notMyProfile = true;
 
-                if (res.body._id === myId) {
+                if (res.username === myUsername) {
                     notMyProfile = false;
                 }
 
-                if (res.body.followers !== undefined && res.body.followers.indexOf(myId) > -1) {
+                if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(myUsername) > -1) {
                     followCurrentUser = true;
                 }
 
                 this.setState({
-                    avatar: res.body.avatar,
-                    user: res.body.username,
-                    userId: res.body._id,
+                    avatar: res.avatar,
+                    user: res.username,
+                    userId: res.id,
                     notMyProfile,
-                    myId,
+                    myUsername,
                     followCurrentUser
                 });
 
 
-                for (let storyId of res.body.stories) {
+                for (let storyId of res.storiesById) {
                     this.props.Crud.getStoryById(storyId).then((story) => {
+
                         this.setState(prevState => ({
-                            stories: [...prevState.stories, story.body]
+                            stories: [...prevState.stories, story]
                         }));
                     });
                 }
 
-                for (let challengeId of res.body.challenges) {
+                for (let challengeId of res.challengesById) {
                     this.props.Crud.getStoryById(challengeId).then((story) => {
-                        this.props.Crud.getChallengeById(story.body.challenge).then((challenge) => {
+                        this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
                             if (this.props.isAdmin) {
                                 this.setState(prevState => ({
-                                    challenges: [...prevState.challenges, story.body]
+                                    challenges: [...prevState.challenges, story]
                                 }));
                             } else {
-                                if (moment(challenge.body.deadlineDate).isBefore(moment.now())) {
+                                if (moment(challenge.deadlineDate).isBefore(moment.now())) {
                                     this.setState(prevState => ({
-                                        challenges: [...prevState.challenges, story.body]
+                                        challenges: [...prevState.challenges, story]
                                     }));
                                 }
                             }
                         });
                     });
                 }
-
-            } else {
-                console.log(res.message);
-            }
         }).catch((err) => {
             console.log(err);
         });
@@ -117,7 +113,7 @@ export default class AllUserStories extends React.Component {
     };
 
     startFollowing = () => {
-        this.props.Crud.startFollowUser(this.state.myId, this.state.userId).then((res) => {
+        this.props.Crud.startFollowUser(this.state.username, this.state.userId).then((res) => {
             if (res.success) {
                 message.success(`You are now following ${this.state.user}`,);
                 this.setState({
@@ -129,7 +125,7 @@ export default class AllUserStories extends React.Component {
     };
 
     stopFollowing = () => {
-        this.props.Crud.stopFollowUser(this.state.myId, this.state.userId).then((res) => {
+        this.props.Crud.stopFollowUser(this.state.username, this.state.userId).then((res) => {
             if (res.success) {
                 message.success(`You are no longer following ${this.state.user}`,);
                 this.setState({
@@ -139,24 +135,12 @@ export default class AllUserStories extends React.Component {
         });
     };
 
-    handleDeleteFromGroup(id) {
-        this.props.Crud.deleteStoryFromGroupById(id).then((res) => {
+    handleDelete(id) {
+        this.props.Crud.deleteStoryById(id).then((res) => {
             if (res.success) {
-                message.success('Story deleted successfully');
+                message.success(res.body);
                 this.setState({
                     stories: []
-                });
-                this.fetchAllUserStories();
-            }
-        });
-    }
-
-    handleDeleteFromChallenge(id) {
-        this.props.Crud.deleteStoryFromChallengeById(id).then((res) => {
-            if (res.success) {
-                message.success('Story deleted successfully');
-                this.setState({
-                    challenges: []
                 });
                 this.fetchAllUserStories();
             }
@@ -202,16 +186,16 @@ export default class AllUserStories extends React.Component {
                                             style={{marginBottom: 20, marginTop: 20}}
                                             actions={this.props.isAdmin ? [<Popconfirm
                                                 title="Are you sure delete this story?"
-                                                onConfirm={() => this.handleDeleteFromGroup(str._id)} okText="Yes"
+                                                onConfirm={() => this.handleDelete(str.id)} okText="Yes"
                                                 cancelText="No">
                                                 <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                                             </Popconfirm>] : null}
                                             hoverable
                                             cover={<img src={str.cover}
-                                                        onClick={() => this.showModal(str._id)} alt=""
+                                                        onClick={() => this.showModal(str.id)} alt=""
                                             />}
                                         > <Meta
-                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str._id)}>
+                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str.id)}>
                                                 {str.name}
                                             </a>}
                                         />
@@ -251,16 +235,16 @@ export default class AllUserStories extends React.Component {
                                             style={{marginBottom: 20, marginTop: 20}}
                                             actions={this.props.isAdmin ? [<Popconfirm
                                                 title="Are you sure delete this story?"
-                                                onConfirm={() => this.handleDeleteFromChallenge(str._id)} okText="Yes"
+                                                onConfirm={() => this.handleDelete(str.id)} okText="Yes"
                                                 cancelText="No">
                                                 <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                                             </Popconfirm>] : null}
                                             hoverable
                                             cover={<img src={str.cover}
-                                                        onClick={() => this.showModal(str._id)} alt=""
+                                                        onClick={() => this.showModal(str.id)} alt=""
                                             />}
                                         > <Meta
-                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str._id)}>
+                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str.id)}>
                                                 {str.name}
                                             </a>}
                                         />

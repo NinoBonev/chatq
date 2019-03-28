@@ -15,7 +15,7 @@ class AdminAllUsersPane extends React.Component {
         let userId = this.state.data[key].id;
 
         this.props.Crud.deleteUserById(userId).then((res) => {
-            console.log(res);
+
             if(res.success){
                 message.success("User deleted successfully")
                 this.setState({
@@ -32,22 +32,21 @@ class AdminAllUsersPane extends React.Component {
 
     fetchAllStories(){
         this.props.Crud.getAllUsers().then((res) => {
-            console.log(res);
             let count = 0
 
-            for (let user of res.body) {
+            for (let user of res) {
                 let userData = {
                     key: count++,
-                    id: user._id,
+                    id: user.id,
                     name: user.name,
                     avatar: user.avatar,
                     email: user.email,
                     username: user.username,
-                    groups_follow: user.followGroup.length,
-                    people_follow: user.followUsers.length,
-                    followers: user.followers.length,
-                    stories_groups: user.stories.length,
-                    stories_challenges: user.challenges.length
+                    groups_follow: user.followingGroupsByName.length,
+                    people_follow: user.followingUsersByUsername.length,
+                    followers: user.followersByUsername.length,
+                    stories_groups: user.storiesById.length,
+                    stories_challenges: user.challengesById.length
                 }
 
                 this.setState(prevStete => ({
