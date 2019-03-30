@@ -31,7 +31,7 @@ const DashboardFollowedPeople = (props) => {
                                     <div style={{fontSize: 16}}>Created By</div>
                                     <div><Tooltip placement="top"
                                                   title={'Click to see all ' + item.username + ' stories'}><Link
-                                        to={{pathname: `/users/${item.createdBy}`}}>
+                                        to={{pathname: `/users/${item.username}`}}>
                                         <Avatar size={55} src={item.avatar}/>
                                     </Link></Tooltip></div>
                                 </div>

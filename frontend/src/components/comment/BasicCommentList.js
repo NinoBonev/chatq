@@ -52,14 +52,12 @@ class BasicComments extends React.Component {
     }
 
     async componentDidMount() {
-        let user = await this.props.Auth.getProfile()
-
-        if (user) {
+        let user = this.props.Auth.getProfile()
             this.setState({
                 userId: user.id,
                 avatar: user.avatar
             })
-        }
+
 
         this.fetchAllComments()
     }
@@ -93,8 +91,6 @@ class BasicComments extends React.Component {
             userId: this.state.userId,
             storyId: this.props.storyId
         };
-
-        console.log(submit);
 
         this.setState({
             submitting: true,

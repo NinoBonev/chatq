@@ -30,7 +30,7 @@ const DashboardFollowedGroups = (props) => {
                                         <div style={{fontSize: 16}}>Created By</div>
                                         <div><Tooltip placement="top"
                                                       title={'Click to see all ' + item.username + ' stories'}>
-                                            <Link to={{pathname: `/users/${item.createdBy}`}}>
+                                            <Link to={{pathname: `/users/${item.username}`}}>
                                                 <Avatar size={55} src={item.avatar}/>
                                             </Link>
                                         </Tooltip></div>
@@ -57,8 +57,8 @@ const DashboardFollowedGroups = (props) => {
                                 </Skeleton>
                                 <div>
                                     <div style={{fontSize: 16}}>Group: <span><Link to={{
-                                        pathname: `/groups/${item.groupId}`,
-                                        state: {groupId: item.groupId}
+                                        pathname: `/groups/${item.groupName}`,
+                                        state: {groupName: item.groupName}
                                     }}>
                                             {item.groupName}
                                         </Link></span></div>

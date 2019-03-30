@@ -8,41 +8,58 @@ let Request = new RequestService();
 
 class CrudService {
     constructor() {
-        this.addChallenge = this.addChallenge.bind(this);
-        this.createStory = this.createStory.bind(this)
-
         this.getAllChallenges = this.getAllChallenges.bind(this);
+        this.getChallengeById = this.getChallengeById.bind(this);
+        this.addChallenge = this.addChallenge.bind(this);
+        this.archiveOldChallengeById = this.archiveOldChallengeById.bind(this);
+
         this.getAllGroups = this.getAllGroups.bind(this);
         this.getGroupById = this.getGroupById.bind(this);
+        this.getGroupByName = this.getGroupByName.bind(this);
+        this.addGroup = this.addGroup.bind(this);
+        this.archiveGroupById = this.archiveGroupById.bind(this);
+
         this.getStoryById = this.getStoryById.bind(this);
+        this.createStory = this.createStory.bind(this);
+        this.editStoryInfo = this.editStoryInfo.bind(this);
+        this.deleteStoryById = this.deleteStoryById.bind(this);
+
+        this.startFollowGroup = this.startFollowGroup.bind(this);
+        this.stopFollowGroup = this.stopFollowGroup.bind(this);
+        this.startFollowUser = this.startFollowUser.bind(this);
+        this.stopFollowUser = this.stopFollowUser.bind(this);
+
+        this.addCommentToStory = this.addCommentToStory.bind(this);
+        this.getCommentById = this.getCommentById.bind(this);
 
         this.getUserInfo = this.getUserInfo.bind(this)
+        this.getAllUsers = this.getAllUsers.bind(this);
     }
 
-    startFollowGroup(groupId, userId, payload){
+    startFollowGroup(group_name, username, payload){
         const token = this._getToken();
-        return Request.post(`/${groupId}/${userId}/start_follow_group`,  payload, token).then((res) => {
+        return Request.post(`/${group_name}/${username}/start_follow_group`,  payload, token).then((res) => {
             return Promise.resolve(res);
         })
     }
 
-    stopFollowGroup(groupId, userId, payload){
+    stopFollowGroup(group_name, username, payload){
         const token = this._getToken();
-        return Request.post(`/${groupId}/${userId}/stop_follow_group`,  payload, token).then((res) => {
+        return Request.post(`/${group_name}/${username}/stop_follow_group`,  payload, token).then((res) => {
             return Promise.resolve(res);
         })
     }
 
-    startFollowUser(myId, userId, payload){
+    startFollowUser(myUsername, followed_username, payload){
         const token = this._getToken();
-        return Request.post(`/${myId}/${userId}/start_follow_user`,  payload, token).then((res) => {
+        return Request.post(`/${myUsername}/${followed_username}/start_follow_user`,  payload, token).then((res) => {
             return Promise.resolve(res);
         })
     }
 
-    stopFollowUser(myId, userId, payload){
+    stopFollowUser(myUsername, followed_username, payload){
         const token = this._getToken();
-        return Request.post(`/${myId}/${userId}/stop_follow_user`,  payload, token).then((res) => {
+        return Request.post(`/${myUsername}/${followed_username}/stop_follow_user`,  payload, token).then((res) => {
             return Promise.resolve(res);
         })
     }
@@ -75,9 +92,37 @@ class CrudService {
         });
     }
 
+    archiveOldChallengeById(id){
+        const token = this._getToken();
+        return Request.post(`/admin/challenges/archive/${id}`, {}, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
     addGroup(payload){
         const token = this._getToken();
         return Request.post('/admin/groups/create_group', payload, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    archiveGroupById(id) {
+        const token = this._getToken();
+        return Request.post(`/admin/groups/archive/${id}`, {}, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    openGroupById(id){
+        const token = this._getToken();
+        return Request.post(`/admin/groups/open/${id}`, {}, token).then((res) => {
+            return Promise.resolve(res);
+        });
+    }
+
+    closeGroupById(id){
+        const token = this._getToken();
+        return Request.post(`/admin/groups/close/${id}`, {}, token).then((res) => {
             return Promise.resolve(res);
         });
     }
@@ -117,12 +162,7 @@ class CrudService {
         });
     }
 
-    deleteGroupById(id) {
-        const token = this._getToken();
-        return Request.delete(`/groups/delete/${id}`, token).then((res) => {
-            return Promise.resolve(res);
-        });
-    }
+
 
     getStoryById(id){
         const token = this._getToken();

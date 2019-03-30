@@ -26,7 +26,7 @@ import SingleOldChallenge from './components/challenge/SingleOldChallenge'
 import WrappedAdminCreateChallenge from './components/admin/AdminCreateChallenge';
 import AdminAllUsersPane from './components/admin/AdminAllUsersPane'
 import WrappedAdminCreateGroup from './components/admin/AdminCreateGroup';
-
+import AdminAllGroupsPane from "./components/admin/AdminAllGroupsPane";
 
 
 const AppRouter = (props) => {
@@ -145,24 +145,6 @@ const AppRouter = (props) => {
                 />}
             />
 
-            <Route exact path='/admin/challenges/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
-                <WrappedAdminCreateChallenge
-                    Helper={Helper}
-                    Auth={Auth}
-                    Crud={Crud}
-                    {...props}
-                />
-            }/>
-
-            <Route exact path='/admin/groups/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
-                <WrappedAdminCreateGroup
-                    Helper={Helper}
-                    Auth={Auth}
-                    Crud={Crud}
-                    {...props}
-                />
-            }/>
-
             <Route exact path='/groups/edit/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <WrappedAdminCreateGroup
                     isAuth={isAuth}
@@ -217,6 +199,24 @@ const AppRouter = (props) => {
                 />}
             />
 
+            <Route exact path='/admin/challenges/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
+                <WrappedAdminCreateChallenge
+                    Helper={Helper}
+                    Auth={Auth}
+                    Crud={Crud}
+                    {...props}
+                />
+            }/>
+
+            <Route exact path='/admin/groups/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
+                <WrappedAdminCreateGroup
+                    Helper={Helper}
+                    Auth={Auth}
+                    Crud={Crud}
+                    {...props}
+                />
+            }/>
+
             <Route exact path='/admin/users/all' render={(props) => !isAdmin ? <Redirect to='/'/> :
                 <AdminAllUsersPane
                     isAdmin={isAdmin}
@@ -225,6 +225,14 @@ const AppRouter = (props) => {
                     Crud={Crud}
                     {...props}
                 />}
+            />
+
+            <Route exact path='/admin/groups/all' render={(props) => !isAdmin ? <Redirect to='/' /> :
+                <AdminAllGroupsPane
+                    Auth={Auth}
+                    Crud={Crud}
+                    {...props}
+                /> }
             />
 
 

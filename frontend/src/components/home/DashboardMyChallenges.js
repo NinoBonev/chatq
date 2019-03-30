@@ -19,7 +19,6 @@ export default class DashboardMyChallenges extends React.Component {
     }
 
     async componentDidMount() {
-        console.log(this.props);
         await this.fetchAllStories()
         this.setState({isLoading: false})
     }
@@ -39,9 +38,8 @@ export default class DashboardMyChallenges extends React.Component {
         }
     }
 
-    handleDelete(id){
-        console.log(id);
-        this.props.Crud.deleteStoryById(id).then((res) => {
+    async handleDelete(id){
+        let res = await this.props.Crud.deleteStoryById(id)
             if(res.success){
                 message.success("Story deleted successfully")
                 this.setState({
@@ -49,7 +47,6 @@ export default class DashboardMyChallenges extends React.Component {
                 })
                 this.fetchAllStories()
             }
-        })
     }
 
     render () {

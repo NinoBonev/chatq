@@ -39,7 +39,6 @@ export default class AllChallengesPage extends React.Component {
                         this.setState(prevState => ({
                             activeChallenges: [...prevState.activeChallenges, challenge]
                         }));
-                        console.log(this.state);
                     } else {
                         this.setState(prevState => ({
                             oldChallenges: [...prevState.oldChallenges, challenge]

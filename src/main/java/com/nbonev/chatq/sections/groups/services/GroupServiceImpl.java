@@ -3,6 +3,7 @@ package com.nbonev.chatq.sections.groups.services;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.entities.Group;
+import com.nbonev.chatq.sections.groups.enums.GroupStatus;
 import com.nbonev.chatq.sections.groups.models.binding.GroupCreateBindingModel;
 import com.nbonev.chatq.sections.groups.models.view.GroupViewModel;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
@@ -35,9 +36,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ResponseEntity<?> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException {
+    public ResponseEntity<ApiResponse> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException {
 
         groupCreateBindingModel.uploadAndSetCover(groupCreateBindingModel.getCover());
+        groupCreateBindingModel.setStatus(GroupStatus.OPEN.getStatusName());
 
         Group group = modelMapper.map(groupCreateBindingModel, Group.class);
         this.groupRepository.save(group);
@@ -98,5 +100,44 @@ public class GroupServiceImpl implements GroupService {
         groupViewModel.setFollowersByUsername(groupOptional.get().getFollowers().stream().map(User::getUsername).collect(Collectors.toSet()));
 
         return groupViewModel;
+    }
+
+    @Override
+    public void archiveGroup(Long id) {
+        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+
+        if (!optionalGroup.isPresent()) {
+            throw new ResourceNotFoundException("Group", "id", id);
+        }
+
+        optionalGroup.get().setStatus(GroupStatus.ARCHIVED.getStatusName());
+
+        this.groupRepository.save(optionalGroup.get());
+    }
+
+    @Override
+    public void closeGroup(Long id) {
+        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+
+        if (!optionalGroup.isPresent()) {
+            throw new ResourceNotFoundException("Group", "id", id);
+        }
+
+        optionalGroup.get().setStatus(GroupStatus.CLOSED.getStatusName());
+
+        this.groupRepository.save(optionalGroup.get());
+    }
+
+    @Override
+    public void openGroup(Long id) {
+        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+
+        if (!optionalGroup.isPresent()) {
+            throw new ResourceNotFoundException("Group", "id", id);
+        }
+
+        optionalGroup.get().setStatus(GroupStatus.OPEN.getStatusName());
+
+        this.groupRepository.save(optionalGroup.get());
     }
 }

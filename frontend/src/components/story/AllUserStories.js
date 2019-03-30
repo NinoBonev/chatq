@@ -20,7 +20,6 @@ export default class AllUserStories extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         if (!this.props.isAuth) {
             this.props.history.push({
                 pathname: '/login',
@@ -33,55 +32,54 @@ export default class AllUserStories extends React.Component {
 
     fetchAllUserStories() {
         this.props.Crud.getUserInfo(this.props.match.params.name).then((res) => {
-                let myUsername = this.props.Auth.getUsername();
+            let user = this.props.Auth.getProfile();
 
-                let followCurrentUser = false;
-                let notMyProfile = true;
+            let followCurrentUser = false;
+            let notMyProfile = true;
 
-                if (res.username === myUsername) {
-                    notMyProfile = false;
-                }
+            if (res.username === user.username) {
+                notMyProfile = false;
+            }
 
-                if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(myUsername) > -1) {
-                    followCurrentUser = true;
-                }
+            if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(user.username) > -1) {
+                followCurrentUser = true;
+            }
 
-                this.setState({
-                    avatar: res.avatar,
-                    user: res.username,
-                    userId: res.id,
-                    notMyProfile,
-                    myUsername,
-                    followCurrentUser
+            this.setState({
+                avatar: res.avatar,
+                user: res.username,
+                userId: res.id,
+                notMyProfile,
+                myUsername: user.username,
+                followCurrentUser
+            });
+
+
+            for (let storyId of res.storiesById) {
+                this.props.Crud.getStoryById(storyId).then((story) => {
+                    this.setState(prevState => ({
+                        stories: [...prevState.stories, story]
+                    }));
                 });
+            }
 
-
-                for (let storyId of res.storiesById) {
-                    this.props.Crud.getStoryById(storyId).then((story) => {
-
-                        this.setState(prevState => ({
-                            stories: [...prevState.stories, story]
-                        }));
-                    });
-                }
-
-                for (let challengeId of res.challengesById) {
-                    this.props.Crud.getStoryById(challengeId).then((story) => {
-                        this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
-                            if (this.props.isAdmin) {
+            for (let challengeId of res.challengesById) {
+                this.props.Crud.getStoryById(challengeId).then((story) => {
+                    this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
+                        if (this.props.isAdmin()) {
+                            this.setState(prevState => ({
+                                challenges: [...prevState.challenges, story]
+                            }));
+                        } else {
+                            if (moment(challenge.deadlineDate).isBefore(moment.now())) {
                                 this.setState(prevState => ({
                                     challenges: [...prevState.challenges, story]
                                 }));
-                            } else {
-                                if (moment(challenge.deadlineDate).isBefore(moment.now())) {
-                                    this.setState(prevState => ({
-                                        challenges: [...prevState.challenges, story]
-                                    }));
-                                }
                             }
-                        });
+                        }
                     });
-                }
+                });
+            }
         }).catch((err) => {
             console.log(err);
         });
@@ -93,11 +91,9 @@ export default class AllUserStories extends React.Component {
             visible: true,
 
         });
-        console.log(this.state);
     };
 
     handleOk = (e) => {
-        console.log(e);
         this.setState({
             visible: false,
             id: ''
@@ -105,7 +101,6 @@ export default class AllUserStories extends React.Component {
     };
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             visible: false,
             id: ''
@@ -113,9 +108,9 @@ export default class AllUserStories extends React.Component {
     };
 
     startFollowing = () => {
-        this.props.Crud.startFollowUser(this.state.username, this.state.userId).then((res) => {
+        this.props.Crud.startFollowUser(this.state.myUsername, this.state.user).then((res) => {
             if (res.success) {
-                message.success(`You are now following ${this.state.user}`,);
+                message.success(res.body);
                 this.setState({
                     followCurrentUser: true
                 });
@@ -125,9 +120,9 @@ export default class AllUserStories extends React.Component {
     };
 
     stopFollowing = () => {
-        this.props.Crud.stopFollowUser(this.state.username, this.state.userId).then((res) => {
+        this.props.Crud.stopFollowUser(this.state.myUsername, this.state.user).then((res) => {
             if (res.success) {
-                message.success(`You are no longer following ${this.state.user}`,);
+                message.success(res.body);
                 this.setState({
                     followCurrentUser: false
                 });

@@ -3,6 +3,7 @@ package com.nbonev.chatq;
 import com.nbonev.chatq.sections.comments.entities.Comment;
 import com.nbonev.chatq.sections.comments.repositories.CommentRepository;
 import com.nbonev.chatq.sections.groups.entities.Group;
+import com.nbonev.chatq.sections.groups.enums.GroupStatus;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
 import com.nbonev.chatq.sections.roles.entities.Role;
 import com.nbonev.chatq.sections.roles.enums.RoleEnum;
@@ -66,7 +67,6 @@ public class Initializer implements CommandLineRunner {
             this.roleRepository.save(userRole);
 
             user.setAuthorities(Collections.singleton(userRole));
-            user.setAdmin(false);
 
             this.userRepository.save(user);
 
@@ -85,14 +85,14 @@ public class Initializer implements CommandLineRunner {
             this.roleRepository.save(adminRole);
 
             admin.setAuthorities(Collections.singleton(adminRole));
-            admin.setAdmin(true);
 
             this.userRepository.save(admin);
 
             Group social = new Group(
                     "Social",
                     "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1553445963/ubuduggkwbfwavbmkhzs.jpg");
+                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1553445963/ubuduggkwbfwavbmkhzs.jpg",
+                    GroupStatus.OPEN.getStatusName());
 
             Group culture = new Group(
                     "Culture",
@@ -100,7 +100,8 @@ public class Initializer implements CommandLineRunner {
                             " by injected humour, or randomised words which don't look even slightly believable." +
                             " If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden" +
                             " in the middle of text. ",
-                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1552805256/a2fx0ekeorxqxwifxd00.jpg");
+                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1552805256/a2fx0ekeorxqxwifxd00.jpg",
+                    GroupStatus.OPEN.getStatusName());
 
             Group nature = new Group(
                     "Nature",
@@ -108,7 +109,8 @@ public class Initializer implements CommandLineRunner {
                             " true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model" +
                             " sentence structures, to generate Lorem Ipsum which looks reasonable." +
                             " The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1552808641/bymsbi25mra92r24uvqk.jpg");
+                    "https://res.cloudinary.com/dar4inn2i/image/upload/v1552808641/bymsbi25mra92r24uvqk.jpg",
+                    GroupStatus.OPEN.getStatusName());
 
             this.groupRepository.save(social);
             this.groupRepository.save(culture);

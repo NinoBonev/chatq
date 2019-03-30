@@ -26,30 +26,29 @@ public class UserPrincipal implements UserDetails {
 
     private String username;
 
-    private String avatar;
-
     @JsonIgnore
     private String email;
 
     @JsonIgnore
     private String password;
 
-    private Set<Story> stories;
-
-    private Set<Comment> comments;
+    private String avatar;
 
     private Set<User> followingUsers;
 
+    private Set<Group> followingGroups;
+
     private Set<User> followers;
 
-    private Set<Group> followingGroups;
+    private Set<Comment> comments;
+
+    private Set<Story> stories;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String name, String username, String avatar, String email, String password,
-                         Set<Story> stories,
-                         Set<Comment> comments,
-                         Set<User> followingUsers, Set<User> followers,Set<Group> followingGroups,
+    public UserPrincipal(Long id, String name, String username, String email, String password, String avatar,
+                         Set<User> followingUsers, Set<Group> followingGroups ,Set<User> followers,
+                         Set<Comment> comments, Set<Story> stories,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
@@ -73,14 +72,14 @@ public class UserPrincipal implements UserDetails {
                 user.getId(),
                 user.getName(),
                 user.getUsername(),
-                user.getAvatar(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getStories(),
-                user.getComments(),
+                user.getAvatar(),
                 user.getFollowingUsers(),
-                user.getFollowers(),
                 user.getFollowingGroups(),
+                user.getFollowers(),
+                user.getComments(),
+                user.getStories(),
                 authorities
         );
     }

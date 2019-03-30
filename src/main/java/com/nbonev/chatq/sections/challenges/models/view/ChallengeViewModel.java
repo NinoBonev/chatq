@@ -13,19 +13,21 @@ public class ChallengeViewModel {
     private String info;
     private String cover;
     private Instant deadlineDate;
+    private String status;
     private Instant createdAt;
     private Set<Long> storiesById;
 
     public ChallengeViewModel() {
     }
 
-    public ChallengeViewModel(long id, String name, String info, String cover,
-                              Instant deadlineDate, Instant createdAt, Set<Long> storiesById) {
+    public ChallengeViewModel(long id, String name, String info, String cover, Instant deadlineDate,
+                              String status, Instant createdAt, Set<Long> storiesById) {
         this.id = id;
         this.name = name;
         this.info = info;
         this.cover = cover;
         this.deadlineDate = deadlineDate;
+        this.status = status;
         this.storiesById = storiesById;
         this.createdAt = createdAt;
     }
@@ -84,5 +86,13 @@ public class ChallengeViewModel {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

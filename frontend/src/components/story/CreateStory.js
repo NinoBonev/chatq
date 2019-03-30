@@ -49,7 +49,7 @@ class CreateStoryForm extends React.Component {
                 let challenge = challenges.find(x => x.name === this.props.location.state);
 
                 this.setState(({fields}) => ({
-                    fields: {...fields, challenge: {label: challenge.name, value: challenge.id}},
+                    fields: {...fields, challenge: {status: challenge.status, label: challenge.name, value: challenge.id}},
                 }));
             }).catch((err) => {
                 message.error('Error');
@@ -57,10 +57,9 @@ class CreateStoryForm extends React.Component {
         }
 
         if (this.props.location.pathname === '/groups/create_story') {
-            console.log(this.props);
             if (this.props.location.state !== undefined) {
                 this.props.Crud.getAllGroups().then((groups) => {
-                    console.log(groups);
+
                     let group = groups.find(x => x.name === this.props.location.state);
 
                     this.setState(({fields}) => ({
@@ -72,9 +71,10 @@ class CreateStoryForm extends React.Component {
                     for (const group of res) {
                         let label = group.name;
                         let value = group.id;
+                        let status = group.status;
 
                         this.setState(({fields}) => ({
-                            fields: {...fields, groups: [...fields.groups, {label, value}]},
+                            fields: {...fields, groups: [...fields.groups, {status, label, value}]},
                         }));
                     }
                 }).catch((err) => {
@@ -87,7 +87,6 @@ class CreateStoryForm extends React.Component {
 
             this.props.Crud.getStoryById(this.props.match.params.id).then((res) => {
                 this.setState(this.props.Helper.storyFormInitialState(res))
-                console.log(this.state);
             }).catch((err) => {
                 message.error('Error');
             });
@@ -138,8 +137,6 @@ class CreateStoryForm extends React.Component {
             editProps.cover = this.state.fields.cover.value.base64;
         }
 
-        console.log(editProps);
-
         message.loading('Please wait while editing your story', 0);
         let res = await this.props.Crud.editStoryInfo(storyId, editProps);
         if (res.success) {
@@ -155,6 +152,8 @@ class CreateStoryForm extends React.Component {
 
         if (createdBy) {
             let {fields} = this.state;
+
+            console.log(fields);
 
             let payload = {
                 name: fields.name.value,

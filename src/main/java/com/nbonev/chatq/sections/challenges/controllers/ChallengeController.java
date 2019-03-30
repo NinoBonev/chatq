@@ -66,43 +66,14 @@ public class ChallengeController {
         return this.challengeService.createChallenge(challengeCreateBindingModel);
     }
 
-//    @PostMapping("/users/challenges/add_story")
-//    @PreAuthorize("isAuthenticated()")
-//    public ResponseEntity<ApiResponse> createStory(@Valid @RequestBody StoryCreatePayload storyCreatePayload) throws IOException {
-//
-//        StoryCreateBindingModel storyCreateBindingModel = new StoryCreateBindingModel();
-//
-//        Optional<User> optionalUser = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
-//
-//        if (!optionalUser.isPresent()){
-//            throw new ResourceNotFoundException("Group", "username", storyCreatePayload.getUserByUsername());
-//        }
-//
-//        //TODO ---> Send crop as parameter to upload
-//        storyCreateBindingModel.setName(storyCreatePayload.getName());
-//        storyCreateBindingModel.setCover(storyCreatePayload.getCover());
-//        storyCreateBindingModel.setInfo(storyCreatePayload.getInfo());
-//        storyCreateBindingModel.setUser(optionalUser.get());
-//
-//        if (storyCreatePayload.getChallenge() != null){
-//            Optional<Challenge> challengeOptional = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
-//
-//            if (!challengeOptional.isPresent()) {
-//                throw new ResourceNotFoundException("Challenge", "id", storyCreatePayload.getChallenge());
-//            }
-//
-//            storyCreateBindingModel.setChallenge(challengeOptional.get());
-//        }
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        LinkedHashSet<StoryLineCreateBindingModel> storyLines = objectMapper.
-//                readValue(storyCreatePayload
-//                                .getStoryLine(),
-//                        TypeFactory
-//                                .defaultInstance()
-//                                .constructCollectionType(LinkedHashSet.class, StoryLineCreateBindingModel.class));
-//
-//        return this.storyService.create(storyCreateBindingModel, storyLines);
-//
-//    }
+    @PostMapping(path = "/admin/challenges/archive/{id}")
+    @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> archiveChallenge(@PathVariable("id") Long id) {
+
+        this.challengeService.archiveChallenge(id);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Archive Challenge Message"));
+    }
 }

@@ -97,8 +97,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers(HttpMethod.GET, "/api/users/**")
                         .permitAll() //TODO: hasAnyRole
-//                    .antMatchers("/api/admin/**")
-//                .permitAll() //TODO: Admin role
                     .anyRequest()
                     .authenticated();
 

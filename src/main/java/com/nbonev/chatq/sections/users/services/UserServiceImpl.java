@@ -2,13 +2,11 @@ package com.nbonev.chatq.sections.users.services;
 
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
-import com.nbonev.chatq.sections.challenges.entities.Challenge;
 import com.nbonev.chatq.sections.comments.entities.Comment;
 import com.nbonev.chatq.sections.groups.entities.Group;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
 import com.nbonev.chatq.sections.roles.enums.RoleEnum;
 import com.nbonev.chatq.sections.roles.repositories.RoleRepository;
-import com.nbonev.chatq.sections.stories.entities.Story;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.models.view.UserViewModel;
@@ -68,7 +66,6 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setAuthorities(Stream.of(roleRepository.findByRole(RoleEnum.USER.getRoleName())).collect(Collectors.toSet()));
-        user.setAdmin(false);
 
         this.userRepository.save(user);
 
@@ -88,12 +85,87 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("Group", "name", group_name);
         }
 
-        userOptional.get().setFollowingGroups(Collections.singleton(groupOption.get()));
-        groupOption.get().setFollowers(Collections.singleton(userOptional.get()));
+        userOptional.get().startFollowingGroup(groupOption.get());
+
         this.userRepository.save(userOptional.get());
         this.groupRepository.save(groupOption.get());
 
-        return ResponseEntity.ok().body(new ApiResponse(true, String.format(Constants.GROUP_FOLLOW_SUCCESS, groupOption.get().getName())));
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true,
+                        String.format(Constants.GROUP_START_FOLLOW_SUCCESS,
+                                groupOption.get().getName())));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> stopFollowingGroup(String username, String group_name) {
+        Optional<User> userOptional = this.userRepository.findByUsername(username);
+        Optional<Group> groupOption = this.groupRepository.findByName(group_name);
+
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("User", "username", username);
+        }
+
+        if (!groupOption.isPresent()) {
+            throw new ResourceNotFoundException("Group", "name", group_name);
+        }
+
+        userOptional.get().stopFollowingGroup(groupOption.get());
+
+        this.userRepository.save(userOptional.get());
+        this.groupRepository.save(groupOption.get());
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true,
+                        String.format(Constants.GROUP_STOP_FOLLOW_SUCCESS,
+                                groupOption.get().getName())));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> startFollowingUser(String myUsername, String followed_username) {
+        Optional<User> myUserOptional = this.userRepository.findByUsername(myUsername);
+        Optional<User> followedUserOptional = this.userRepository.findByUsername(followed_username);
+
+        if (!myUserOptional.isPresent()) {
+            throw new ResourceNotFoundException("User", "username", myUsername);
+        }
+
+        if (!followedUserOptional.isPresent()) {
+            throw new ResourceNotFoundException("User", "username", followed_username);
+        }
+
+        myUserOptional.get().startFollowingUser(followedUserOptional.get());
+
+        this.userRepository.save(myUserOptional.get());
+        this.userRepository.save(followedUserOptional.get());
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true,
+                        String.format(Constants.USER_START_FOLLOW_SUCCESS,
+                                followedUserOptional.get().getUsername())));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> stopFollowingUser(String myUsername, String followed_username) {
+        Optional<User> myUserOptional = this.userRepository.findByUsername(myUsername);
+        Optional<User> followedUserOptional = this.userRepository.findByUsername(followed_username);
+
+        if (!myUserOptional.isPresent()) {
+            throw new ResourceNotFoundException("User", "username", myUsername);
+        }
+
+        if (!followedUserOptional.isPresent()) {
+            throw new ResourceNotFoundException("User", "username", followed_username);
+        }
+
+        myUserOptional.get().stopFollowingUser(followedUserOptional.get());
+
+        this.userRepository.save(myUserOptional.get());
+        this.userRepository.save(followedUserOptional.get());
+
+        return ResponseEntity.ok()
+                .body(new ApiResponse(true,
+                        String.format(Constants.USER_STOP_FOLLOW_SUCCESS,
+                                followedUserOptional.get().getUsername())));
     }
 
     @Override
@@ -120,7 +192,7 @@ public class UserServiceImpl implements UserService {
 
         Set<Long> challengesById = new HashSet<>();
         user.getStories().forEach(story -> {
-            if (story.getChallenge() != null){
+            if (story.getChallenge() != null) {
                 challengesById.add(story.getId());
             }
         });
@@ -129,10 +201,13 @@ public class UserServiceImpl implements UserService {
 
         Set<Long> storiesById = new HashSet<>();
         user.getStories().forEach(story -> {
-            if (story.getGroup() != null){
+            if (story.getGroup() != null) {
                 storiesById.add(story.getId());
             }
         });
+
+        List<String> roles = new ArrayList<>();
+        user.getAuthorities().forEach(auth -> roles.add(auth.getAuthority()));
 
         userViewModel.setStoriesById(storiesById);
 
@@ -140,6 +215,7 @@ public class UserServiceImpl implements UserService {
         userViewModel.setFollowingUsersByUsername(user.getFollowingUsers().stream().map(User::getUsername).collect(Collectors.toSet()));
         userViewModel.setFollowingGroupsByName(user.getFollowingGroups().stream().map(Group::getName).collect(Collectors.toSet()));
         userViewModel.setFollowersByUsername(user.getFollowers().stream().map(User::getUsername).collect(Collectors.toSet()));
+        userViewModel.setRoles(roles);
 
         return userViewModel;
     }
@@ -155,7 +231,7 @@ public class UserServiceImpl implements UserService {
 
             Set<Long> challengesById = new HashSet<>();
             user.getStories().forEach(story -> {
-                if (story.getChallenge() != null){
+                if (story.getChallenge() != null) {
                     challengesById.add(story.getId());
                 }
             });
@@ -164,7 +240,7 @@ public class UserServiceImpl implements UserService {
 
             Set<Long> storiesById = new HashSet<>();
             user.getStories().forEach(story -> {
-                if (story.getGroup() != null){
+                if (story.getGroup() != null) {
                     storiesById.add(story.getId());
                 }
             });

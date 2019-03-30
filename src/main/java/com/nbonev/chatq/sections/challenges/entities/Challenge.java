@@ -39,6 +39,8 @@ public class Challenge extends DateAudit {
     @DateTimeFormat
     private Instant deadlineDate;
 
+    private String status;
+
     @JsonManagedReference(value="challenge-stories")
     @OneToMany(mappedBy = "challenge", targetEntity = Story.class, cascade = CascadeType.REMOVE)
     private Set<Story> stories;
@@ -46,11 +48,12 @@ public class Challenge extends DateAudit {
     public Challenge() {
     }
 
-    public Challenge(String name, String info, String cover, Instant deadlineDate) {
+    public Challenge(String name, String info, String cover, Instant deadlineDate, String status) {
         this.name = name;
         this.info = info;
         this.cover = cover;
         this.deadlineDate = deadlineDate;
+        this.status = status;
     }
 
     public Challenge(String name) {
@@ -110,5 +113,13 @@ public class Challenge extends DateAudit {
         currentStories.add(story);
 
         this.setStories(currentStories);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -51,8 +51,46 @@ public class UserController {
     }
 
     @PostMapping("/{group_name}/{username}/start_follow_group")
-    public ResponseEntity<ApiResponse> startFollowingGroup(@PathVariable(value = "username") String username, @PathVariable(value = "group_name") String group_name) {
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> startFollowingGroup(
+            @PathVariable(value = "username") String username,
+            @PathVariable(value = "group_name") String group_name) {
 
         return this.userService.startFollowingGroup(username, group_name);
+    }
+
+    @PostMapping("/{group_name}/{username}/stop_follow_group")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> stopFollowingGroup(
+            @PathVariable(value = "username") String username,
+            @PathVariable(value = "group_name") String group_name) {
+
+        return this.userService.stopFollowingGroup(username, group_name);
+    }
+
+    @PostMapping("/{myUsername}/{followed_username}/start_follow_user")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> startFollowingUser(
+            @PathVariable(value = "myUsername") String myUsername,
+            @PathVariable(value = "followed_username") String followed_username) {
+
+        return this.userService.startFollowingUser(myUsername, followed_username);
+    }
+
+    @PostMapping("/{myUsername}/{followed_username}/stop_follow_user")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> stopFollowingUser(
+            @PathVariable(value = "myUsername") String myUsername,
+            @PathVariable(value = "followed_username") String followed_username) {
+
+        return this.userService.stopFollowingUser(myUsername, followed_username);
     }
 }

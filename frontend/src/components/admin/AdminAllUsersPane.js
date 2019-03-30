@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {Table, Divider, Tag, Col, Popconfirm} from 'antd';
+import {Table, Col, Popconfirm} from 'antd';
 import {message} from 'antd/lib/index';
 
 class AdminAllUsersPane extends React.Component {
@@ -17,10 +17,10 @@ class AdminAllUsersPane extends React.Component {
         this.props.Crud.deleteUserById(userId).then((res) => {
 
             if(res.success){
-                message.success("User deleted successfully")
+                message.success(res.body)
                 this.setState({
                     data: []
-                })
+                });
                 this.fetchAllStories()
             }
         })

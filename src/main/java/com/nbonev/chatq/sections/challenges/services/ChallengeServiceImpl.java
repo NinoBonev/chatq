@@ -3,6 +3,7 @@ package com.nbonev.chatq.sections.challenges.services;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.challenges.entities.Challenge;
+import com.nbonev.chatq.sections.challenges.enums.ChallengeStatus;
 import com.nbonev.chatq.sections.challenges.models.binding.ChallengeCreateBindingModel;
 import com.nbonev.chatq.sections.challenges.models.view.ChallengeViewModel;
 import com.nbonev.chatq.sections.challenges.repositories.ChallengeRepository;
@@ -34,6 +35,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public ResponseEntity<ApiResponse> createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
         challengeCreateBindingModel.uploadAndSetCover(challengeCreateBindingModel.getCover());
+        challengeCreateBindingModel.setStatus(ChallengeStatus.OPEN.getStatusName());
 
         Challenge challenge = this.modelMapper.map(challengeCreateBindingModel, Challenge.class);
         this.challengeRepository.save(challenge);
@@ -83,6 +85,45 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         return challengeViewModel;
 
+    }
+
+    @Override
+    public void archiveChallenge(Long id) {
+        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+
+        if (!optionalChallenge.isPresent()) {
+            throw new ResourceNotFoundException("Challenge", "id", id);
+        }
+
+        optionalChallenge.get().setStatus(ChallengeStatus.ARCHIVED.getStatusName());
+
+        this.challengeRepository.save(optionalChallenge.get());
+    }
+
+    @Override
+    public void closeChallenge(Long id) {
+        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+
+        if (!optionalChallenge.isPresent()) {
+            throw new ResourceNotFoundException("Challenge", "id", id);
+        }
+
+        optionalChallenge.get().setStatus(ChallengeStatus.CLOSED.getStatusName());
+
+        this.challengeRepository.save(optionalChallenge.get());
+    }
+
+    @Override
+    public void openChallenge(Long id) {
+        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+
+        if (!optionalChallenge.isPresent()) {
+            throw new ResourceNotFoundException("Challenge", "id", id);
+        }
+
+        optionalChallenge.get().setStatus(ChallengeStatus.OPEN.getStatusName());
+
+        this.challengeRepository.save(optionalChallenge.get());
     }
 
 }

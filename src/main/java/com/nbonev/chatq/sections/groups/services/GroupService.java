@@ -1,5 +1,6 @@
 package com.nbonev.chatq.sections.groups.services;
 
+import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.entities.Group;
 import com.nbonev.chatq.sections.groups.models.binding.GroupCreateBindingModel;
 import com.nbonev.chatq.sections.groups.models.view.GroupViewModel;
@@ -14,7 +15,7 @@ import java.util.Optional;
  */
 public interface GroupService {
 
-    ResponseEntity<?> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException;
+    ResponseEntity<ApiResponse> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException;
 
     List<Group> findAllGroups();
 
@@ -25,4 +26,11 @@ public interface GroupService {
     Optional<Group> findGroupById(Long id);
 
     GroupViewModel getGroupDTOByName(String name);
+
+    void archiveGroup(Long id);
+
+    void closeGroup(Long id);
+
+    void openGroup(Long id);
+
 }

@@ -16,6 +16,7 @@ public class ChallengeCreateBindingModel {
     private String info;
     private String cover;
     private Instant deadlineDate;
+    private String status;
 
     public ChallengeCreateBindingModel() {
     }
@@ -62,5 +63,13 @@ public class ChallengeCreateBindingModel {
     public void uploadAndSetCover(String cover) throws IOException {
         ImageUpload image = new ImageUpload();
         this.cover = image.uploadAndGetUrl(cover);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

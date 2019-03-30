@@ -32,14 +32,9 @@ class AuthService {
         return Request.post('/auth/login', payload).then((res) => {
             if (res.success) {
                 this._setToken(res.body.accessToken);
-                this.getProfile().then((profile) => {
-                    if (profile.admin){
-                        console.log(profile);
-                        this._setAdminValue(true)
-                    } else {
-                        this._setAdminValue(false);
-                    }
-                })
+                const decoded = decode(res.body.accessToken);
+
+                console.log(decoded);
             }
 
             return Promise.resolve(res);
@@ -47,28 +42,14 @@ class AuthService {
     }
 
     logout() {
-        localStorage.removeItem('admin');
         localStorage.removeItem('token');
-    }
-
-    getUsername(){
-        try {
-            const decoded = decode(this._getToken());
-
-            return decoded.sub
-
-        } catch (err) {
-            return undefined;
-        }
     }
 
     getProfile() {
         try {
             const decoded = decode(this._getToken());
 
-            return Request.get(`/users/${decoded.sub}`).then((res) => {
-                 return Promise.resolve(res)
-            });
+            return decoded.profile
 
         } catch (err) {
             return undefined;
@@ -90,16 +71,14 @@ class AuthService {
     }
 
     isAdmin(){
-        return true;
-    }
+        try {
+            const decoded = decode(this._getToken());
+            
+            return decoded.profile.roles.indexOf("ROLE_ADMIN") > -1;
 
-    _setAdminValue(boolean) {
-        localStorage.setItem('admin', boolean);
-        this.adminValue = boolean;
-    }
-
-   _getAdminValue() {
-        return this._adminValue
+        } catch (err) {
+            return undefined;
+        }
     }
 
     _setToken(token) {

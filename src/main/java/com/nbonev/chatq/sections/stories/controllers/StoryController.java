@@ -56,6 +56,8 @@ public class StoryController {
 
     @PostMapping("/story/create")
     @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> createStory(@Valid @RequestBody StoryCreatePayload storyCreatePayload) throws IOException {
 
         StoryCreateBindingModel storyCreateBindingModel = new StoryCreateBindingModel();

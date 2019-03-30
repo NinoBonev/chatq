@@ -70,7 +70,7 @@ const WrappedNewStepOneForm = Form.create({
         {getFieldDecorator('cover', {
             rules: [{
                 required: true,
-                message: 'Please select cover image for your story!'
+                message: 'Please select cover image for your story'
             }],
         })(
             <FileBase64 name='name' type="file" multiple={false} onDone={props.setFile}/>
@@ -84,7 +84,7 @@ const WrappedNewStepOneForm = Form.create({
         {getFieldDecorator('croppedImageUrl', {
             rules: [{
                 required: true,
-                message: 'Please select the area of the image you want to use for your cover!'
+                message: 'Please select the area of the image you want to use for your cover'
             }],
         })(
             <ReactCrop
@@ -135,9 +135,9 @@ const WrappedNewStepOneForm = Form.create({
                         >
                             {getFieldDecorator('name', {
                                 rules: [{
-                                    min: 3,
-                                    max: 100,
-                                    required: true, message: 'Please choose a name between 3 and 60'
+                                    min: 6,
+                                    max: 300,
+                                    required: true, message: 'Please choose a name between 6 and 300 symbols'
                                 }],
                             })(
                                 <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
@@ -175,6 +175,7 @@ const WrappedNewStepOneForm = Form.create({
                                 })(
                                     <Select style={{width: 150}}>
                                         {props.groups.map((group) =>
+                                            group.status === "OPEN" &&
                                             <Option
                                                 value={group.value} key={group.value}>{group.label}</Option>)}
                                     </Select>
@@ -222,7 +223,7 @@ const WrappedNewStepOneForm = Form.create({
                                     wrapperCol={{span: 12}}
                                 >
                                     {getFieldDecorator('sliderValue', {
-                                        rules: [{required: true, message: 'Please choose group'}],
+                                        rules: [{required: true, message: 'Please select a cover'}],
                                     })(
                                         <Switch onChange={props.changeSliderValue} />
 

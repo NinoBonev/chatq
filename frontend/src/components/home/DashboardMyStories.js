@@ -23,12 +23,14 @@ export default class DashboardMyStories extends React.Component {
     }
 
     fetchAllStories() {
+        console.log(this.props);
         for (let story of this.props.myStories) {
             this.props.Crud.getStoryById(story.id).then((story) => {
                 this.setState(prevState => (
                     {
                         stories: [...prevState.stories, story]
                     }));
+                console.log(this.state);
             }).catch((err) => {
                 message.error("Error");
             });
@@ -36,17 +38,21 @@ export default class DashboardMyStories extends React.Component {
     }
 
     async handleDelete(id){
-        await this.props.handleStoryDelete(id).then(async () => {
-                this.setState({
-                    stories: []
-                })
-                await this.fetchAllStories()
-        })
+        let res = await this.props.Crud.deleteStoryById(id)
+        if(res.success){
+            message.success(res.body)
+            this.setState({
+                stories: []
+            });
+            await this.props.fetchAllStories();
+            this.fetchAllStories()
+        }
     }
 
 
     render() {
         let myStoriesSortedByDateCreate = this.state.stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
 
         return (
             <Row gutter={16}>
@@ -58,7 +64,7 @@ export default class DashboardMyStories extends React.Component {
                                 cover={<img onClick={() => this.props.showModal(str.id)}
                                             src={str.cover} alt="" style={{width: '100%'}}/>}
                                 actions={[<Popconfirm title="Are you sure delete this story?"
-                                                      onConfirm={async () => await this.handleDelete(str.id)} okText="Yes"
+                                                      onConfirm={() => this.handleDelete(str.id)} okText="Yes"
                                                       cancelText="No">
                                     <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                                 </Popconfirm>,

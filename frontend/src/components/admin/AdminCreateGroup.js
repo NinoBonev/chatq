@@ -44,18 +44,24 @@ class AdminCreateGroup extends React.Component {
 
         if (validated){
 
-
             let data = this.props.form.getFieldsValue();
 
+            console.log(data);
+
+            const {name, info} = data;
+            const cover = data.cover.base64
+            let payload = {
+                name, info, cover
+            }
             this.setState({
                 loading: true
             })
             message.loading("Please wait while creating the group", 0)
-            const res = await this.props.Crud.addGroup(data);
+            const res = await this.props.Crud.addGroup(payload);
 
             if (res.success){
                 message.destroy();
-                message.success("Group created successfully")
+                message.success(res.body)
                 this.props.history.push('/dashboard');
             } else {
                 message.error("Error during creating the group")
@@ -77,7 +83,7 @@ class AdminCreateGroup extends React.Component {
                 initialValue: fromEdit ? this.state.cover : this.props.cover,
                 rules: [{
                     required: true,
-                    message: 'Please select cover image for your story!'
+                    message: 'Please select cover image for the group!'
                 }],
             })(
                 <FileBase64 name='name' type="file" multiple={false} onDone={this.props.setFile}/>
@@ -91,7 +97,7 @@ class AdminCreateGroup extends React.Component {
                 {getFieldDecorator('croppedImageUrl', {
                     rules: [{
                         required: true,
-                        message: 'Please select the area of the image you want to use for your cover!'
+                        message: 'Please select the area of the image you want to use for your cover'
                     }],
                 })(
                     <ReactCrop
@@ -124,7 +130,7 @@ class AdminCreateGroup extends React.Component {
                                             rules: [{
                                                 min: 4,
                                                 max: 100,
-                                                required: true, message: 'Please select a Name for the event!'}],
+                                                required: true, message: 'The name of the groups should be between 4 and 100 symbols'}],
                                         })(
                                             <Input placeholder="Name"/>
                                         )}
@@ -140,9 +146,9 @@ class AdminCreateGroup extends React.Component {
                                             initialValue: this.state.info,
                                             rules: [{
                                                 min: 25,
-                                                required: true, message: 'Please add info for the event!'}],
+                                                required: true, message: 'The provided info should be min 25 symbols long'}],
                                         })(
-                                            <TextArea placeholder="Please add a few lines of info for the event"
+                                            <TextArea placeholder="Please add a few lines of info for the group"
                                                       autosize={{minRows: 4, maxRows: 8}}/>
                                         )}
                                     </Form.Item>
@@ -205,7 +211,7 @@ class AdminCreateGroup extends React.Component {
     }
 }
 
-let WrappedAdminCreateCategory = Form.create({name: 'normal_login'})(AdminCreateGroup);
-WrappedAdminCreateCategory = withImageCrop(WrappedAdminCreateCategory)
+let WrappedAdminCreateGroup = Form.create({name: 'normal_login'})(AdminCreateGroup);
+WrappedAdminCreateGroup = withImageCrop(WrappedAdminCreateGroup)
 
-export default WrappedAdminCreateCategory;
+export default WrappedAdminCreateGroup;

@@ -15,13 +15,10 @@ function modalFunctionality(WrappedComponent) {
         }
 
         showModal = (id) => {
-            console.log(id);
-            console.log('Yes');
             this.setState({
                 id,
                 visible: true,
             });
-            console.log(this.state);
         }
 
         handleOk = (e) => {

@@ -18,18 +18,20 @@ public class GroupViewModel {
     private String cover;
     private Set<Long> storiesById;
     private Set<String> followersByUsername;
+    private String status;
 
     public GroupViewModel() {
     }
 
     public GroupViewModel(long id, String name, String info, String cover,
-                          Set<Long> storiesById, Set<String> followersByUsername) {
+                          Set<Long> storiesById, Set<String> followersByUsername, String status) {
         this.id = id;
         this.name = name;
         this.info = info;
         this.cover = cover;
         this.storiesById = storiesById;
         this.followersByUsername = followersByUsername;
+        this.status = status;
     }
 
     public long getId() {
@@ -78,5 +80,13 @@ public class GroupViewModel {
 
     public void setFollowersByUsername(Set<String> followersByUsername) {
         this.followersByUsername = followersByUsername;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

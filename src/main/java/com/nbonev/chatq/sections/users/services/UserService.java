@@ -20,6 +20,12 @@ public interface UserService {
 
     ResponseEntity<ApiResponse> startFollowingGroup(String username, String group_name);
 
+    ResponseEntity<ApiResponse> stopFollowingGroup(String username, String group_name);
+
+    ResponseEntity<ApiResponse> startFollowingUser(String myUsername, String followed_username);
+
+    ResponseEntity<ApiResponse> stopFollowingUser(String myUsername, String followed_username);
+
     Optional<User> findUserByUsername(String username);
 
     UserViewModel getUserViewDTOByUsername(String username);

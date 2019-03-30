@@ -64,8 +64,9 @@ class SiderClass extends React.Component {
                     </SubMenu>}
                     {this.props.Auth.isAdmin() ? <SubMenu key="sub3" title={<span><Icon type="tool"/><span>Admin Panel</span></span>}>
                         <Menu.Item key="7"><Link to='/admin/challenges/create'>Add Challenge</Link></Menu.Item>
-                        <Menu.Item key="8"><Link to='/admin/groups/create'>Add Category</Link></Menu.Item>
+                        <Menu.Item key="8"><Link to='/admin/groups/create'>Add Group</Link></Menu.Item>
                         <Menu.Item key="9"><Link to='/admin/users/all'>All Users Data</Link></Menu.Item>
+                        <Menu.Item key="10"><Link to='/admin/groups/all'>All Groups Data</Link></Menu.Item>
                     </SubMenu> : null}
                 </Menu>
             </Sider>

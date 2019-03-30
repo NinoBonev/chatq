@@ -7,16 +7,21 @@ import {message} from "antd/lib/index";
 
 function withFollowing(WrappedComponent) {
     class Following extends React.Component {
+        _isMounted = false;
+
         constructor(props) {
             super(props);
         }
 
-        async componentDidMount(){
-            this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
-                if (this.props.isAuth) {
-                    let following = false;
+        componentDidMount() {
+            this._isMounted = true;
 
-                    this.props.Auth.getProfile().then((user) => {
+            this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
+                if (this._isMounted) {
+                    if (this.props.isAuth) {
+                        let following = false;
+                        let user = this.props.Auth.getProfile()
+
                         if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(user.username) > -1) {
                             following = true;
                         }
@@ -26,17 +31,21 @@ function withFollowing(WrappedComponent) {
                             username: user.username,
                             following
                         });
-                    });
+                    }
                 }
             }).catch((err) => {
                 message.error("Error");
             });
         }
 
+        componentWillUnmount() {
+            this._isMounted = false;
+        }
+
         startFollowing = (group_name, username) => {
             this.props.Crud.startFollowGroup(group_name, username).then((res) => {
                 if (res.success) {
-                    message.success(`You are now following group ${this.state.group_name}`,)
+                    message.success(res.body)
                     this.setState({
                         following: true
                     });
@@ -48,7 +57,7 @@ function withFollowing(WrappedComponent) {
         stopFollowing = (group_name, username) => {
             this.props.Crud.stopFollowGroup(group_name, username).then((res) => {
                 if (res.success) {
-                    message.success(`You are no longer following group ${this.state.group_name}`,)
+                    message.success(res.body)
                     this.setState({
                         following: false
                     });
@@ -57,10 +66,10 @@ function withFollowing(WrappedComponent) {
         };
 
         render() {
-            const { ...otherProps } = this.props;
+            const {...otherProps} = this.props;
             return (<WrappedComponent
-                stopFollowing={this.stopFollowing.bind(this)}
-                startFollowing={this.startFollowing.bind(this)}
+                stopFollowing={this.stopFollowing}
+                startFollowing={this.startFollowing}
                 {...otherProps}
                 {...this.state}
             />);

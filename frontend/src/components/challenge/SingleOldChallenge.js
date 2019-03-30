@@ -26,7 +26,6 @@ class BasicSingleOldChallenge extends Component {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
                 for (let storyById of res.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
-                        console.log(story);
                         this.props.Crud.getUserInfo(story.username).then((user) => {
                             story.avatar = user.avatar;
 

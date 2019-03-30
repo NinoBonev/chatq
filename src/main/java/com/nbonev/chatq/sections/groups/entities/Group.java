@@ -26,11 +26,11 @@ public class Group extends DateAudit {
     private long id;
 
     @NotBlank
-    @Size(min = 4, max = 15)
+    @Size(min = 4, max = 100)
     private String name;
 
     @NotBlank
-    @Size(min = 10, max = 600)
+    @Size(min = 25, max = 600)
     private String info;
 
     @NotBlank
@@ -40,23 +40,22 @@ public class Group extends DateAudit {
     @OneToMany(mappedBy = "group", targetEntity = Story.class, cascade = CascadeType.REMOVE)
     private Set<Story> stories;
 
-    @ManyToMany(cascade = {
+    @ManyToMany(mappedBy = "followingGroups",cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinTable(name = "following_followers_group",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
     private Set<User> followers;
+
+    private String status;
 
     public Group() {
     }
 
-    public Group(String name, String info, String cover) {
+    public Group(String name, String info, String cover, String status) {
         this.name = name;
         this.info = info;
         this.cover = cover;
+        this.status = status;
     }
 
     public long getId() {
@@ -112,5 +111,13 @@ public class Group extends DateAudit {
         currentStories.add(story);
 
         this.stories = currentStories;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -33,8 +33,6 @@ class AdminCreateChallenge extends React.Component {
             let data = this.props.form.getFieldsValue();
             data.cover = this.props.cover.base64
 
-            console.log(data);
-
             this.setState({
                 loading: true
             })
@@ -43,7 +41,7 @@ class AdminCreateChallenge extends React.Component {
 
             if (res.success){
                 message.destroy();
-                message.success("Challenge created successfully")
+                message.success(res.body)
                 this.props.history.push('/dashboard');
             } else {
                 message.error("Error during creating the challenge")
@@ -75,7 +73,7 @@ class AdminCreateChallenge extends React.Component {
                                             rules: [{
                                                 min: 4,
                                                 max: 100,
-                                                required: true, message: 'Please select a Name for the event!'}],
+                                                required: true, message: 'The name of the challenge should be between 4 and 100 symbols'}],
                                         })(
                                             <Input placeholder="Name"/>
                                         )}
@@ -90,9 +88,9 @@ class AdminCreateChallenge extends React.Component {
                                         {getFieldDecorator('info', {
                                             rules: [{
                                                 min: 25,
-                                                required: true, message: 'Please add info for the event!'}],
+                                                required: true, message: 'The provided info should be min 25 symbols long'}],
                                         })(
-                                            <TextArea placeholder="Please add a few lines of info for the event"
+                                            <TextArea placeholder="Please add a few lines of info for the challenge"
                                                       autosize={{minRows: 4, maxRows: 8}}/>
                                         )}
                                     </Form.Item>
@@ -104,7 +102,7 @@ class AdminCreateChallenge extends React.Component {
                                         wrapperCol={{span: 14}}
                                     >
                                         {getFieldDecorator('deadlineDate', {
-                                            rules: [{required: true, message: 'Please select end date for the event!'}],
+                                            rules: [{required: true, message: 'Please select end date for the challenge'}],
                                         })(
                                             <DatePicker showTime/>
                                         )}
@@ -125,7 +123,7 @@ class AdminCreateChallenge extends React.Component {
                                             label="Croped Image"
                                         >
                                             {getFieldDecorator('croppedImageUrl', {
-                                                rules: [{required: true, message: 'Please select end date for the event!'}],
+                                                rules: [{required: true, message: 'Please select the area of the image you want to use for your cover'}],
                                             })(
                                                 <ReactCrop
                                                     src={this.props.src}

@@ -1,8 +1,12 @@
 package com.nbonev.chatq.sections.storylines.models.binding;
 
 import com.nbonev.chatq.sections.stories.entities.Story;
+import com.nbonev.chatq.sections.storylines.utils.Constants;
 import com.nbonev.chatq.util.cloudinary.ImageUpload;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 
 /**
@@ -10,8 +14,15 @@ import java.io.IOException;
  */
 public class StoryLineCreateBindingModel {
 
+    @NotNull
+    @NotEmpty(message = Constants.INFO_VALIDATION_MESSAGE)
+    @Size(min = 21, max = 12000)
     private String info;
+
+    @NotNull
+    @NotEmpty(message = Constants.COVER_VALIDATION_MESSAGE)
     private String cover;
+
     private String name;
     private Story story;
 

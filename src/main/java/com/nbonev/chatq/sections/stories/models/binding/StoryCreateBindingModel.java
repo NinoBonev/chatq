@@ -25,7 +25,7 @@ public class StoryCreateBindingModel {
 
     @NotNull
     @NotEmpty(message = Constants.INFO_VALIDATION_MESSAGE)
-    @Size(min = 10, max = 12000)
+    @Size(min = 25, max = 12000)
     private String info;
 
     @NotNull
@@ -35,7 +35,6 @@ public class StoryCreateBindingModel {
     private User user;
     private Group group;
     private Challenge challenge;
-
     private Set<StoryLine> storylines;
 
     public StoryCreateBindingModel() {

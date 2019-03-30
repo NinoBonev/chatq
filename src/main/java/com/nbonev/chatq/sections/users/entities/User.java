@@ -42,12 +42,14 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(min = 4, max = 15)
+    //TODO @Column(unique = true) ???
     private String username;
 
     @NaturalId
     @NotBlank
     @Size(max = 40)
     @Email
+    //TODO @Column(unique = true) ???
     private String email;
 
     @NotBlank
@@ -57,23 +59,33 @@ public class User extends DateAudit {
     @URL
     private String avatar;
 
-    @ManyToMany(mappedBy = "followers")
-    private Set<User> followingUsers = new HashSet<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "User_Following_Relations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id"))
+    private Set<User> followingUsers;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinTable(name = "following_followers_group",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
+    @JoinTable(name = "Group_Followers",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "group_id",
+                    referencedColumnName = "id")
     )
     private Set<Group> followingGroups;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "User_Relations",
-            joinColumns = @JoinColumn(name = "Followed_Id"),
-            inverseJoinColumns = @JoinColumn(name = "Following_Id"))
+    @ManyToMany(mappedBy = "followingUsers",cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     private Set<User> followers;
 
     @JsonManagedReference(value="user-comments")
@@ -93,8 +105,6 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> authorities;
-
-    private Boolean isAdmin;
 
     public User() {
     }
@@ -163,8 +173,14 @@ public class User extends DateAudit {
         this.followingUsers = followingUsers;
     }
 
-    public void addFollowingUsers(User followed) {
-        followed.addFollower(this);
+    public void startFollowingUser(User followedUser) {
+        this.followingUsers.add(followedUser);
+        followedUser.followers.add(this);
+    }
+
+    public void stopFollowingUser(User followedUser) {
+        this.followingUsers.remove(followedUser);
+        followedUser.followers.remove(this);
     }
 
     public Set<Group> getFollowingGroups() {
@@ -175,17 +191,22 @@ public class User extends DateAudit {
         this.followingGroups = followingGroups;
     }
 
+    public void startFollowingGroup(Group group) {
+        this.followingGroups.add(group);
+        group.getFollowers().add(this);
+    }
+
+    public void stopFollowingGroup(Group group) {
+        this.followingGroups.remove(group);
+        group.getFollowers().remove(this);
+    }
+
     public Set<User> getFollowers() {
         return followers;
     }
 
     public void setFollowers(Set<User> followers) {
         this.followers = followers;
-    }
-
-    public void addFollower(User follower) {
-        this.followers.add(follower);
-        follower.followingUsers.add(this);
     }
 
     public Set<Comment> getComments() {
@@ -240,14 +261,5 @@ public class User extends DateAudit {
     public void setAuthorities(Set<Role> roles) {
         this.authorities = roles;
     }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
-
 
 }

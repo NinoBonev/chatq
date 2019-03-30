@@ -136,7 +136,7 @@ class CreateStoryStepTwoForm extends React.Component {
                                         {getFieldDecorator(file.name, {
                                             rules: [{
                                                 min: 21,
-                                                required: true, message: 'Please add info for your picture'}],
+                                                required: true, message: 'Please add info with min 21 symbols for your picture'}],
                                         })(
                                             <TextArea
                                                       placeholder={'Add info for picture number ' + count++} rows={4}/>

@@ -15,6 +15,8 @@ const ListAllGroupStories = withModal(AllGroupStories)
 
 
 class BasicSingleGroup extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -26,23 +28,29 @@ class BasicSingleGroup extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
-            for (let str of res.storiesById) {
-                this.props.Crud.getStoryById(str).then((story) => {
-                    console.log(story);
-                    this.props.Crud.getUserInfo(story.username).then((user) => {
-                        story.avatar = user.avatar;
+            if (this._isMounted){
+                for (let str of res.storiesById) {
+                    this.props.Crud.getStoryById(str).then((story) => {
+                        this.props.Crud.getUserInfo(story.username).then((user) => {
+                            story.avatar = user.avatar;
 
-                        this.setState(prevState => ({
-                            stories: [...prevState.stories, story]
-                        }));
-                    });
-                })
+                            this.setState(prevState => ({
+                                stories: [...prevState.stories, story]
+                            }));
+                        });
+                    })
+                }
             }
-
         }).catch((err) => {
             message.error("Error");
         });
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     toggleCollapsedInfo = () => {

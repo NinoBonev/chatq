@@ -28,7 +28,6 @@ class SingleCurrentChallengeTabs extends React.Component{
 
                 for (let storyById of res.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
-                        console.log(story);
                         this.props.Crud.getUserInfo(story.username).then((user) => {
                             story.avatar = user.avatar;
 

@@ -6,4 +6,8 @@ package com.nbonev.chatq.sections.groups.utils;
 public class Constants {
 
     public static final String GROUP_CREATED_SUCCESS = "Group created successfully";
+    public static final String NAME_VALIDATION_MESSAGE = "Name should be between 6 and 300 symbols";
+    public static final String INFO_VALIDATION_MESSAGE = "Story info should be between 10 and 12000 symbols";
+    public static final String COVER_VALIDATION_MESSAGE = "Cover could not be empty";
+
 }

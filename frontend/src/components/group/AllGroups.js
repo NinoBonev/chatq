@@ -3,13 +3,15 @@
  */
 
 import React from 'react'
-import {Row, Col, Card, Icon, message} from 'antd'
+import {Row, Col, Card, Popconfirm, Icon, message} from 'antd'
 import {Link} from 'react-router-dom'
 
 const {Meta} = Card;
 
 //TODO: Link is all over the Caregory Card -----> should be just over the image
 export default class AllGroups extends React.Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -19,14 +21,41 @@ export default class AllGroups extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
-        this.props.Crud.getAllGroups().then((res) => {
-            this.setState({
-                groups: res
-            })
-        }).catch((err) => {
-            message.error("Error");
-        });
+        this._isMounted = true;
+        this.fetchAllStories()
+    }
+
+    fetchAllStories(){
+        if (this._isMounted) {
+            this.props.Crud.getAllGroups().then((res) => {
+                for (const group of res) {
+                    if (group.status === "OPEN"){
+                        this.setState(prevState => ({
+                            groups: [...prevState.groups,  group]
+                        }))
+                    }
+                }
+
+            }).catch((err) => {
+                message.error("Error");
+            });
+        }
+    }
+
+    handleArchive(id){
+        this.props.Crud.archiveGroupById(id).then((res) => {
+            if(res.success){
+                message.success(res.body)
+                this.setState({
+                    groups: []
+                })
+                this.fetchAllStories();
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -43,9 +72,12 @@ export default class AllGroups extends React.Component {
                             <Card
                                 hoverable
                                 cover={<img src={group.cover} alt=""  />}
-                                actions={this.props.isAdmin ? [<Icon type="delete"
-                                                                     onClick={console.log('delete')}/>,
-                                    <Icon type="edit" onClick={console.log('edit')}/>] : ''}
+                                actions={this.props.isAdmin ? [<Popconfirm title="Are you sure delete this group?" onConfirm={() => this.handleArchive(group.id)} okText="Yes" cancelText="No">
+                                     <Icon type="delete"/><span style={{marginLeft: 10}}>archive</span>
+                                 </Popconfirm>,
+                                <Popconfirm title="Are you sure edit this group?" onConfirm={() => this.props.history.push({pathname: `/groups/edit/${group.id}`})} okText="Yes" cancelText="No">
+                                <Icon type="edit"/><span style={{marginLeft: 10}}>edit</span>
+                                </Popconfirm>]  : null}
                             > <Meta style={{minHeight: 120}} title={group.name}
                                     description={<div style={{
                                 marginTop: 20,

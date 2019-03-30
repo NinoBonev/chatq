@@ -37,7 +37,10 @@ public class CommentController {
 
     @PostMapping("/story/add_comment")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse> createComment(@Valid @RequestBody CommentCreateBindingModel commentCreateBindingModel) throws IOException {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse> createComment(
+            @Valid @RequestBody CommentCreateBindingModel commentCreateBindingModel) throws IOException {
 
         return this.commentService.create(commentCreateBindingModel);
     }

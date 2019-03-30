@@ -28,10 +28,11 @@ public class Story extends DateAudit {
 
     @NotBlank
     @Size(min = 6, max = 300)
+    //TODO @Column(unique = true) ???
     private String name;
 
     @NotBlank
-    @Size(min = 10, max = 12000)
+    @Size(min = 25, max = 12000)
     private String info;
 
     @NotBlank

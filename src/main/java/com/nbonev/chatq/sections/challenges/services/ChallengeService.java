@@ -27,4 +27,10 @@ public interface ChallengeService {
 
     ChallengeViewModel getChallengeDTOById(Long id);
 
+    void archiveChallenge(Long id);
+
+    void closeChallenge(Long id);
+
+    void openChallenge(Long id);
+
 }
