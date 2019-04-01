@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {Row, Col} from 'antd'
+import {Row, Col, Collapse } from 'antd'
 
 //Add about info ----> The idea behind Gotcha ---> Open groups and Challenges
 const About = () =>{

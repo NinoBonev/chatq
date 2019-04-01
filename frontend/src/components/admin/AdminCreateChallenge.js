@@ -31,7 +31,13 @@ class AdminCreateChallenge extends React.Component {
         if (validated){
 
             let data = this.props.form.getFieldsValue();
-            data.cover = this.props.cover.base64
+            data.cover = this.props.cover.base64;
+            data.x = data.croppedImageUrl.x;
+            data.y = data.croppedImageUrl.y;
+            data.height = data.croppedImageUrl.height;
+            data.width = data.croppedImageUrl.width;
+
+            console.log(data);
 
             this.setState({
                 loading: true
@@ -52,7 +58,6 @@ class AdminCreateChallenge extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const {loading} = this.state
-        const {crop, src} = this.props;
 
         return (
             <Row type="flex" justify="space-around">

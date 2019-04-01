@@ -83,8 +83,8 @@ public class UserRegisterBindingModel {
         this.avatar = avatar;
     }
 
-    public void uploadAndSetAvatar(String avatar) throws IOException {
+    public void uploadAndSetAvatar() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.avatar = image.uploadAndGetUrl(avatar);
+        this.avatar = image.uploadAndSetStoryLine(this.avatar);
     }
 }

@@ -1,10 +1,13 @@
 package com.nbonev.chatq.util.cloudinary;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,8 +35,41 @@ public class ImageUpload {
                 "api_secret", "wQ6E2D6mTcDg4D8T8GyC2w8rzlo"));
     }
 
-    public String uploadAndGetUrl(String image) throws IOException {
-        Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.emptyMap());
+    public String uploadAndSetStoryLine(String image) throws IOException {
+        Transformation transformation = new Transformation()
+                .width(2048)
+                .quality("auto:eco");
+        Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(
+                "transformation", transformation));
+
+        return (String) uploadResult.get("url");
+    }
+
+    public String uploadAndGetUrl(String aspectRatio, String image) throws IOException {
+        Transformation transformation = new Transformation()
+                .aspectRatio(aspectRatio)
+                .width(2048)
+                .gravity("center")
+                .quality("auto:eco")
+                .crop("crop");
+        Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(
+                "transformation", transformation));
+
+        return (String) uploadResult.get("url");
+    }
+
+    public String uploadWithTransformationAndGetUrl(String aspectRatio, String image, Double x, Double y, Double height, Double width) throws IOException {
+        Transformation transformation = new Transformation()
+               // .gravity("custom")
+                .aspectRatio(aspectRatio)
+                .quality("auto:best")
+//                .x(x.intValue() * 10)
+//                .y(y.intValue() * 10)
+//                .width(width.intValue() * 10)
+                .crop("crop");
+
+        Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(
+                "transformation", transformation));
 
         return (String) uploadResult.get("url");
     }

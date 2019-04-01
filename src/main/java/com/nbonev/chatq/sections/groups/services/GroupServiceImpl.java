@@ -38,7 +38,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ResponseEntity<ApiResponse> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException {
 
-        groupCreateBindingModel.uploadAndSetCover(groupCreateBindingModel.getCover());
+        groupCreateBindingModel.uploadAndSetCover();
         groupCreateBindingModel.setStatus(GroupStatus.OPEN.getStatusName());
 
         Group group = modelMapper.map(groupCreateBindingModel, Group.class);

@@ -1,7 +1,5 @@
 package com.nbonev.chatq.sections.storylines.models.view;
 
-import com.nbonev.chatq.sections.stories.entities.Story;
-
 import java.time.Instant;
 
 /**

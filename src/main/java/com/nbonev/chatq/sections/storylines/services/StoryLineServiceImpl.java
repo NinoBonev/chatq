@@ -35,7 +35,7 @@ public class StoryLineServiceImpl implements StoryLineService {
 
     @Override
     public StoryLine create(StoryLineCreateBindingModel storyLineCreateBindingModel) throws IOException {
-        storyLineCreateBindingModel.uploadAndSetCover(storyLineCreateBindingModel.getCover());
+        storyLineCreateBindingModel.uploadAndSetStoryLine();
 
         StoryLine storyLine = modelMapper.map(storyLineCreateBindingModel, StoryLine.class);
 

@@ -49,15 +49,17 @@ class AdminCreateGroup extends React.Component {
             console.log(data);
 
             const {name, info} = data;
-            const cover = data.cover.base64
-            let payload = {
-                name, info, cover
-            }
+            data.cover = data.cover.base64
+            data.x = data.croppedImageUrl.x;
+            data.y = data.croppedImageUrl.y;
+            data.height = data.croppedImageUrl.height;
+            data.width = data.croppedImageUrl.width;
+
             this.setState({
                 loading: true
             })
             message.loading("Please wait while creating the group", 0)
-            const res = await this.props.Crud.addGroup(payload);
+            const res = await this.props.Crud.addGroup(data);
 
             if (res.success){
                 message.destroy();

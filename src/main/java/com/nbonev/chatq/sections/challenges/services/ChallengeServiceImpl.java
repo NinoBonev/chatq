@@ -34,7 +34,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ResponseEntity<ApiResponse> createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
-        challengeCreateBindingModel.uploadAndSetCover(challengeCreateBindingModel.getCover());
+
+        challengeCreateBindingModel.uploadAndSetCover();
         challengeCreateBindingModel.setStatus(ChallengeStatus.OPEN.getStatusName());
 
         Challenge challenge = this.modelMapper.map(challengeCreateBindingModel, Challenge.class);

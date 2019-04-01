@@ -20,12 +20,17 @@ public class StoryCreatePayload {
     private String info;
     private String name;
     private String storyLine;
+    private Double x;
+    private Double y;
+    private Double height;
+    private Double width;
 
     public StoryCreatePayload() {
     }
 
     public StoryCreatePayload(Long challenge, Long group, String cover, String crop,
-                              String userByUsername, String info, String name, String storyLine) {
+                              String userByUsername, String info, String name, String storyLine,
+                              Double x, Double y, Double height, Double width) {
         this.challenge = challenge;
         this.group = group;
         this.cover = cover;
@@ -34,6 +39,10 @@ public class StoryCreatePayload {
         this.info = info;
         this.name = name;
         this.storyLine = storyLine;
+        this.height = height;
+        this.width = width;
+        this.x = x;
+        this.y = y;
     }
 
     public Long getChallenge() {
@@ -98,5 +107,37 @@ public class StoryCreatePayload {
 
     public void setStoryLine(String storyLine) {
         this.storyLine = storyLine;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getWidth() {
+        return width;
+    }
+
+    public void setWidth(Double width) {
+        this.width = width;
     }
 }

@@ -10,13 +10,15 @@ function modalFunctionality(WrappedComponent) {
             super(props);
             this.state = {
                 visible: false,
-                id: ''
+                storyName: '',
+                storyId: ''
             };
         }
 
-        showModal = (id) => {
+        showModal = (storyId, storyName) => {
             this.setState({
-                id,
+                storyName,
+                storyId,
                 visible: true,
             });
         }
@@ -24,14 +26,16 @@ function modalFunctionality(WrappedComponent) {
         handleOk = (e) => {
             this.setState({
                 visible: false,
-                id: ''
+                storyName: '',
+                storyId: ''
             });
         }
 
         handleCancel = (e) => {
             this.setState({
                 visible: false,
-                id: ''
+                storyName: '',
+                storyId: ''
             });
         }
 

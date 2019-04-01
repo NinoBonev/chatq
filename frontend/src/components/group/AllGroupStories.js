@@ -31,9 +31,9 @@ class AllGroupStories extends React.Component {
                     <Col span={6}>
                         <Card
                             style={{marginBottom: 20, marginTop: 20}}
-                            cover={<img onClick={() => this.props.showModal(story.id)}
-                                        src={story.cover} alt="" style={{width: '100%'}}/>}
-                            hoverable
+                            cover={<div className='imageFadeOut'><img
+                                onClick={() => this.props.showModal(story.id, story.name)}
+                                src={story.cover} alt="" style={{width: '100%'}}/></div>}
                             actions={this.props.isAdmin ? [<Popconfirm title="Are you sure delete this story?"
                                                                        onConfirm={() => this.handleDelete(story.id)}
                                                                        okText="Yes" cancelText="No">
@@ -46,7 +46,8 @@ class AllGroupStories extends React.Component {
                                     to={{pathname: `/users/${story.username}`}}>
                                     <Avatar style={{marginRight: 20}} size={50} src={story.avatar}/>
                                 </Link></Tooltip>}
-                                title={<a style={{color: 'black'}} onClick={() => this.props.showModal(story.id)}>
+                                title={<a style={{color: 'black'}}
+                                          onClick={() => this.props.showModal(story.id, story.name)}>
                                     {story.name}
                                 </a>}
 

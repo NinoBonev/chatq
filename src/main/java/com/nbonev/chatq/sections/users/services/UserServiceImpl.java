@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         }
 
         //Uploading user's avatar to Cloudinary
-        userDTO.uploadAndSetAvatar(userDTO.getAvatar());
+        userDTO.uploadAndSetAvatar();
 
         // Creating user's account
         User user = this.modelMapper.map(userDTO, User.class);

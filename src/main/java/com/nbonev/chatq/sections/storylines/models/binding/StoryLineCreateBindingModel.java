@@ -66,8 +66,8 @@ public class StoryLineCreateBindingModel {
         this.name = name;
     }
 
-    public void uploadAndSetCover(String cover) throws IOException {
+    public void uploadAndSetStoryLine() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl(cover);
+        this.cover = image.uploadAndSetStoryLine(this.cover);
     }
 }

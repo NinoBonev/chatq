@@ -44,7 +44,7 @@ export default class StoryPage extends React.Component {
     }
 
     componentDidMount() {
-        this.props.Crud.getStoryById(this.props.id).then((story) => {
+        this.props.Crud.getStoryById(this.props.storyId).then((story) => {
             this.setState({
                 storyLines: story.storyLine,
             });
@@ -91,7 +91,7 @@ export default class StoryPage extends React.Component {
                             </Carousel>
                         </TabPane>
                         <TabPane tab={<span><Icon type="message"/>Comments</span>} key="2">
-                            <BasicComments {...this.props} storyId={this.props.id}/>
+                            <BasicComments {...this.props} storyId={this.props.storyId}/>
                         </TabPane>
                     </Tabs>
                 </Row>

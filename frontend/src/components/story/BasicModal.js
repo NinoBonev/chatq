@@ -9,7 +9,7 @@ import StoryPage from './StoryPage'
 const BasicModal = (props) => {
     return(
         <Modal
-            title="Storyline"
+            title={props.storyName}
             style={{top: 20}}
             visible={props.visible}
             width='78%'

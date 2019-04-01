@@ -37,14 +37,24 @@ public class StoryCreateBindingModel {
     private Challenge challenge;
     private Set<StoryLine> storylines;
 
+    private Double x;
+    private Double y;
+    private Double height;
+    private Double width;
+
     public StoryCreateBindingModel() {
     }
 
-    public StoryCreateBindingModel(String name, String info, String cover, User user) {
+    public StoryCreateBindingModel(String name, String info, String cover, User user, Double x,
+                                   Double y, Double height, Double width) {
         this.name = name;
         this.info = info;
         this.cover = cover;
         this.user = user;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public String getName() {
@@ -103,8 +113,70 @@ public class StoryCreateBindingModel {
         this.challenge = challenge;
     }
 
-    public void uploadAndSetCover(String cover) throws IOException {
+    public Set<StoryLine> getStorylines() {
+        return storylines;
+    }
+
+    public void setStorylines(Set<StoryLine> storylines) {
+        this.storylines = storylines;
+    }
+
+    public Double getX() {
+        return x;
+    }
+
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getWidth() {
+        return width;
+    }
+
+    public void setWidth(Double width) {
+        this.width = width;
+    }
+
+    public void uploadAndSetCover() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl(cover);
+        this.cover = image.uploadAndGetUrl("16:10", this.cover);
+    }
+
+    public void uploadWithTransformationAndGetUrl() throws IOException {
+        ImageUpload image = new ImageUpload();
+        this.cover = image.uploadWithTransformationAndGetUrl("16:10", this.cover, this.x, this.y, this.height, this.width);
+    }
+
+    @Override
+    public String toString() {
+        return "StoryCreateBindingModel{" +
+                "name='" + name + '\'' +
+                ", info='" + info + '\'' +
+                ", cover='" + cover + '\'' +
+                ", user=" + user +
+                ", group=" + group +
+                ", challenge=" + challenge +
+                ", storylines=" + storylines +
+                ", x=" + x +
+                ", y=" + y +
+                ", height=" + height +
+                ", width=" + width +
+                '}';
     }
 }

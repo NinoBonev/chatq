@@ -185,12 +185,14 @@ export default class AllUserStories extends React.Component {
                                                 cancelText="No">
                                                 <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                                             </Popconfirm>] : null}
-                                            hoverable
-                                            cover={<img src={str.cover}
-                                                        onClick={() => this.showModal(str.id)} alt=""
-                                            />}
+                                            cover={<div className='imageFadeOut'><img src={str.cover}
+                                                                                      style={{width: '100%'}}
+                                                                                      onClick={() => this.showModal(str.id, str.name)}
+                                                                                      alt=""
+                                            /></div>}
                                         > <Meta
-                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str.id)}>
+                                            title={<a style={{color: 'black'}}
+                                                      onClick={() => this.showModal(str.id, str.name)}>
                                                 {str.name}
                                             </a>}
                                         />
@@ -234,12 +236,15 @@ export default class AllUserStories extends React.Component {
                                                 cancelText="No">
                                                 <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
                                             </Popconfirm>] : null}
-                                            hoverable
-                                            cover={<img src={str.cover}
-                                                        onClick={() => this.showModal(str.id)} alt=""
-                                            />}
+                                            cover={<div className='imageFadeOut'><img src={str.cover}
+                                                                                      style={{width: '100%'}}
+                                                                                      onClick={() => this.showModal(str.id, str.name)}
+                                                                                      alt=""
+
+                                            /></div>}
                                         > <Meta
-                                            title={<a style={{color: 'black'}} onClick={() => this.showModal(str.id)}>
+                                            title={<a style={{color: 'black'}}
+                                                      onClick={() => this.showModal(str.id, str.name)}>
                                                 {str.name}
                                             </a>}
                                         />

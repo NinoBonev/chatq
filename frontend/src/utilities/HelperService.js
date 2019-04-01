@@ -103,10 +103,7 @@ class HelperService {
                     },
                     crop: {
                         value: {
-                            aspect: 1,
-                            width: 50,
-                            x: 0,
-                            y: 0,
+                            aspect: 1.6,
                         }
                     },
                     sliderValue: {

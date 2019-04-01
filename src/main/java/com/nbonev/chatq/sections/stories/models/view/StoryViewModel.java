@@ -1,13 +1,10 @@
 package com.nbonev.chatq.sections.stories.models.view;
 
 import com.nbonev.chatq.sections.comments.entities.Comment;
-import com.nbonev.chatq.sections.groups.entities.Group;
 import com.nbonev.chatq.sections.storylines.entities.StoryLine;
-import com.nbonev.chatq.sections.users.entities.User;
-import javafx.collections.transformation.SortedList;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Set;
 
 /**
  * Created by Nino Bonev - 25.3.2019 г., 15:33

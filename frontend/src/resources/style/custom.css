@@ -86,3 +86,17 @@
     float: right;
     margin-right: 30px;
 }
+
+.imageFadeOut{
+    transition: transform .2s; /* Animation */
+}
+
+.imageFadeOut:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.cardImage:hover{
+    cursor: pointer;
+    opacity: 0.7;
+}

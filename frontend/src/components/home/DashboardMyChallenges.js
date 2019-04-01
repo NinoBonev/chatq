@@ -10,7 +10,7 @@ import moment from 'moment'
 const {Meta} = Card;
 
 export default class DashboardMyChallenges extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -23,13 +23,14 @@ export default class DashboardMyChallenges extends React.Component {
         this.setState({isLoading: false})
     }
 
-    fetchAllStories(){
+    fetchAllStories() {
         for (let story of this.props.myChallenges) {
-                this.props.Crud.getChallengeById(story.challengeId).then((challengeInfo) => {
-                    story.deadlineDate = challengeInfo.deadlineDate
-                        this.setState(prevState => (
-                            { challenges: [...prevState.challenges , story]
-                            }));
+            this.props.Crud.getChallengeById(story.challengeId).then((challengeInfo) => {
+                story.deadlineDate = challengeInfo.deadlineDate
+                this.setState(prevState => (
+                    {
+                        challenges: [...prevState.challenges, story]
+                    }));
 
 
             }).catch((err) => {
@@ -38,53 +39,68 @@ export default class DashboardMyChallenges extends React.Component {
         }
     }
 
-    async handleDelete(id){
+    async handleDelete(id) {
         let res = await this.props.Crud.deleteStoryById(id)
-            if(res.success){
-                message.success("Story deleted successfully")
-                this.setState({
-                    challenges: []
-                })
-                this.fetchAllStories()
-            }
+        if (res.success) {
+            message.success("Story deleted successfully")
+            this.setState({
+                challenges: []
+            })
+            this.fetchAllStories()
+        }
     }
 
-    render () {
-        let myChallengesSortedByDateCreate = this.state.challenges.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    render() {
+        let myChallengesSortedByDateCreate = this.state.challenges.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        return(
+        return (
             <Row gutter={16}>
-            <div>{myChallengesSortedByDateCreate.length > 0 ? <div>{myChallengesSortedByDateCreate.map((chal) =>
-                <Col span={8}>
-                    <Card
-                        style={{marginBottom: 20}}
-                        hoverable
-                        cover={<img onClick={() => this.props.showModal(chal.id)}
-                                    src={chal.cover} alt="" style={{width: '100%'}}/>}
-                        actions={moment(chal.deadlineDate).isAfter(moment.now()) ? [<Popconfirm title="Are you sure delete this story?" onConfirm={() => this.handleDelete(chal.id)} okText="Yes" cancelText="No">
-                            <Icon type="delete"/><span style={{marginLeft: 10}}>delete</span>
-                        </Popconfirm>,
-                            <Popconfirm title="Are you sure edit this story?" onConfirm={() => this.props.history.push({pathname: `/challenges/edit_story/${chal.id}`})} okText="Yes" cancelText="No">
-                                <Icon type="edit"/><span style={{marginLeft: 10}}>edit</span>
-                            </Popconfirm>] : [<div style={{fontStyle: 'italic', fontSize: 12}}>You can not edit stories from closed challenges</div>]}
-                    > <Meta
-                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(chal.id)}>
-                            {chal.name}
-                            </a>}
-                    />
-                        <div style={{marginTop: 20, minHeight: 120}}>{chal.info.substring(0, 300) !== chal.info ?
-                            chal.info.substring(0, 300) + '...'
+                <div>{myChallengesSortedByDateCreate.length > 0 ? <div>{myChallengesSortedByDateCreate.map((chal) =>
+                        <Col span={8}>
+                            <div className='cardZoomIn'>
+                                <Card
+                                    style={{marginBottom: 20}}
+                                    cover={<div className='imageFadeOut'><img
+                                        onClick={() => this.props.showModal(chal.id, chal.name)}
+                                        src={chal.cover} alt="" style={{width: '100%'}}/></div>}
+                                    actions={moment(chal.deadlineDate).isAfter(moment.now()) ?
+                                        [<Popconfirm title="Are you sure delete this story?"
+                                                     onConfirm={() => this.handleDelete(chal.id)} okText="Yes"
+                                                     cancelText="No">
+                                            <Icon type="delete"/>
+                                            <span style={{marginLeft: 10}}>delete
+                                </span>
+                                        </Popconfirm>,
+                                            <Popconfirm title="Are you sure edit this story?"
+                                                        onConfirm={() => this.props.history.push(
+                                                            {pathname: `/challenges/edit_story/${chal.id}`})}
+                                                        okText="Yes" cancelText="No">
+                                                <Icon type="edit"/><span style={{marginLeft: 10}}>edit</span>
+                                            </Popconfirm>] :
+                                        [<div style={{fontStyle: 'italic', fontSize: 12}}>
+                                            You can not edit stories from closed challenges
+                                        </div>]}
+                                > <Meta
+                                    title={<a style={{color: 'black'}}
+                                              onClick={() => this.props.showModal(chal.id, chal.name)}>
+                                        {chal.name}
+                                    </a>}
+                                />
+                                    <div
+                                        style={{marginTop: 20, minHeight: 120}}>{chal.info.substring(0, 300) !== chal.info ?
+                                        chal.info.substring(0, 300) + '...'
 
-                            :
-                            chal.info}</div>
-                    </Card>
-                </Col>)}
-                </div>
+                                        :
+                                        chal.info}</div>
+                                </Card>
+                            </div>
+                        </Col>)}
+                    </div>
 
-                :
+                    :
 
-                <h1 style={{top: 20}} align="center">Please join some of our challenges</h1>}
-                <BasicModal {...this.props}/>
+                    <h1 style={{top: 20}} align="center">Please join some of our challenges</h1>}
+                    <BasicModal {...this.props}/>
                 </div>
             </Row>
         )

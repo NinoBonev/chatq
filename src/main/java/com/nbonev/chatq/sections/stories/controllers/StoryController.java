@@ -72,6 +72,11 @@ public class StoryController {
         storyCreateBindingModel.setName(storyCreatePayload.getName());
         storyCreateBindingModel.setCover(storyCreatePayload.getCover());
         storyCreateBindingModel.setInfo(storyCreatePayload.getInfo());
+        storyCreateBindingModel.setWidth(storyCreatePayload.getWidth());
+        storyCreateBindingModel.setHeight(storyCreatePayload.getHeight());
+        storyCreateBindingModel.setX(storyCreatePayload.getX());
+        storyCreateBindingModel.setY(storyCreatePayload.getY());
+
         storyCreateBindingModel.setUser(optionalUser.get());
 
         if (storyCreatePayload.getGroup() != null){

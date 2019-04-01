@@ -30,7 +30,9 @@ const AllOldChallengesTab = (props) => {
                             <Skeleton loading={false} active>
                                 <List.Item.Meta
                                     avatar={<Link style={{fontSize: 24}} to={{pathname: `/challenges/old/${item.id}`}} >
-                                        <Avatar size={200} shape='square' alt="logo" src={item.cover} />
+                                        <div className='imageFadeOut'>
+                                            <Avatar size={200} shape='square' alt="logo" src={item.cover} />
+                                        </div>
                                     </Link>}
                                     title={<Link style={{fontSize: 24}} to={{pathname: `/challenges/old/${item.id}`}} >{item.name}</Link>}
                                     description={item.info}

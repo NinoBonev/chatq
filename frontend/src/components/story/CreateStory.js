@@ -160,7 +160,11 @@ class CreateStoryForm extends React.Component {
                 challenge: fields.challenge.value,
                 group: fields.group.value,
                 cover: fields.src.value,
-                crop: JSON.stringify(fields.crop.value),
+                x: fields.crop.value.x,
+                y: fields.crop.value.y,
+                height: fields.crop.value.height,
+                width: fields.crop.value.width,
+                //crop: JSON.stringify(fields.crop.value),
                 info: fields.info.value,
                 userByUsername: createdBy.username,
                 storyLine: JSON.stringify(fields.storyline.value)

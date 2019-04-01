@@ -53,7 +53,8 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public ResponseEntity<ApiResponse> create(StoryCreateBindingModel storyCreateBindingModel,
                                               LinkedHashSet<StoryLineCreateBindingModel> storyLineCreateBindingModels) throws IOException {
-        storyCreateBindingModel.uploadAndSetCover(storyCreateBindingModel.getCover());
+        System.out.println(storyCreateBindingModel.toString());
+        storyCreateBindingModel.uploadAndSetCover();
 
         Story story = modelMapper.map(storyCreateBindingModel, Story.class);
         this.storyRepository.save(story);

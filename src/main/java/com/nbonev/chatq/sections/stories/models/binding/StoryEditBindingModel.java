@@ -1,11 +1,7 @@
 package com.nbonev.chatq.sections.stories.models.binding;
 
-import com.nbonev.chatq.sections.stories.utils.Constants;
 import com.nbonev.chatq.util.cloudinary.ImageUpload;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.IOException;
 
 /**
@@ -72,6 +68,6 @@ public class StoryEditBindingModel {
 
     public void uploadAndSetCover(String cover) throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl(cover);
+        this.cover = image.uploadAndGetUrl("16:10", cover);
     }
 }

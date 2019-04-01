@@ -4,7 +4,6 @@ import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.models.binding.GroupCreateBindingModel;
 import com.nbonev.chatq.sections.groups.models.view.GroupViewModel;
 import com.nbonev.chatq.sections.groups.services.GroupService;
-import com.nbonev.chatq.sections.users.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

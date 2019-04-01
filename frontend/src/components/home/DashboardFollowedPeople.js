@@ -13,7 +13,7 @@ const DashboardFollowedPeople = (props) => {
 
     return (
         <div>
-            <Col span={18} offset={3}>
+            <Col span={20} offset={2}>
                 <List
                     itemLayout="vertical"
                     size="large"
@@ -41,9 +41,11 @@ const DashboardFollowedPeople = (props) => {
                         >
                             <Skeleton loading={false} active>
                                 <List.Item.Meta
-                                    avatar={<img onClick={() => props.showModal(item.id)}
-                                                 src={item.cover} alt="" style={{height: 140}}/>}
-                                    title={<a style={{color: 'black'}} onClick={() => props.showModal(item.id)}>
+                                    avatar={<div className='imageFadeOut'><img
+                                        onClick={() => props.showModal(item.id, item.name)}
+                                        src={item.cover} alt="" style={{height: 210}}/></div>}
+                                    title={<a style={{color: 'black'}}
+                                              onClick={() => props.showModal(item.id, item.name)}>
                                         {item.name}
                                     </a>}
                                     description={item.info.substring(0, 200) !== item.info ?

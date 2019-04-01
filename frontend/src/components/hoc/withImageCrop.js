@@ -17,9 +17,6 @@ function withImageCrop(WrappedComponent) {
                 src: null,
                 crop: {
                     aspect: 1,
-                    width: 50,
-                    x: 0,
-                    y: 0,
                 },
                 loading: false,
             };

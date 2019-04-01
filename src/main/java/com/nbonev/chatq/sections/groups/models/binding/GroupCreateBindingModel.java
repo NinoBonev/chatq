@@ -33,13 +33,23 @@ public class GroupCreateBindingModel {
 
     private String status;
 
+    private Double x;
+    private Double y;
+    private Double height;
+    private Double width;
+
     public GroupCreateBindingModel() {
     }
 
-    public GroupCreateBindingModel(String name, String info, String cover) {
+    public GroupCreateBindingModel(String name, String info, String cover, Double x,
+                                   Double y, Double height, Double width) {
         this.name = name;
         this.info = info;
         this.cover = cover;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public String getName() {
@@ -74,8 +84,45 @@ public class GroupCreateBindingModel {
         this.status = status;
     }
 
-    public void uploadAndSetCover(String cover) throws IOException {
+    public Double getX() {
+        return x;
+    }
+
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getWidth() {
+        return width;
+    }
+
+    public void setWidth(Double width) {
+        this.width = width;
+    }
+
+    public void uploadAndSetCover() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl(cover);
+        this.cover = image.uploadAndGetUrl("16:10", this.cover);
+    }
+
+    public void uploadWithTransformationAndGetUrl() throws IOException {
+        ImageUpload image = new ImageUpload();
+        this.cover = image.uploadWithTransformationAndGetUrl("16:10", this.cover, this.x, this.y, this.height, this.width);
     }
 }

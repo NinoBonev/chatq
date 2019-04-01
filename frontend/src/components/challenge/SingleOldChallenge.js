@@ -53,9 +53,8 @@ class BasicSingleOldChallenge extends Component {
                             <Col span={6} style={{margin: 20}}>
                                 <div>
                                     <Card
-                                        hoverable
-                                        cover={ <img onClick={() => this.props.showModal(str.id)}
-                                                     src={str.cover} alt="" style={{width: '100%'}}/>}
+                                        cover={<div className='imageFadeOut'><img onClick={() => this.props.showModal(str.id, str.name)}
+                                                                                  src={str.cover} alt="" style={{width: '100%'}}/></div>}
                                         actions={this.props.isAdmin ? [<Icon
                                             type="delete" onClick={this.delete}/>,
                                             <Icon type="edit" onClick={this.edit}/>] : null}
@@ -65,7 +64,7 @@ class BasicSingleOldChallenge extends Component {
                                             to={{pathname: `/users/${str.username}`}}>
                                             <Avatar size={55} src={str.avatar}/>
                                         </Link></Tooltip>}
-                                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(str.id)}>
+                                        title={<a style={{color: 'black'}} onClick={() => this.props.showModal(str.id, str.name)}>
                                                   {str.name}
                                             </a>}
                                     />
