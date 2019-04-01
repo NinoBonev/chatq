@@ -25,6 +25,7 @@
         <jjwt.version>0.9.0</jjwt.version>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -120,45 +121,91 @@
             </plugin>
 
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.6</version>
-                <configuration>
-                    <workingDirectory>frontend</workingDirectory>
-                    <installDirectory>target</installDirectory>
-                </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.3.2</version>
                 <executions>
+                    <!-- Required: The following will ensure `npm install` is called
+                         before anything else during the 'Default Lifecycle' -->
                     <execution>
-                        <id>install node and npm</id>
+                        <id>npm install (initialize)</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>exec</goal>
                         </goals>
+                        <phase>initialize</phase>
                         <configuration>
-                            <nodeVersion>v11.13.0</nodeVersion>
-                            <npmVersion>5.6.0</npmVersion>
-                            <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>npm run build (compile)</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>exec</goal>
                         </goals>
+                        <phase>compile</phase>
                         <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
+
+                <configuration>
+                    <workingDirectory>frontend</workingDirectory>
+                    <environmentVariables>
+                        <!-- The following parameters create an NPM sandbox for CI -->
+                        <NPM_CONFIG_PREFIX>${basedir}/npm</NPM_CONFIG_PREFIX>
+                        <NPM_CONFIG_TMP>${project.build.directory}/npmtmp</NPM_CONFIG_TMP>
+                    </environmentVariables>
+                </configuration>
             </plugin>
+
+            <!--<plugin>-->
+            <!--<groupId>com.github.eirslett</groupId>-->
+            <!--<artifactId>frontend-maven-plugin</artifactId>-->
+            <!--<version>1.6</version>-->
+            <!--<configuration>-->
+            <!--<workingDirectory>frontend</workingDirectory>-->
+            <!--<installDirectory>target</installDirectory>-->
+            <!--</configuration>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>install node and npm</id>-->
+            <!--<goals>-->
+            <!--<goal>install-node-and-npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<nodeVersion>v11.13.0</nodeVersion>-->
+            <!--<npmVersion>5.6.0</npmVersion>-->
+            <!--<nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>npm install</id>-->
+            <!--<goals>-->
+            <!--<goal>npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<arguments>install</arguments>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>npm run build</id>-->
+            <!--<goals>-->
+            <!--<goal>npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<arguments>run build</arguments>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
