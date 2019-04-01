@@ -45,13 +45,26 @@ public class ImageUpload {
         return (String) uploadResult.get("url");
     }
 
-    public String uploadAndGetUrl(Double aspectRatio, String image) throws IOException {
+    public String uploadAndGetUrlAspect_1(String image) throws IOException {
         Transformation transformation = new Transformation()
-                .aspectRatio(aspectRatio)
-                .width(2048)
-                .gravity("center")
-                .quality("auto:eco")
-                .crop("crop");
+                .aspectRatio(1)
+                .height(1024)
+                .crop("fill")
+                .gravity("custom")
+                .quality("auto:eco");
+        Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(
+                "transformation", transformation));
+
+        return (String) uploadResult.get("url");
+    }
+
+    public String uploadAndGetUrlAspect_16_10(String image) throws IOException {
+        Transformation transformation = new Transformation()
+                .aspectRatio(1.6)
+                .width(1024)
+                .crop("fill")
+                .gravity("custom")
+                .quality("auto:eco");
         Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(
                 "transformation", transformation));
 

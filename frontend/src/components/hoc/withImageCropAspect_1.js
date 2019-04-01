@@ -76,8 +76,8 @@ function withImageCropAspect_1(WrappedComponent) {
                 pixelCrop.height,
                 0,
                 0,
-                1024,
-                1024,
+                pixelCrop.width,
+                pixelCrop.height,
             );
 
             return new Promise((resolve, reject) => {
