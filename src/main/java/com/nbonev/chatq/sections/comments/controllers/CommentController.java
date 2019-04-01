@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class CommentController {
     private final CommentService commentService;
 

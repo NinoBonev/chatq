@@ -68,6 +68,6 @@ public class StoryEditBindingModel {
 
     public void uploadAndSetCover(String cover) throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl("16:10", cover);
+        this.cover = image.uploadAndGetUrl(1.6, cover);
     }
 }

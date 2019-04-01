@@ -5,9 +5,8 @@
 import React from 'react';
 import FileBase64 from 'react-file-base64'
 import ReactCrop from 'react-image-crop';
-import * as loadImage from 'blueimp-load-image'
 import 'react-image-crop/dist/ReactCrop.css';
-import withImageCrop from '../hoc/withImageCrop';
+import withImageCropAspect_1 from '../hoc/withImageCropAspect_1';
 
 import {Input, Button, Col, Row, Form, message} from 'antd';
 
@@ -162,6 +161,6 @@ class AdminCreateChallenge extends React.Component {
 }
 
 let WrappedAdminCreateChallenge = Form.create({name: 'normal_login'})(AdminCreateChallenge);
-WrappedAdminCreateChallenge = withImageCrop(WrappedAdminCreateChallenge)
+WrappedAdminCreateChallenge = withImageCropAspect_1(WrappedAdminCreateChallenge)
 
 export default WrappedAdminCreateChallenge;

@@ -5,9 +5,8 @@
 import React from 'react';
 import FileBase64 from 'react-file-base64'
 import ReactCrop from 'react-image-crop';
-import * as loadImage from 'blueimp-load-image'
 import 'react-image-crop/dist/ReactCrop.css';
-import withImageCrop from '../hoc/withImageCrop'
+import withImageCropAspect_16_10 from '../hoc/withImageCropAspect_16_10'
 
 import {Input, Button, Col, Row, Form, Switch, message} from 'antd';
 
@@ -214,6 +213,6 @@ class AdminCreateGroup extends React.Component {
 }
 
 let WrappedAdminCreateGroup = Form.create({name: 'normal_login'})(AdminCreateGroup);
-WrappedAdminCreateGroup = withImageCrop(WrappedAdminCreateGroup)
+WrappedAdminCreateGroup = withImageCropAspect_16_10(WrappedAdminCreateGroup)
 
 export default WrappedAdminCreateGroup;

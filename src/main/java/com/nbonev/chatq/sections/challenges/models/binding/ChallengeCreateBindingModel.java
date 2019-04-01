@@ -71,7 +71,7 @@ public class ChallengeCreateBindingModel {
 
     public void uploadAndSetCover() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl("1", this.cover);
+        this.cover = image.uploadAndGetUrl(1.00, this.cover);
     }
 
     public void uploadWithTransformationAndGetUrl() throws IOException {

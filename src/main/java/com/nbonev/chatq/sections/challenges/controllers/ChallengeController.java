@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class ChallengeController {
     private final ChallengeService challengeService;
     private final StoryService storyService;

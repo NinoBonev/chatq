@@ -7,7 +7,6 @@ import {
     Switch, Form, Icon, Input, Button, Select, Col, Row, message
 } from 'antd';
 import '../../resources/style/custom.css';
-import * as loadImage from 'blueimp-load-image';
 import FileBase64 from 'react-file-base64';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';

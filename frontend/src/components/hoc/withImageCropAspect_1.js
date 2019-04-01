@@ -5,7 +5,7 @@
 import React from 'react';
 import * as loadImage from 'blueimp-load-image';
 
-function withImageCrop(WrappedComponent) {
+function withImageCropAspect_1(WrappedComponent) {
     class ImageCrop extends React.Component {
         constructor(props) {
             super(props);
@@ -76,8 +76,8 @@ function withImageCrop(WrappedComponent) {
                 pixelCrop.height,
                 0,
                 0,
-                pixelCrop.width,
-                pixelCrop.height,
+                1024,
+                1024,
             );
 
             return new Promise((resolve, reject) => {
@@ -113,4 +113,4 @@ function withImageCrop(WrappedComponent) {
     return ImageCrop;
 }
 
-export default withImageCrop;
+export default withImageCropAspect_1;

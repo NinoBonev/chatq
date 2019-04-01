@@ -45,7 +45,7 @@ public class ImageUpload {
         return (String) uploadResult.get("url");
     }
 
-    public String uploadAndGetUrl(String aspectRatio, String image) throws IOException {
+    public String uploadAndGetUrl(Double aspectRatio, String image) throws IOException {
         Transformation transformation = new Transformation()
                 .aspectRatio(aspectRatio)
                 .width(2048)
@@ -60,12 +60,13 @@ public class ImageUpload {
 
     public String uploadWithTransformationAndGetUrl(String aspectRatio, String image, Double x, Double y, Double height, Double width) throws IOException {
         Transformation transformation = new Transformation()
-               // .gravity("custom")
+                .gravity("custom")
                 .aspectRatio(aspectRatio)
-                .quality("auto:best")
-//                .x(x.intValue() * 10)
-//                .y(y.intValue() * 10)
-//                .width(width.intValue() * 10)
+                .quality("auto:eco")
+                .x(x.intValue() * 10)
+                .y(y.intValue() * 10)
+                .width(width.intValue())
+                .height(height.intValue())
                 .crop("crop");
 
         Map uploadResult = this.cloudinary.uploader().upload(image, ObjectUtils.asMap(

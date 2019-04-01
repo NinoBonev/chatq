@@ -85,17 +85,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                         .permitAll()
-                    .antMatchers("/api/auth/**")
+                    .antMatchers("/auth/**")
                         .permitAll()
-                    .antMatchers("/api/groups/**")
+                    .antMatchers("/groups/**")
                         .permitAll()
-                    .antMatchers("/api/story/{id}")
+                    .antMatchers("/story/{id}")
                         .permitAll()
-                    .antMatchers("/api/challenges/**")
+                    .antMatchers("/challenges/**")
                         .permitAll()
-                    .antMatchers("/api/comments/**")
+                    .antMatchers("/comments/**")
                         .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/users/**")
+                    .antMatchers(HttpMethod.GET, "/users/**")
                         .permitAll() //TODO: hasAnyRole
                     .anyRequest()
                     .authenticated();

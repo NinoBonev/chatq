@@ -155,7 +155,7 @@ public class StoryCreateBindingModel {
 
     public void uploadAndSetCover() throws IOException {
         ImageUpload image = new ImageUpload();
-        this.cover = image.uploadAndGetUrl("16:10", this.cover);
+        this.cover = image.uploadAndGetUrl(1.6, this.cover);
     }
 
     public void uploadWithTransformationAndGetUrl() throws IOException {
