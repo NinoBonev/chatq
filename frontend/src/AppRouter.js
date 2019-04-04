@@ -39,7 +39,11 @@ const AppRouter = (props) => {
         <Switch>
 
             <Route exact path='/' render={(props) => isAuth ? <Redirect to="/dashboard"/> :
-                <HomePage/>
+                <HomePage
+                    Auth={Auth}
+                    Crud={Crud}
+                    {...props}
+                />
             }/>
 
             <Route exact path="/logout" render={() => <Redirect to="/"/>}/>

@@ -1,10 +1,21 @@
 import React from 'react';
-import CarouselClass from './Carousel';
+import HeadroomClass from "../common/main_header/HeadroomClass";
 
-const HomePage = () => {
-    return (
-        <CarouselClass />
-    );
+class HomePage extends React.Component {
+    render() {
+        return (
+            <div>
+
+
+                <div className="background"
+                     style={{minHeight: 2000, backgroundColor: 'white'}}
+                >
+
+                </div>
+
+            </div>
+        );
+    }
 }
 
 export default HomePage;

@@ -1,4 +1,78 @@
+.headroom {
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: white;
+    height: 60px;
+}
+.headroom--unfixed {
+    position: relative;
+    transform: translateY(0);
+}
+.headroom--scrolled {
+    transition: transform 200ms ease-in-out;
+}
+.headroom--unpinned {
+    position: fixed;
+    transform: translateY(-100%);
+}
+.headroom--pinned {
+    position: fixed;
+    transform: translateY(0%);
+}
+
+.header-menu-item {
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    color: gray;
+    vertical-align: middle;
+    height: 60px;
+    transition: transform .2s;
+}
+
+.header-menu-item:hover {
+    position: relative;
+    color: black;
+    cursor: pointer
+}
+
+.sub-header {
+    height: 70px;
+    background-color: paleturquoise;
+    color: chocolate;
+}
+
+
+.sub-header-link {
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    color: chocolate;
+    vertical-align: middle;
+    height: 70px;
+    transition: transform .2s;
+}
+
+.sub-header-link:hover {
+    position: relative;
+    color: white;
+    cursor: pointer
+}
+
+.sub-header-name {
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+/*.header-menu-item:hover:after {*/
+    /*content: url(../style/angle-arrow-down.svg); !* no need for qoutes *!*/
+    /*height: 5px;*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*top: 1px; !* change this value to one that suits you *!*/
+/*}*/
+
 .one {
+    position: relative;
+    z-index: 1;
     background-color: white;
     height: 670px;
     background-image: url(https://res.cloudinary.com/dar4inn2i/image/upload/v1552770405/igoo0o4zl00hpddaaouj.jpg);
@@ -54,12 +128,6 @@
     transition: color .3s;
 }
 
-.logo {
-    height: 50px;
-    background: #000000;
-    margin-bottom: 40px;
-}
-
 .gutter-register-box {
     margin: 10px;
     min-height: 650px;
@@ -81,10 +149,8 @@
 }
 
 .header-user-welcome {
-    color: white;
-    font-size: 16px;
     float: right;
-    margin-right: 30px;
+    margin-right: 200px;
 }
 
 .imageFadeOut{

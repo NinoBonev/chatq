@@ -1,5 +1,6 @@
 package com.nbonev.chatq.config;
 
+import com.nbonev.chatq.security.CustomUserDetailsService;
 import com.nbonev.chatq.security.JwtAuthenticationFilter;
 import org.modelmapper.*;
 import org.springframework.context.annotation.Bean;

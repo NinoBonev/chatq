@@ -17,7 +17,7 @@ export default class CarouselClass extends React.Component {
         </Col>
 
         const settings = {
-            dots: false,
+            dots: true,
             infinite: true,
             speed: 1500,
             pauseOnHover: false,

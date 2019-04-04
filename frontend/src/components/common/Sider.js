@@ -37,7 +37,9 @@ class SiderClass extends React.Component {
                 breakpoint="1g"
                 width={180}
                 collapsed={this.props.collapsed}>
-                <div className="logo"/>
+                <div className="logo">
+                    <img src="../../resources/27-1.png" alt=""/>
+                </div>
                 <Menu
                     style={{height: '100%', borderRight: 0}}
                     defaultSelectedKeys={['1']}

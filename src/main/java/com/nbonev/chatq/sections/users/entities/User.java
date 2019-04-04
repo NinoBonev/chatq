@@ -42,7 +42,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(min = 4, max = 15)
-    //TODO @Column(unique = true) ???
+    @Column(unique = true)
     private String username;
 
     @NaturalId
