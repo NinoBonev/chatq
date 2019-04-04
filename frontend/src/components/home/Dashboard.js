@@ -11,6 +11,7 @@ import DashboardFollowedPeople from './DashboardFollowedPeople';
 import withModal from '../hoc/withModal'
 import moment from 'moment/moment';
 import {message} from "antd/lib/index";
+import Header from "../common/Header";
 
 const MyChallenges = withModal(DashboardMyChallenges)
 const MyStories = withModal(DashboardMyStories)
@@ -149,8 +150,9 @@ export default class Dashboard extends React.Component {
         </div>;
 
         return (
-            <div className='default-panel'>
-                <Tabs style={{marginLeft: 25}} onChange={this.setKey} activeKey={this.state.activeKey}
+            <div >
+                <Header {...this.props} />
+                <Tabs style={{marginLeft: 25, marginTop: 20}} onChange={this.setKey} activeKey={this.state.activeKey}
                       tabBarExtraContent={operations}>
                     <TabPane tab="Chatq" key="1">
                         <Tabs style={{marginBottom: 30}} tabPosition='left'>

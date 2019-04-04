@@ -1,16 +1,14 @@
 import React from 'react';
-import HeadroomClass from "../common/main_header/HeadroomClass";
+import Header from '../common/Header'
 
 class HomePage extends React.Component {
     render() {
         return (
             <div>
-
-
+                <Header {...this.props} />
                 <div className="background"
                      style={{minHeight: 2000, backgroundColor: 'white'}}
                 >
-
                 </div>
 
             </div>

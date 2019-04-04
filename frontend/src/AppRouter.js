@@ -30,7 +30,7 @@ import AdminAllGroupsPane from "./components/admin/AdminAllGroupsPane";
 
 
 const AppRouter = (props) => {
-    const {Crud, Auth, Helper} = props;
+    const {Crud, Auth, Helper, setActiveKey, activeKey} = props;
 
     const isAuth = Auth.isLoggedIn();
     const isAdmin = Auth.isAdmin();
@@ -40,32 +40,45 @@ const AppRouter = (props) => {
 
             <Route exact path='/' render={(props) => isAuth ? <Redirect to="/dashboard"/> :
                 <HomePage
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     Auth={Auth}
                     Crud={Crud}
                     {...props}
                 />
             }/>
 
-            <Route exact path="/logout" render={() => <Redirect to="/"/>}/>
+            <Route exact path="/logout" render={() => <Redirect to="/" />}/>
 
             <Route exact path='/register' render={(props) => isAuth ? <Redirect to="/"/> :
                 <WrappedRegistrationForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
+                    Auth={Auth}
                     {...props}
                 />
             }/>
 
             <Route exact path='/about' render={() => <About
+                activeKey={activeKey}
+                setActiveKey={setActiveKey}
+                Auth={Auth}
                 isAdmin={isAdmin}
             />} />
 
             <Route exact path='/login' render={(props) => isAuth ? <Redirect to="/"/> :
                 <WrappedNormalLoginForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
+                    Auth={Auth}
                     {...props}
                 />
             }/>
 
             <Route exact path='/dashboard' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <Dashboard
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -77,6 +90,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups/create_story' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     Auth={Auth}
                     Crud={Crud}
@@ -87,6 +102,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups/edit_story/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     Auth={Auth}
                     Crud={Crud}
@@ -97,6 +114,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/challenges/edit_story/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <CreateStoryForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     Auth={Auth}
                     Crud={Crud}
@@ -108,6 +127,8 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges" render={(props) =>
                 <AllChallenges
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -119,6 +140,8 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/current/:id" render={(props) =>
                 <SingleCurrentChallengeTabs
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -130,6 +153,8 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/old/:id" render={(props) =>
                 <SingleOldChallenge
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -141,6 +166,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/challenges/create_story' render={(props) =>
                 <CreateStoryForm
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     Auth={Auth}
                     Crud={Crud}
@@ -151,6 +178,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups/edit/:id' render={(props) => !isAuth ? <Redirect to="/" /> :
                 <WrappedAdminCreateGroup
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     Auth={Auth}
                     Crud={Crud}
@@ -161,6 +190,8 @@ const AppRouter = (props) => {
 
             <Route exact path="/groups/:groupId/:storyId" render={(props) =>
                 <StoryPage
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -172,6 +203,8 @@ const AppRouter = (props) => {
 
             <Route exact path="/groups/:name" render={(props) =>
                 <SingleGroup
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     Auth={Auth}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
@@ -183,6 +216,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups' render={(props) =>
                 <AllGroups
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -194,6 +229,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/users/:name' render={(props) =>
                 <AllUserStories
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -205,6 +242,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/challenges/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
                 <WrappedAdminCreateChallenge
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     Helper={Helper}
                     Auth={Auth}
                     Crud={Crud}
@@ -214,6 +253,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/groups/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
                 <WrappedAdminCreateGroup
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     Helper={Helper}
                     Auth={Auth}
                     Crud={Crud}
@@ -223,6 +264,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/users/all' render={(props) => !isAdmin ? <Redirect to='/'/> :
                 <AdminAllUsersPane
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -233,6 +276,8 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/groups/all' render={(props) => !isAdmin ? <Redirect to='/' /> :
                 <AdminAllGroupsPane
+                    activeKey={activeKey}
+                    setActiveKey={setActiveKey}
                     Auth={Auth}
                     Crud={Crud}
                     {...props}

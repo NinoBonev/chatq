@@ -69,7 +69,9 @@
     /*position: absolute;*/
     /*top: 1px; !* change this value to one that suits you *!*/
 /*}*/
-
+.main-data-container {
+    margin: 90px 30px 0px
+}
 .one {
     position: relative;
     z-index: 1;

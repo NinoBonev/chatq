@@ -4,7 +4,7 @@
 
 import React from 'react'
 
-function modalFunctionality(WrappedComponent) {
+function withModal(WrappedComponent) {
     class Modal extends React.Component {
         constructor(props) {
             super(props);
@@ -54,4 +54,4 @@ function modalFunctionality(WrappedComponent) {
     return Modal;
 }
 
-export default modalFunctionality;
+export default withModal;
