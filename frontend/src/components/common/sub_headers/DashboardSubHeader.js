@@ -18,7 +18,9 @@ const DashboardSubHeader = (props) => {
                     marginLeft: '2%'
                 }}>
                             <DemoBox value={60}>
-                                <span  className='sub-header-link' onClick={() => props.history.push('/dashboard')}>My Flow</span>
+                                <span  className='sub-header-link' onClick={() => {
+                                    props.history.push('/dashboard')
+                                }}>My Flow</span>
                             </DemoBox>
                         </span>
                 <Divider type="vertical" />
@@ -26,7 +28,9 @@ const DashboardSubHeader = (props) => {
                     marginLeft: '1%'
                 }}>
                             <DemoBox value={60}>
-                                <span  className='sub-header-link' onClick={() => props.history.push('/groups')}>My Stories</span>
+                                <span  className='sub-header-link' onClick={() => {
+                                    props.setContentKey('myStories')
+                                }}>My Stories</span>
                             </DemoBox>
                         </span>
                 <Divider type="vertical" />
@@ -34,7 +38,9 @@ const DashboardSubHeader = (props) => {
                     marginLeft: '1%'
                 }}>
                             <DemoBox value={60}>
-                                <span className='sub-header-link' onClick={() => props.history.push('/challenges')}>My Challenges</span>
+                                <span className='sub-header-link' onClick={() => {
+                                    props.setContentKey('myChallenges')
+                                }}>My Challenges</span>
                             </DemoBox>
                         </span>
             </Row>

@@ -40,7 +40,7 @@ export default class StoryPage extends React.Component {
     }
 
     setKey(key) {
-        this.setState({activeKey: key});
+        this.setState({subHeaderKey: key});
     }
 
     componentDidMount() {
@@ -66,7 +66,7 @@ export default class StoryPage extends React.Component {
         return (
             <div>
                 <Row gutter={8}>
-                    <Tabs onChange={this.setKey} activeKey={this.state.activeKey}>
+                    <Tabs onChange={this.setKey} activeKey={this.state.subHeaderKey}>
                         <TabPane tab={<span><Icon type="read"/>Storyline</span>} key="1">
                             <Carousel ref={node => (this.carousel = node)}  {...settings}>
                                 {sortedStoryLine.map((str) =>

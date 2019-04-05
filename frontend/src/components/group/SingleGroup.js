@@ -4,7 +4,6 @@
 
 import React, {Component} from 'react';
 import {Row, Col, Button, message} from 'antd';
-import Header from '../common/Header'
 import AllGroupStories from './AllGroupStories';
 import GroupRules from './GroupRules';
 import GroupInfo from './GroupInfo';
@@ -29,6 +28,7 @@ class BasicSingleGroup extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
         this._isMounted = true;
 
         this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
@@ -71,7 +71,7 @@ class BasicSingleGroup extends Component {
 
         return (
             <div>
-                <Header {...this.props}/>
+                <Row>
                 <div className='main-data-container'>
                     <Row gutter={24}>
                         <Col span={9}>
@@ -128,6 +128,7 @@ class BasicSingleGroup extends Component {
                         </div>
                     </Row>
                 </div>
+                </Row>
             </div>
         );
     }

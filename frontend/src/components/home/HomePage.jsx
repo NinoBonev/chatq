@@ -1,17 +1,19 @@
 import React from 'react';
-import Header from '../common/Header'
+import {Row} from 'antd'
 
 class HomePage extends React.Component {
+
+    componentDidMount(){
+        this.props.setSubHeaderKey('home')
+    }
+
     render() {
         return (
-            <div>
-                <Header {...this.props} />
-                <div className="background"
-                     style={{minHeight: 2000, backgroundColor: 'white'}}
-                >
+            <Row>
+                <div className='main-data-container'>
+                    <p>Hello</p>
                 </div>
-
-            </div>
+            </Row>
         );
     }
 }

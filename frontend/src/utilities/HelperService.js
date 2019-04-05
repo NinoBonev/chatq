@@ -27,7 +27,7 @@ class HelperService {
     dashboardInitialState() {
         return (
             {
-                activeKey: '1',
+                subHeaderKey: '1',
                 followGroup: [],
                 followPeople: [],
                 storiesFromGroups: [],

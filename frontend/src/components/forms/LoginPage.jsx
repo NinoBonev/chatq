@@ -30,6 +30,7 @@ class LoginPage extends React.Component {
     };
 
     componentDidMount(){
+        this.props.setSubHeaderKey('signIn')
         if (this.props.location.state) {
             message.info(this.props.location.state)
         }
@@ -39,13 +40,9 @@ class LoginPage extends React.Component {
         const {getFieldDecorator} = this.props.form;
         return (
             <div>
-                <Header {...this.props}/>
                 <Row type="flex" justify="space-around">
-                    <Col span={12} offset={6} style={{marginBottom: 30, fontSize: 40}}>
-                        Log in to Chatq
-                    </Col>
                     <Col span={12}>
-                        <div className='login-form'>
+                        <div className='main-data-container'>
                             <Form onSubmit={this.handleSubmit.bind(this)}>
                                 <Row justify="center" align="bottom">
                                     <Col span={10} offset={7} style={{marginTop: 50}}>
@@ -70,7 +67,11 @@ class LoginPage extends React.Component {
                                     </Col>
                                     <Col span={10} offset={7}>
                                         <Form.Item>
-                                            <Button icon="login" type="primary" htmlType="submit"
+                                            <Button style={{
+                                                border: 'none',
+                                                backgroundColor: 'paleturquoise',
+                                                color: 'chocolate'
+                                            }} icon="login" type="primary" htmlType="submit"
                                                     className="login-form-button">
                                                 Log in
                                             </Button>

@@ -1,16 +1,15 @@
 import React from 'react';
 import {Layout, Breadcrumb} from 'antd';
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import AppRouter from './AppRouter'
 import 'antd/dist/antd.css'
 
-import AnonymousHeadroom from "./components/common/main_headers/AnonymousHeadroom";
-import AuthenticatedHeadroom from './components/common/main_headers/AuthenticatedHeadroom'
 import FooterClass from './components/common/Footer'
 
 import AuthService from './utilities/AuthService'
 import CrudService from './utilities/CrudService';
 import HelperService from './utilities/HelperService';
+import Header from "./components/common/Header";
 
 const {Content} = Layout;
 const Auth = new AuthService();
@@ -19,25 +18,44 @@ const Helper = new HelperService();
 
 class App extends React.Component {
     state = {
-        activeKey: 'welcome'
+        subHeaderKey: 'welcome',
+        contentKey: 'followedGroups'
     }
 
-    setActiveKey =(key) => {
+    setSubHeaderKey = (key) => {
         this.setState({
-            activeKey: key
+            subHeaderKey: key
         })
     }
 
-    render(){
+    setContentKey = (key) => {
+        this.setState({
+            contentKey: key
+        })
+    }
+
+    render() {
         return (
             <Layout>
-                <div style={{minHeight: 600, backgroundColor: '#f5f5f5'}}>
-                    <Content>
-                        <AppRouter Auth={Auth} Crud={Crud} Helper={Helper}
-                                   {...this.state} setActiveKey={this.setActiveKey}/>
-                    </Content>
-                    <FooterClass/>
-                </div>
+                <Content>
+                    <Header {...this.props}
+                            Auth={Auth}
+                            subHeaderKey={this.state.subHeaderKey}
+                            setSubHeaderKey={this.setSubHeaderKey.bind(this)}
+                            setContentKey={this.setContentKey.bind(this)}
+                    />
+                    <div className='main-container'>
+                        <AppRouter
+                            Auth={Auth}
+                            Crud={Crud}
+                            Helper={Helper}
+                            setContentKey={this.setContentKey.bind(this)}
+                            setSubHeaderKey={this.setSubHeaderKey.bind(this)}
+                            {...this.state}
+                        />
+                    </div>
+                    <FooterClass />
+                </Content>
             </Layout>
         );
     }

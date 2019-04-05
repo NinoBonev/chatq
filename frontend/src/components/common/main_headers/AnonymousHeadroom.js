@@ -1,11 +1,13 @@
 import React from 'react'
 import Headroom from 'react-headroom'
 import Logo from '../../../resources/27-1.png'
-import {Affix, Col, Row, Input, Divider} from 'antd'
+import {Affix, Menu, Row, Input, Dropdown} from 'antd'
+import {Link} from 'react-router-dom'
 
 import AboutSubHeader from '../sub_headers/AboutSubHeader'
-import BrowseSubHeader from '../sub_headers/BrowseSubHeader'
 import WithTextSubHeader from '../sub_headers/WithTextSubHeader'
+import AllGroupsSubHeader from "../sub_headers/AllGroupsSubHeader";
+import SingleGroupSubHeader from '../sub_headers/SingleGroupSubHeader'
 
 const {Search} = Input
 const DemoBox = props => <p className={`height-${props.value}`}>{props.children}</p>;
@@ -14,11 +16,22 @@ export default class AnonymousHeadroom extends React.Component {
 
     render() {
         const content = {
-            welcome: <WithTextSubHeader showText='welcome' {...this.props}/>,
+            home: <WithTextSubHeader showTextContent='welcome' {...this.props}/>,
             about: <AboutSubHeader {...this.props}/>,
-            browse: <BrowseSubHeader {...this.props}/>,
-            signIn: <WithTextSubHeader showText='signIn' {...this.props} />
+            signIn: <WithTextSubHeader showTextContent='signIn' {...this.props} />,
+            allGroups: <WithTextSubHeader showTextContent='allGroups' {...this.props} />,
+            allChallenges: <WithTextSubHeader showTextContent='allGroups' {...this.props} />,
+            singleGroup: <SingleGroupSubHeader {...this.props} />
         }
+
+        const browseMenu = (<Menu>
+            <Menu.Item key="1"><span onClick={() => {
+                this.props.history.push('/groups')
+            }}>Groups</span></Menu.Item>
+            <Menu.Item key="2"><span onClick={() => {
+                this.props.history.push('/challenges')
+            }}>Challenges</span></Menu.Item>
+        </Menu>)
 
         return (
             <Headroom className='headroom'>
@@ -28,7 +41,6 @@ export default class AnonymousHeadroom extends React.Component {
                         }}>
                             <DemoBox value={60}>
                                 <img style={{height: 40}} src={Logo} alt="" onClick={() => {
-                                    this.props.setActiveKey('welcome')
                                     this.props.history.push('/')
                                 }}/>
                             </DemoBox>
@@ -48,14 +60,21 @@ export default class AnonymousHeadroom extends React.Component {
                         marginLeft: '2%'
                     }}>
                             <DemoBox value={60}>
-                                <span className='header-menu-item' onClick={() => this.props.setActiveKey('about')}>About</span>
+                                <span className='header-menu-item'
+                                      onClick={() => {
+                                          this.props.history.push('/about')
+                                      }}>About</span>
                             </DemoBox>
                         </span>
                     <span style={{
                         marginLeft: '2%'
                     }}>
                             <DemoBox value={60}>
-                                <span className='header-menu-item' onClick={() => this.props.setActiveKey('browse')}>Browse</span>
+                                <Dropdown overlay={browseMenu} trigger={['hover']}>
+                                    <span className='header-menu-item'
+                                          style={{userSelect: 'none'}}>Browse</span>
+                                </Dropdown>
+
                             </DemoBox>
                         </span>
                     <span style={{
@@ -63,15 +82,14 @@ export default class AnonymousHeadroom extends React.Component {
                         right: '21%'
                     }}>
                             <DemoBox value={60}>
-                                <span className='header-menu-item' onClick={() => {
-                                    this.props.setActiveKey('signIn')
+                                <a className='header-menu-item' onClick={() => {
                                     this.props.history.push('/login')
-                                }}>Sign in</span>
+                                }}>Sign in</a>
                             </DemoBox>
                         </span>
                 </Row>
                 <Affix offsetTop={60}>
-                    {content[this.props.activeKey]}
+                    {content[this.props.subHeaderKey]}
                 </Affix>
             </Headroom>
         )

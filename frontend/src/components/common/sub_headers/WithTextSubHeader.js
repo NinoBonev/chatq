@@ -3,9 +3,11 @@ import {Row} from 'antd'
 
 import Quote from '../utils/QuoteOfTheDay'
 import SignInText from '../utils/SignInText'
+import AllGroups from "../utils/AllGroups";
 
 const DemoBox = props => <p className={`height-${props.value}`}>{props.children}</p>;
 const content = {
+    allGroups: AllGroups,
     welcome: Quote,
     signIn: SignInText
 }
@@ -15,10 +17,6 @@ class WithTextSubHeader extends React.Component{
         super(props)
 
         this.showContent = this.showContent.bind(this)
-    }
-
-    componentDidMount(){
-        console.log(this.props);
     }
 
     showContent = (input) => {
@@ -33,7 +31,7 @@ class WithTextSubHeader extends React.Component{
                             marginLeft: '40%'
                         }}>
                             <DemoBox value={60}>
-                                <span  className='sub-header-name'>{this.showContent(this.props.showText)}</span>
+                                <span  className='sub-header-name'>{this.showContent(this.props.showTextContent)}</span>
                             </DemoBox>
                         </span>
                 </Row>

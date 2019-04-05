@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {Tabs, Button} from 'antd';
+import {Tabs, Button, Row, Col} from 'antd';
 import DashboardFollowedGroups from './DashboardFollowedGroups';
 import DashboardMyStories from './DashboardMyStories';
 import DashboardMyChallenges from './DashboardMyChallenges';
@@ -25,11 +25,11 @@ export default class Dashboard extends React.Component {
         super(props);
 
         this.state = this.props.Helper.dashboardInitialState()
-        this.setKey = this.setKey.bind(this);
     }
 
 
     componentDidMount() {
+        this.props.setSubHeaderKey('dashboard')
         let user = this.props.Auth.getProfile();
 
         let {avatar, username} = user;
@@ -137,51 +137,63 @@ export default class Dashboard extends React.Component {
         }
     }
 
-    setKey(key) {
-        this.setState({activeKey: key});
-    }
-
     render() {
         const operations = <div style={{fontStyle: 'italic', marginRight: 20}}>
             Have a new story to share? Tell it to the world then.
             <Button style={{marginLeft: 15}} type='primary' onClick={() => this.props.history.push({
                 pathname: '/groups/create_story'
             })} className='Create' icon='create'>Create Story</Button>
-        </div>;
+        </div>
+
+        let content = {
+            followedGroups: <FollowedGroups
+                {...this.state}
+                {...this.props}
+            />,
+            followedPeople: <FollowedPeople
+                {...this.state}
+                {...this.props}
+            />,
+            myStories: <MyStories
+                {...this.state}
+                {...this.props}
+            />,
+            myChallenges: <MyChallenges
+                {...this.state}
+                {...this.props} />
+
+        }
+
+
 
         return (
-            <div >
-                <Header {...this.props} />
-                <Tabs style={{marginLeft: 25, marginTop: 20}} onChange={this.setKey} activeKey={this.state.activeKey}
-                      tabBarExtraContent={operations}>
-                    <TabPane tab="Chatq" key="1">
-                        <Tabs style={{marginBottom: 30}} tabPosition='left'>
-                            <TabPane tab="Groups you follow" key="1">
-
-                                <FollowedGroups
-                                    {...this.state}
-                                    {...this.props}
-                                />
-                            </TabPane>
-                            <TabPane tab="People you follow" key="2">
-                                <FollowedPeople
-                                    {...this.state}
-                                    {...this.props}
-                                />
-                            </TabPane>
-                        </Tabs>
-                    </TabPane>
-                    <TabPane tab="My Stories" key="2">
-                        <MyStories
-                            {...this.state}
-                            {...this.props}
-                        /></TabPane>
-                    <TabPane tab="My Challenges" key="3">
-                        <MyChallenges
-                            {...this.state}
-                            {...this.props} />
-                    </TabPane>
-                </Tabs>
+            <div>
+                <Row gutter={16}>
+                    <div className='main-data-container'>
+                        <Col offset={2} span={4}>
+                            <div style={{color: 'green'}}>
+                                Your follows
+                            </div>
+                            <div>
+                                <span className='dashboard-side-menu-item'
+                                      onClick={() => {
+                                          this.props.setContentKey('followedGroups')
+                                      }}
+                                >Groups</span>
+                            </div>
+                            <div>
+                                <span className='dashboard-side-menu-item'
+                                      onClick={() => {
+                                          this.props.setContentKey('followedPeople')
+                                      }}
+                                >People</span>
+                            </div>
+                        </Col>
+                        <Col span={17}>
+                            {content[this.props.contentKey]}
+                        </Col>
+                    </div>
+                </Row>
             </div>
         );
     }

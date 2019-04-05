@@ -4,8 +4,6 @@
 
 import React from 'react'
 import {Row, Col, Card, Popconfirm, Icon, message} from 'antd'
-import {Link} from 'react-router-dom'
-import Header from '../common/Header'
 
 
 const {Meta} = Card;
@@ -23,8 +21,8 @@ export default class AllGroups extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         this._isMounted = true;
+        this.props.setSubHeaderKey('allGroups')
         this.fetchAllStories()
     }
 
@@ -64,7 +62,6 @@ export default class AllGroups extends React.Component {
     render() {
         return (
             <div>
-                <Header {...this.props}/>
                 <Row gutter={16}>
                     {this.state.groups.map((group) =>
                         <div className='main-data-container'>
@@ -73,10 +70,13 @@ export default class AllGroups extends React.Component {
                                     <Card
                                         style={{marginBottom: 20}}
                                         cover={<div className='imageFadeOut'>
-                                            <img onClick={() => this.props.history.push({
-                                                pathname: `/groups/${group.name.toLowerCase()}`,
-                                                state: {groupName: group.name}
-                                            })} src={group.cover} alt="" style={{width: '100%'}}  />
+                                            <img onClick={() => {
+                                                this.props.setSubHeaderKey('singleGroup')
+                                                this.props.history.push({
+                                                    pathname: `/groups/${group.name.toLowerCase()}`,
+                                                    state: {groupName: group.name}
+                                                })
+                                            }} src={group.cover} alt="" style={{width: '100%'}}  />
                                         </div>}
                                         actions={this.props.isAdmin ? [<Popconfirm title="Are you sure delete this group?" onConfirm={() => this.handleArchive(group.id)} okText="Yes" cancelText="No">
                                             <Icon type="delete"/><span style={{marginLeft: 10}}>archive</span>
