@@ -54,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupViewModel> getAllGroupsDTO() {
-        List<Group> all = this.groupRepository.findAll();
+        List<Group> all = this.findAllGroups();
 
         return all.stream()
                 .map(gr -> {
@@ -67,77 +67,61 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Optional<Group> findGroupByName(String name) {
-        Optional<Group> groupOptional = this.groupRepository.findByName(name);
-        if (!groupOptional.isPresent()) {
+    public Group findGroupByName(String name) {
+        Group group = this.groupRepository.findGroupByName(name);
+        if (group == null) {
             throw new ResourceNotFoundException("Group", "name", name);
         }
 
-        return groupOptional;
+        return group;
 
     }
 
     @Override
-    public Optional<Group> findGroupById(Long id) {
-        Optional<Group> groupOptional = this.groupRepository.findById(id);
-        if (!groupOptional.isPresent()) {
+    public Group findGroupById(Long id) {
+        Group group = this.groupRepository.findGroupById(id);
+        if (group == null) {
             throw new ResourceNotFoundException("Group", "id", id);
         }
 
-        return groupOptional;
+        return group;
     }
 
     @Override
     public GroupViewModel getGroupDTOByName(String name) {
-        Optional<Group> groupOptional = this.groupRepository.findByName(name);
+        Group group = this.findGroupByName(name);
 
-        if (!groupOptional.isPresent()) {
-            throw new ResourceNotFoundException("Group", "name", name);
-        }
-
-        GroupViewModel groupViewModel = this.modelMapper.map(groupOptional.get(), GroupViewModel.class);
-        groupViewModel.setStoriesById(groupOptional.get().getStories().stream().map(Story::getId).collect(Collectors.toSet()));
-        groupViewModel.setFollowersByUsername(groupOptional.get().getFollowers().stream().map(User::getUsername).collect(Collectors.toSet()));
+        GroupViewModel groupViewModel = this.modelMapper.map(group, GroupViewModel.class);
+        groupViewModel.setStoriesById(group.getStories().stream().map(Story::getId).collect(Collectors.toSet()));
+        groupViewModel.setFollowersByUsername(group.getFollowers().stream().map(User::getUsername).collect(Collectors.toSet()));
 
         return groupViewModel;
     }
 
     @Override
     public void archiveGroup(Long id) {
-        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+        Group group = this.findGroupById(id);
 
-        if (!optionalGroup.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
+        group.setStatus(GroupStatus.ARCHIVED.getStatusName());
 
-        optionalGroup.get().setStatus(GroupStatus.ARCHIVED.getStatusName());
-
-        this.groupRepository.save(optionalGroup.get());
+        this.groupRepository.save(group);
     }
 
     @Override
     public void closeGroup(Long id) {
-        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+        Group group = this.findGroupById(id);
 
-        if (!optionalGroup.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
+        group.setStatus(GroupStatus.CLOSED.getStatusName());
 
-        optionalGroup.get().setStatus(GroupStatus.CLOSED.getStatusName());
-
-        this.groupRepository.save(optionalGroup.get());
+        this.groupRepository.save(group);
     }
 
     @Override
     public void openGroup(Long id) {
-        Optional<Group> optionalGroup = this.groupRepository.findById(id);
+        Group group = this.findGroupById(id);
 
-        if (!optionalGroup.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
+        group.setStatus(GroupStatus.OPEN.getStatusName());
 
-        optionalGroup.get().setStatus(GroupStatus.OPEN.getStatusName());
-
-        this.groupRepository.save(optionalGroup.get());
+        this.groupRepository.save(group);
     }
 }

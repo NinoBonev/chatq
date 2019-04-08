@@ -2,11 +2,9 @@ import React from 'react'
 import Headroom from 'react-headroom'
 import Logo from '../../../resources/27-1.png'
 import {Affix, Menu, Row, Input, Dropdown} from 'antd'
-import {Link} from 'react-router-dom'
 
 import AboutSubHeader from '../sub_headers/AboutSubHeader'
 import WithTextSubHeader from '../sub_headers/WithTextSubHeader'
-import AllGroupsSubHeader from "../sub_headers/AllGroupsSubHeader";
 import SingleGroupSubHeader from '../sub_headers/SingleGroupSubHeader'
 
 const {Search} = Input
@@ -78,16 +76,20 @@ export default class AnonymousHeadroom extends React.Component {
                             </DemoBox>
                         </span>
                     <span style={{
-                        position: 'absolute',
-                        right: '21%'
+                        position: 'fixed',
+                        right: '21%',
+                        marginTop: 5
                     }}>
                             <DemoBox value={60}>
-                                <a className='header-menu-item' onClick={() => {
+                                <span className='header-menu-item' onClick={() => {
                                     this.props.history.push('/login')
-                                }}>Sign in</a>
+                                }}>Sign in</span>
                             </DemoBox>
                         </span>
                 </Row>
+                {/*{this.props.withHeaderCover && <div>*/}
+                    {/*<img className='header-image-cover' src={this.props.headerCoverSource} alt=""/>*/}
+                {/*</div>}*/}
                 <Affix offsetTop={60}>
                     {content[this.props.subHeaderKey]}
                 </Affix>

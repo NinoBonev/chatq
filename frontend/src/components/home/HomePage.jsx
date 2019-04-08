@@ -1,5 +1,6 @@
 import React from 'react';
 import {Row} from 'antd'
+import CarouselClass from "./Carousel";
 
 class HomePage extends React.Component {
 
@@ -9,11 +10,12 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <Row>
-                <div className='main-data-container'>
-                    <p>Hello</p>
-                </div>
-            </Row>
+            <div>
+                <Row>
+                    <CarouselClass />
+                </Row>
+            </div>
+
         );
     }
 }

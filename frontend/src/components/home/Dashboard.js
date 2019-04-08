@@ -21,33 +21,38 @@ const FollowedPeople = withModal(DashboardFollowedPeople)
 const TabPane = Tabs.TabPane;
 
 export default class Dashboard extends React.Component {
+
+
     constructor(props) {
         super(props);
 
         this.state = this.props.Helper.dashboardInitialState()
     }
 
-
     componentDidMount() {
-        this.props.setSubHeaderKey('dashboard')
-        let user = this.props.Auth.getProfile();
 
-        let {avatar, username} = user;
-        this.setState({
-            avatar,
-            username,
-            storiesFromPeople: [],
-            storiesFromGroups: [],
-            followPeople: [],
-            followGroup: []
-        });
+            this.props.setSubHeaderKey('dashboard')
 
-        this.props.Crud.getUserInfo(username).then((res) =>{
-            this.fetchAllMyStories(res.storiesById);
-            this.fetchAllMyChallenges(res.challengesById);
-            this.fetchAllStoriesFromFollowedUser(res.followingUsersByUsername)
-            this.fetchAllStoriesFromGroupsFollowed(res.followingGroupsByName);
-        })
+            let user = this.props.Auth.getProfile();
+
+            let {avatar, username} = user;
+            this.setState({
+                avatar,
+                username,
+                storiesFromPeople: [],
+                storiesFromGroups: [],
+                followPeople: [],
+                followGroup: []
+            });
+
+            this.props.Crud.getUserInfo(username).then((res) => {
+                this.fetchAllMyStories(res.storiesById);
+                this.fetchAllMyChallenges(res.challengesById);
+                this.fetchAllStoriesFromFollowedUser(res.followingUsersByUsername)
+                this.fetchAllStoriesFromGroupsFollowed(res.followingGroupsByName);
+            })
+
+
     }
 
     fetchAllMyStories(storiesById) {
@@ -70,7 +75,7 @@ export default class Dashboard extends React.Component {
         }
     }
 
-    fetchAllStoriesFromFollowedUser(followingUsersByUsername){
+    fetchAllStoriesFromFollowedUser(followingUsersByUsername) {
         for (let person of followingUsersByUsername) {
             this.props.Crud.getUserInfo(person).then((newRes) => {
                 // this.setState(prevState => ({
@@ -107,7 +112,7 @@ export default class Dashboard extends React.Component {
         }
     }
 
-    fetchAllStoriesFromGroupsFollowed(followingGroupsByName){
+    fetchAllStoriesFromGroupsFollowed(followingGroupsByName) {
         for (let group of followingGroupsByName) {
             this.props.Crud.getGroupById(group).then((newRes) => {
                 // this.setState(prevState => ({
@@ -135,6 +140,10 @@ export default class Dashboard extends React.Component {
                 }
             });
         }
+    }
+
+    componentWillUnmount(){
+        this.props.setContentKey('followedGroups')
     }
 
     render() {
@@ -165,33 +174,11 @@ export default class Dashboard extends React.Component {
         }
 
 
-
         return (
             <div>
-                <Row gutter={16}>
-                    <div className='main-data-container'>
-                        <Col offset={2} span={4}>
-                            <div style={{color: 'green'}}>
-                                Your follows
-                            </div>
-                            <div>
-                                <span className='dashboard-side-menu-item'
-                                      onClick={() => {
-                                          this.props.setContentKey('followedGroups')
-                                      }}
-                                >Groups</span>
-                            </div>
-                            <div>
-                                <span className='dashboard-side-menu-item'
-                                      onClick={() => {
-                                          this.props.setContentKey('followedPeople')
-                                      }}
-                                >People</span>
-                            </div>
-                        </Col>
-                        <Col span={17}>
-                            {content[this.props.contentKey]}
-                        </Col>
+                <Row gutter={32}>
+                    <div className='dashboard-data-container'>
+                        {content[this.props.contentKey]}
                     </div>
                 </Row>
             </div>

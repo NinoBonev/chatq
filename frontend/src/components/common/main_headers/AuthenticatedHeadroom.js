@@ -6,15 +6,17 @@ import {Affix, Col, Row, Input, Avatar, Menu, Dropdown} from 'antd'
 import DashboardSubHeader from '../sub_headers/DashboardSubHeader'
 import AboutSubHeader from '../sub_headers/AboutSubHeader'
 import WithTextSubHeader from '../sub_headers/WithTextSubHeader'
-import AllGroupsSubHeader from "../sub_headers/AllGroupsSubHeader";
 import SingleGroupSubHeader from '../sub_headers/SingleGroupSubHeader'
 
 const {Search} = Input
 const DemoBox = props => <p className={`height-${props.value}`}>{props.children}</p>;
 
 export default class AuthenticatedHeadroom extends React.Component {
+    componentDidMount(){
+        console.log(this.props);
+    }
     render() {
-        const user= this.props.Auth.getProfile();
+        const user = this.props.Auth.getProfile();
 
         const content = {
             home: <WithTextSubHeader showTextContent='welcome' {...this.props}/>,
@@ -42,7 +44,9 @@ export default class AuthenticatedHeadroom extends React.Component {
                             marginLeft: '10%'
                         }}>
                             <DemoBox value={60}>
-                                <img style={{height: 40}} src={Logo} alt=""/>
+                                <img style={{height: 40}} src={Logo} alt="" onClick={() => {
+                                    this.props.history.push('/dashboard')
+                                }}/>
                             </DemoBox>
                         </span>
                     <span style={{
@@ -77,20 +81,34 @@ export default class AuthenticatedHeadroom extends React.Component {
                         </span>
                     <span style={{
                         position: 'absolute',
-                        right: '21%'
+                        right: '21%',
+                        marginTop: 5
+                    }}>
+                            <DemoBox  value={60}>
+                                <span className='header-menu-item'>
+                                <Avatar size={50} src={user.avatar} alt=""/>
+                                </span>
+                            </DemoBox>
+                        </span>
+                    <span style={{
+                        position: 'absolute',
+                        right: '17%',
+                        marginTop: 5
                     }}>
                             <DemoBox value={60}>
-                                <Avatar size={50} src={user.avatar} alt=""/>
-                                 <span className='header-menu-item'
-                                       style={{marginLeft: 10}}
-                                       onClick={() => {
-                                     this.props.Auth.logout()
-                                     this.props.history.push('/logout')
-                                 }} >Log Out
+                                <span className='header-menu-item'
+                                      style={{marginLeft: 10}}
+                                      onClick={() => {
+                                          this.props.Auth.logout()
+                                          this.props.history.push('/logout')
+                                      }}>Log Out
                         </span>
                             </DemoBox>
                         </span>
                 </Row>
+                {/*{this.props.withHeaderCover && <div>*/}
+                    {/*<img className='header-image-cover' src={this.props.headerCoverSource} alt=""/>*/}
+                {/*</div>}*/}
                 <Affix offsetTop={60}>
                     {content[this.props.subHeaderKey]}
                 </Affix>

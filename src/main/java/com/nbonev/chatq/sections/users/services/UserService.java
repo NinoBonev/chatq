@@ -1,14 +1,11 @@
 package com.nbonev.chatq.sections.users.services;
 
-import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.models.view.UserViewModel;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Nino Bonev - 24.3.2019 г., 12:13
@@ -16,19 +13,23 @@ import java.util.Optional;
 
 public interface UserService {
 
-    ResponseEntity<ApiResponse> saveUser(UserRegisterBindingModel userDTO) throws IOException;
+    User saveUser(UserRegisterBindingModel userDTO) throws IOException;
 
-    ResponseEntity<ApiResponse> startFollowingGroup(String username, String group_name);
+    Boolean existsByUsername(String username);
 
-    ResponseEntity<ApiResponse> stopFollowingGroup(String username, String group_name);
+    Boolean existsByEmail(String email);
 
-    ResponseEntity<ApiResponse> startFollowingUser(String myUsername, String followed_username);
-
-    ResponseEntity<ApiResponse> stopFollowingUser(String myUsername, String followed_username);
-
-    Optional<User> findUserByUsername(String username);
+    User findUserByUsername(String username);
 
     UserViewModel getUserViewDTOByUsername(String username);
 
     List<UserViewModel> getAllUsersViewDTOs();
+
+    void startFollowingGroup(String username, String group_name);
+
+    void stopFollowingGroup(String username, String group_name);
+
+    void startFollowingUser(String myUsername, String followed_username);
+
+    void stopFollowingUser(String myUsername, String followed_username);
 }

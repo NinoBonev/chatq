@@ -55,7 +55,19 @@ export default class DashboardMyChallenges extends React.Component {
 
         return (
             <Row gutter={16}>
-                <div>{myChallengesSortedByDateCreate.length > 0 ? <div>{myChallengesSortedByDateCreate.map((chal) =>
+                <div className='main-data-container'>
+                    <Col offset={1} span={2}>
+                        <div align="right" style={{color: 'green'}}>
+                            Menu
+                        </div>
+                        <div style={{
+                            marginTop: 10
+                        }}>
+                            Else
+                        </div>
+                    </Col>
+                    <Col span={20}>
+                    {myChallengesSortedByDateCreate.length > 0 ? <div>{myChallengesSortedByDateCreate.map((chal) =>
                         <Col span={8}>
                             <div className='cardZoomIn'>
                                 <Card
@@ -100,6 +112,7 @@ export default class DashboardMyChallenges extends React.Component {
                     :
 
                     <h1 style={{top: 20}} align="center">Please join some of our challenges</h1>}
+                    </Col>
                     <BasicModal {...this.props}/>
                 </div>
             </Row>

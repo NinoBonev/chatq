@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import {Col, List, Avatar, Skeleton, Tooltip} from 'antd';
+import {Row, Col, List, Avatar, Skeleton, Tooltip} from 'antd';
 import {Link} from 'react-router-dom';
 
 import BasicModal from "../story/BasicModal";
@@ -12,8 +12,28 @@ const DashboardFollowedPeople = (props) => {
     let storiesFromPeopleSortedByDateCreate = props.storiesFromPeople.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     return (
-        <div>
-            <Col span={20} offset={2}>
+        <Row gutter={16}>
+        <div className='main-data-container'>
+            <Col offset={1} span={2}>
+                <div align="right" style={{color: 'green'}}>
+                    Menu
+                </div>
+                <div align="right">
+                                <span className='dashboard-side-menu-item'
+                                      onClick={() => {
+                                          props.setContentKey('followedGroups')
+                                      }}
+                                >Groups</span>
+                </div>
+                <div align="right">
+                                <span className='dashboard-side-menu-item'
+                                      onClick={() => {
+                                          props.setContentKey('followedPeople')
+                                      }}
+                                >People</span>
+                </div>
+            </Col>
+            <Col span={20}>
                 <List
                     itemLayout="vertical"
                     size="large"
@@ -61,6 +81,7 @@ const DashboardFollowedPeople = (props) => {
             </Col>
             <BasicModal {...props}/>
         </div>
+        </Row>
     )
 }
 

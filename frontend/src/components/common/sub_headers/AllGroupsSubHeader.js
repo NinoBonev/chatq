@@ -7,10 +7,11 @@ function handleChange(value) {
     console.log(`selected ${value}`);
 }
 
-const AllGroupsSubHeader = (props) => {
-    return (
-        <div className='sub-header'>
-            <Row style={{height: 70}} type="flex" align="middle">
+class AllGroupsSubHeader extends React.Component{
+    render(){
+        return (
+            <div className='sub-header'>
+                <Row style={{height: 70}} type="flex" align="middle">
                         <span style={{
                             marginLeft: '40%'
                         }}>
@@ -18,16 +19,16 @@ const AllGroupsSubHeader = (props) => {
                                 <span className='sub-header-name'>Groups</span>
                             </DemoBox>
                         </span>
-                <span style={{
-                    marginLeft: '2%'
-                }}>
+                    <span style={{
+                        marginLeft: '2%'
+                    }}>
                             <DemoBox value={60}>
                                 <span className='sub-header-link'>Sort by:</span>
                             </DemoBox>
                         </span>
-                <span style={{
-                    marginLeft: '1%'
-                }}>
+                    <span style={{
+                        marginLeft: '1%'
+                    }}>
                             <DemoBox value={60}>
                                 <Select defaultValue='popular' className='groupSelect' id='groupsSelect'
                                         style={{ width: 120, color: 'paleturquoise' }}
@@ -38,9 +39,11 @@ const AllGroupsSubHeader = (props) => {
                                 </Select>
                             </DemoBox>
                         </span>
-            </Row>
-        </div>
-    )
+                </Row>
+            </div>
+        )
+    }
+
 }
 
 export default AllGroupsSubHeader

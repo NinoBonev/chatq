@@ -49,7 +49,10 @@ class CreateStoryForm extends React.Component {
                 let challenge = challenges.find(x => x.name === this.props.location.state);
 
                 this.setState(({fields}) => ({
-                    fields: {...fields, challenge: {status: challenge.status, label: challenge.name, value: challenge.id}},
+                    fields: {
+                        ...fields,
+                        challenge: {status: challenge.status, label: challenge.name, value: challenge.id}
+                    },
                 }));
             }).catch((err) => {
                 message.error('Error');
@@ -320,27 +323,24 @@ class CreateStoryForm extends React.Component {
         }];
 
         return (
-            <Row type="flex" justify="space-around">
-                <div align="center" style={{marginBottom: 30, fontSize: 40}}>
-                    {this.props.match.path === '/groups/edit_story/:id' ? 'Create your Chatq story' : 'Add your story to our challenge'}
-                </div>
-                <Col span={18}>
-                    <div className='login-form'>
-                        <Col span={12} offset={6} style={{marginTop: 30}}>
-                            {this.props.match.path === '/groups/edit_story/:id' ? null :
-                                <Steps current={currentStep}>
-                                    {steps.map(item => <Step key={item.title} title={item.title}/>)}
-                                </Steps>}
-                        </Col>
-                        <Col span={12} offset={6} style={{marginTop: 20}}>
-                            {steps[this.state.currentStep].header}
-                        </Col>
-                        <div>
-                            {steps[this.state.currentStep].content}
-                        </div>
-                    </div>
-                </Col>
-            </Row>
+            <div>
+                <Row type="flex" justify="space-around">
+                    <div className='main-data-container'>
+                                <Col span={10} offset={7}>
+                                    {this.props.match.path === '/groups/edit_story/:id' ? null :
+                                        <Steps current={currentStep}>
+                                            {steps.map(item => <Step key={item.title} title={item.title}/>)}
+                                        </Steps>}
+                                </Col>
+                                <Col span={10} offset={7} style={{marginTop: 20}}>
+                                    {steps[this.state.currentStep].header}
+                                </Col>
+                                <div>
+                                    {steps[this.state.currentStep].content}
+                                </div>
+                            </div>
+                </Row>
+            </div>
         );
     }
 }

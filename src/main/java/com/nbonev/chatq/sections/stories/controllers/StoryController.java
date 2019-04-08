@@ -13,6 +13,7 @@ import com.nbonev.chatq.payload.StoryCreatePayload;
 import com.nbonev.chatq.sections.stories.models.binding.StoryEditBindingModel;
 import com.nbonev.chatq.sections.stories.models.view.StoryViewModel;
 import com.nbonev.chatq.sections.stories.services.StoryService;
+import com.nbonev.chatq.sections.stories.utils.Constants;
 import com.nbonev.chatq.sections.storylines.models.binding.StoryLineCreateBindingModel;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.services.UserService;
@@ -62,11 +63,8 @@ public class StoryController {
 
         StoryCreateBindingModel storyCreateBindingModel = new StoryCreateBindingModel();
 
-        Optional<User> optionalUser = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
+        User user = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
 
-        if (!optionalUser.isPresent()){
-            throw new ResourceNotFoundException("Group", "username", storyCreatePayload.getUserByUsername());
-        }
 
         //TODO ---> Send crop as parameter to upload
         storyCreateBindingModel.setName(storyCreatePayload.getName());
@@ -77,26 +75,18 @@ public class StoryController {
         storyCreateBindingModel.setX(storyCreatePayload.getX());
         storyCreateBindingModel.setY(storyCreatePayload.getY());
 
-        storyCreateBindingModel.setUser(optionalUser.get());
+        storyCreateBindingModel.setUser(user);
 
         if (storyCreatePayload.getGroup() != null){
-            Optional<Group> groupOptional = this.groupService.findGroupById(storyCreatePayload.getGroup());
+            Group group = this.groupService.findGroupById(storyCreatePayload.getGroup());
 
-            if (!groupOptional.isPresent()) {
-                throw new ResourceNotFoundException("Group", "id", storyCreatePayload.getGroup());
-            }
-
-            storyCreateBindingModel.setGroup(groupOptional.get());
+            storyCreateBindingModel.setGroup(group);
         }
 
         if (storyCreatePayload.getChallenge() != null){
-            Optional<Challenge> challengeOptional = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
+            Challenge challenge = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
 
-            if (!challengeOptional.isPresent()) {
-                throw new ResourceNotFoundException("Challenge", "id", storyCreatePayload.getChallenge());
-            }
-
-            storyCreateBindingModel.setChallenge(challengeOptional.get());
+            storyCreateBindingModel.setChallenge(challenge);
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -107,7 +97,9 @@ public class StoryController {
                                 .defaultInstance()
                                 .constructCollectionType(LinkedHashSet.class, StoryLineCreateBindingModel.class));
 
-        return this.storyService.create(storyCreateBindingModel, storyLines);
+        this.storyService.create(storyCreateBindingModel, storyLines);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, Constants.STORY_CREATED_SUCEESS));
 
     }
 

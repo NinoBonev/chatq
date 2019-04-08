@@ -1,3 +1,4 @@
+
 .headroom {
     top: 0;
     left: 0;
@@ -28,7 +29,8 @@
 
 .header-menu-item {
     font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-    color: gray;
+    color: #595959;
+    display: table-cell;
     vertical-align: middle;
     height: 60px;
     transition: transform .2s;
@@ -38,6 +40,12 @@
     position: relative;
     color: black;
     cursor: pointer
+}
+
+.header-image-cover{
+    height: 210px;
+    width: 100%;
+    object-fit: cover;
 }
 
 .sub-header {
@@ -51,7 +59,16 @@
     font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
     color: chocolate;
     height: 70px;
+    display: table-cell;
+    vertical-align: middle;
     transition: transform .2s;
+}
+
+.sub-header-divider {
+    color: white;
+    height: 70px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .sub-header-link:hover {
@@ -78,6 +95,13 @@
     cursor: pointer;
 }
 
+.all-groups-list-item:hover {
+    margin-left: 5px;
+    background-color: #e8e8e8;
+    opacity: 1.2;
+    cursor: pointer;
+}
+
 .main-container {
     position: relative;
     min-height: 600px;
@@ -86,6 +110,11 @@
 
 .main-data-container {
     margin: 90px 30px 0px;
+}
+
+.dashboard-data-container {
+    transition: all 2s ease-in-out;
+    overflow: hidden;
 }
 
 .one {

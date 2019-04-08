@@ -18,12 +18,12 @@ import java.util.Optional;
  */
 public interface StoryService {
 
-    ResponseEntity<ApiResponse> create(StoryCreateBindingModel storyCreateBindingModel,
+    Story create(StoryCreateBindingModel storyCreateBindingModel,
                                        LinkedHashSet<StoryLineCreateBindingModel> storyLineCreateBindingModels) throws IOException;
 
-    Optional<Story> findStoryById(Long id);
+    Story findStoryById(Long id);
 
-    Story editStory(Long id, StoryEditBindingModel storyEditBindingModel) throws IOException;
+    void editStory(Long id, StoryEditBindingModel storyEditBindingModel) throws IOException;
 
     void deleteStory(Long id);
 

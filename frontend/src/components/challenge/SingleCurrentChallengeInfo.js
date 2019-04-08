@@ -33,7 +33,7 @@ class SingleCurrentChallengeInfo extends Component {
     }
 
     setKey(key) {
-        this.setState({subHeaderKey: key});
+        this.setState({activeKey: key});
     }
 
     render() {

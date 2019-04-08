@@ -21,9 +21,9 @@ public interface GroupService {
 
     List<GroupViewModel> getAllGroupsDTO();
 
-    Optional<Group> findGroupByName(String name);
+    Group findGroupByName(String name);
 
-    Optional<Group> findGroupById(Long id);
+    Group findGroupById(Long id);
 
     GroupViewModel getGroupDTOByName(String name);
 

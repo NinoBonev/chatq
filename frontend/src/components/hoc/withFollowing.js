@@ -16,7 +16,7 @@ function withFollowing(WrappedComponent) {
         componentDidMount() {
             this._isMounted = true;
 
-            this.props.Crud.getGroupByName(this.props.match.params.name).then((res) => {
+            this.props.Crud.getGroupByName(this.props.subHeaderLocation.params.name).then((res) => {
                 if (this._isMounted) {
                     if (this.props.isAuth) {
                         let following = false;

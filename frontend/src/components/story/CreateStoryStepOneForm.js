@@ -119,7 +119,7 @@ const WrappedNewStepOneForm = Form.create({
         <div>
             <Form onSubmit={next}>
                 <Row justify="center" align="bottom">
-                    <Col span={14} offset={5} style={{marginTop: 20}}>
+                    <Col span={10} offset={7} style={{marginTop: 20}}>
                         <Col>
                             <div align="center" style={{fontStyle: 'italic', fontSize: 16}}>This is the first step of the creation of your new story.
                             Please choose the name, the cover photo and provide some short info about the storyline of your story.

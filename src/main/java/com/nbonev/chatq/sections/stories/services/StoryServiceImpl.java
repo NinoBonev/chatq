@@ -51,7 +51,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> create(StoryCreateBindingModel storyCreateBindingModel,
+    public Story create(StoryCreateBindingModel storyCreateBindingModel,
                                               LinkedHashSet<StoryLineCreateBindingModel> storyLineCreateBindingModels) throws IOException {
         System.out.println(storyCreateBindingModel.toString());
         storyCreateBindingModel.uploadAndSetCover();
@@ -59,37 +59,26 @@ public class StoryServiceImpl implements StoryService {
         Story story = modelMapper.map(storyCreateBindingModel, Story.class);
         this.storyRepository.save(story);
 
-        Optional<User> userOptional = this.userRepository.findByUsername(storyCreateBindingModel.getUser().getUsername());
-        if (!userOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", storyCreateBindingModel.getUser().getUsername());
-        }
+        User user = this.userRepository.findByUsername(storyCreateBindingModel.getUser().getUsername());
 
         if (storyCreateBindingModel.getGroup() != null) {
-            Optional<Group> groupOptional = this.groupRepository.findByName(storyCreateBindingModel.getGroup().getName());
+            Group group = this.groupRepository.findByName(storyCreateBindingModel.getGroup().getName());
 
-            if (!groupOptional.isPresent()) {
-                throw new ResourceNotFoundException("Group", "name", storyCreateBindingModel.getGroup().getName());
-            }
+            user.addStory(story);
+            this.userRepository.save(user);
 
-            userOptional.get().addStory(story);
-            this.userRepository.save(userOptional.get());
-
-            groupOptional.get().addStory(story);
-            this.groupRepository.save(groupOptional.get());
+            group.addStory(story);
+            this.groupRepository.save(group);
         }
 
         if (storyCreateBindingModel.getChallenge() != null) {
-            Optional<Challenge> challengeOptional = this.challengeRepository.findById(storyCreateBindingModel.getChallenge().getId());
+            Challenge challenge = this.challengeRepository.findChallengeById(storyCreateBindingModel.getChallenge().getId());
 
-            if (!challengeOptional.isPresent()) {
-                throw new ResourceNotFoundException("Group", "name", storyCreateBindingModel.getGroup().getName());
-            }
+            user.addStory(story);
+            this.userRepository.save(user);
 
-            userOptional.get().addStory(story);
-            this.userRepository.save(userOptional.get());
-
-            challengeOptional.get().addStory(story);
-            this.challengeRepository.save(challengeOptional.get());
+            challenge.addStory(story);
+            this.challengeRepository.save(challenge);
         }
 
 
@@ -102,51 +91,41 @@ public class StoryServiceImpl implements StoryService {
             storyLines.add(storyLine);
         }
 
-        Optional<Story> optionalStory = this.storyRepository.findByName(storyCreateBindingModel.getName());
+        Story updatedStory = this.storyRepository.findByName(storyCreateBindingModel.getName());
 
-
-        if (!optionalStory.isPresent()) {
-            throw new ResourceNotFoundException("Story", "name", storyCreateBindingModel.getName());
-        }
-
-        optionalStory.get().setStoryLine(storyLines);
-        this.storyRepository.save(optionalStory.get());
-
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.STORY_CREATED_SUCEESS));
+        updatedStory.setStoryLine(storyLines);
+        return this.storyRepository.save(updatedStory);
     }
 
     @Override
-    public Optional<Story> findStoryById(Long id) {
-        Optional<Story> storyOptional = this.storyRepository.findById(id);
-        if (!storyOptional.isPresent()) {
+    public Story findStoryById(Long id) {
+        Story story = this.storyRepository.findStoryById(id);
+        if (story == null) {
             throw new ResourceNotFoundException("Group", "id", id);
         }
 
-        return storyOptional;
+        return story;
     }
 
     @Override
-    public Story editStory(Long id, StoryEditBindingModel storyEditBindingModel) throws IOException {
-        Optional<Story> storyOptional = this.findStoryById(id);
-        if (!storyOptional.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
+    public void editStory(Long id, StoryEditBindingModel storyEditBindingModel) throws IOException {
+        Story story = this.findStoryById(id);
 
         if (storyEditBindingModel.getName() != null){
-            storyOptional.get().setName(storyEditBindingModel.getName());
+            story.setName(storyEditBindingModel.getName());
         }
 
         if (storyEditBindingModel.getCover() != null){
             storyEditBindingModel.uploadAndSetCover(storyEditBindingModel.getCover());
 
-            storyOptional.get().setCover(storyEditBindingModel.getCover());
+            story.setCover(storyEditBindingModel.getCover());
         }
 
         if (storyEditBindingModel.getInfo() != null){
-            storyOptional.get().setInfo(storyEditBindingModel.getInfo());
+            story.setInfo(storyEditBindingModel.getInfo());
         }
 
-        return this.storyRepository.save(storyOptional.get());
+        this.storyRepository.save(story);
     }
 
     @Async
@@ -157,23 +136,20 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public StoryViewModel getStoryViewDTOById(Long id) {
-        Optional<Story> storyOptional = this.storyRepository.findById(id);
+        Story story = this.findStoryById(id);
 
-        if (!storyOptional.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
-        StoryViewModel storyViewModel = this.modelMapper.map(storyOptional.get(), StoryViewModel.class);
-        storyViewModel.setUsername(storyOptional.get().getUser().getUsername());
-        storyViewModel.setUserId(storyOptional.get().getUser().getId());
+        StoryViewModel storyViewModel = this.modelMapper.map(story, StoryViewModel.class);
+        storyViewModel.setUsername(story.getUser().getUsername());
+        storyViewModel.setUserId(story.getUser().getId());
 
-        if (storyOptional.get().getGroup() != null) {
-            storyViewModel.setGroup_name(storyOptional.get().getGroup().getName());
-            storyViewModel.setGroupId(storyOptional.get().getGroup().getId());
+        if (story.getGroup() != null) {
+            storyViewModel.setGroup_name(story.getGroup().getName());
+            storyViewModel.setGroupId(story.getGroup().getId());
         }
 
-        if (storyOptional.get().getChallenge() != null) {
-            storyViewModel.setChallenge_name(storyOptional.get().getChallenge().getName());
-            storyViewModel.setChallengeId(storyOptional.get().getChallenge().getId());
+        if (story.getChallenge() != null) {
+            storyViewModel.setChallenge_name(story.getChallenge().getName());
+            storyViewModel.setChallengeId(story.getChallenge().getId());
         }
 
         return storyViewModel;

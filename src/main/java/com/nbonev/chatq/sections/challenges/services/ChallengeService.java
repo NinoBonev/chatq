@@ -23,7 +23,7 @@ public interface ChallengeService {
 
     List<ChallengeViewModel> getAllChallengesDTO();
 
-    Optional<Challenge> findChallengeById(Long id);
+    Challenge findChallengeById(Long id);
 
     ChallengeViewModel getChallengeDTOById(Long id);
 

@@ -11,7 +11,7 @@ function withModal(WrappedComponent) {
             this.state = {
                 visible: false,
                 storyName: '',
-                storyId: ''
+                storyId: '',
             };
         }
 

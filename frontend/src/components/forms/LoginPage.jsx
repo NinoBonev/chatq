@@ -70,7 +70,7 @@ class LoginPage extends React.Component {
                                             <Button style={{
                                                 border: 'none',
                                                 backgroundColor: 'paleturquoise',
-                                                color: 'chocolate'
+                                                color: 'white'
                                             }} icon="login" type="primary" htmlType="submit"
                                                     className="login-form-button">
                                                 Log in

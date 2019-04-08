@@ -1,7 +1,6 @@
 package com.nbonev.chatq.sections.users.services;
 
 import com.nbonev.chatq.exception.ResourceNotFoundException;
-import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.comments.entities.Comment;
 import com.nbonev.chatq.sections.groups.entities.Group;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
@@ -11,10 +10,8 @@ import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.models.view.UserViewModel;
 import com.nbonev.chatq.sections.users.repositories.UserRepository;
-import com.nbonev.chatq.sections.users.utils.Constants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,146 +45,86 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> saveUser(UserRegisterBindingModel userDTO) throws IOException {
-
-        if (this.userRepository.existsByUsername(userDTO.getUsername())) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, Constants.USERNAME_TAKEN));
-        }
-
-        if (this.userRepository.existsByEmail(userDTO.getEmail())) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, Constants.EMAIL_TAKEN));
-        }
-
-        //Uploading user's avatar to Cloudinary
+    public User saveUser(UserRegisterBindingModel userDTO) throws IOException {
         userDTO.uploadAndSetAvatar();
-
         // Creating user's account
         User user = this.modelMapper.map(userDTO, User.class);
 
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setAuthorities(Stream.of(roleRepository.findByRole(RoleEnum.USER.getRoleName())).collect(Collectors.toSet()));
 
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void startFollowingGroup(String username, String group_name) {
+        User user = this.userRepository.findByUsername(username);
+        Group group = this.groupRepository.findByName(group_name);
+
+        user.startFollowingGroup(group);
+
         this.userRepository.save(user);
-
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.USER_CREATED_SUCCESS));
+        this.groupRepository.save(group);
     }
 
     @Override
-    public ResponseEntity<ApiResponse> startFollowingGroup(String username, String group_name) {
-        Optional<User> userOptional = this.userRepository.findByUsername(username);
-        Optional<Group> groupOption = this.groupRepository.findByName(group_name);
+    public void stopFollowingGroup(String username, String group_name) {
+        User user = this.userRepository.findByUsername(username);
+        Group group = this.groupRepository.findByName(group_name);
 
-        if (!userOptional.isPresent()) {
+        user.stopFollowingGroup(group);
+
+        this.userRepository.save(user);
+        this.groupRepository.save(group);
+    }
+
+    @Override
+    public void startFollowingUser(String myUsername, String followed_username) {
+        User myUserOptional = this.userRepository.findByUsername(myUsername);
+        User followedUserOptional = this.userRepository.findByUsername(followed_username);
+
+        myUserOptional.startFollowingUser(followedUserOptional);
+
+        this.userRepository.save(myUserOptional);
+        this.userRepository.save(followedUserOptional);
+    }
+
+    @Override
+    public void stopFollowingUser(String myUsername, String followed_username) {
+        User myUserOptional = this.userRepository.findByUsername(myUsername);
+        User followedUserOptional = this.userRepository.findByUsername(followed_username);
+
+        myUserOptional.stopFollowingUser(followedUserOptional);
+
+        this.userRepository.save(myUserOptional);
+        this.userRepository.save(followedUserOptional);
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        User user = this.userRepository.findByUsername(username);
+
+        if (user == null) {
             throw new ResourceNotFoundException("User", "username", username);
         }
 
-        if (!groupOption.isPresent()) {
-            throw new ResourceNotFoundException("Group", "name", group_name);
-        }
-
-        userOptional.get().startFollowingGroup(groupOption.get());
-
-        this.userRepository.save(userOptional.get());
-        this.groupRepository.save(groupOption.get());
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true,
-                        String.format(Constants.GROUP_START_FOLLOW_SUCCESS,
-                                groupOption.get().getName())));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> stopFollowingGroup(String username, String group_name) {
-        Optional<User> userOptional = this.userRepository.findByUsername(username);
-        Optional<Group> groupOption = this.groupRepository.findByName(group_name);
-
-        if (!userOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", username);
-        }
-
-        if (!groupOption.isPresent()) {
-            throw new ResourceNotFoundException("Group", "name", group_name);
-        }
-
-        userOptional.get().stopFollowingGroup(groupOption.get());
-
-        this.userRepository.save(userOptional.get());
-        this.groupRepository.save(groupOption.get());
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true,
-                        String.format(Constants.GROUP_STOP_FOLLOW_SUCCESS,
-                                groupOption.get().getName())));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> startFollowingUser(String myUsername, String followed_username) {
-        Optional<User> myUserOptional = this.userRepository.findByUsername(myUsername);
-        Optional<User> followedUserOptional = this.userRepository.findByUsername(followed_username);
-
-        if (!myUserOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", myUsername);
-        }
-
-        if (!followedUserOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", followed_username);
-        }
-
-        myUserOptional.get().startFollowingUser(followedUserOptional.get());
-
-        this.userRepository.save(myUserOptional.get());
-        this.userRepository.save(followedUserOptional.get());
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true,
-                        String.format(Constants.USER_START_FOLLOW_SUCCESS,
-                                followedUserOptional.get().getUsername())));
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> stopFollowingUser(String myUsername, String followed_username) {
-        Optional<User> myUserOptional = this.userRepository.findByUsername(myUsername);
-        Optional<User> followedUserOptional = this.userRepository.findByUsername(followed_username);
-
-        if (!myUserOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", myUsername);
-        }
-
-        if (!followedUserOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "username", followed_username);
-        }
-
-        myUserOptional.get().stopFollowingUser(followedUserOptional.get());
-
-        this.userRepository.save(myUserOptional.get());
-        this.userRepository.save(followedUserOptional.get());
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse(true,
-                        String.format(Constants.USER_STOP_FOLLOW_SUCCESS,
-                                followedUserOptional.get().getUsername())));
-    }
-
-    @Override
-    public Optional<User> findUserByUsername(String username) {
-        Optional<User> optionalUser = this.userRepository.findByUsername(username);
-
-        if (!optionalUser.isPresent()) {
-            throw new ResourceNotFoundException("Group", "username", username);
-        }
-
-        return optionalUser;
+        return user;
     }
 
     @Override
     public UserViewModel getUserViewDTOByUsername(String username) {
-        Optional<User> optionalUser = this.userRepository.findByUsername(username);
+        User user = this.userRepository.findByUsername(username);
 
-        if (!optionalUser.isPresent()) {
-            throw new ResourceNotFoundException("Group", "username", username);
-        }
-
-        User user = optionalUser.get();
         UserViewModel userViewModel = this.modelMapper.map(user, UserViewModel.class);
 
         Set<Long> challengesById = new HashSet<>();

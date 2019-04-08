@@ -28,9 +28,9 @@ class AllGroupStories extends React.Component {
         return (
             <div>
                 {this.props.data.map((story) => <div>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Card
-                            style={{marginBottom: 20, marginTop: 20}}
+                            style={{marginBottom: 20}}
                             cover={<div className='imageFadeOut'><img
                                 onClick={() => this.props.showModal(story.id, story.name)}
                                 src={story.cover} alt="" style={{width: '100%'}}/></div>}

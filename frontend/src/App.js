@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layout, Breadcrumb} from 'antd';
+import {Layout} from 'antd';
 import {withRouter, Link} from "react-router-dom";
 import AppRouter from './AppRouter'
 import 'antd/dist/antd.css'
@@ -19,7 +19,17 @@ const Helper = new HelperService();
 class App extends React.Component {
     state = {
         subHeaderKey: 'welcome',
-        contentKey: 'followedGroups'
+        contentKey: 'followedGroups',
+        withHeaderCover: false,
+        headerCoverSource: '',
+        subHeaderLocation: '/'
+    }
+
+
+    setSubHeaderLocation = (newProps) => {
+        this.setState({
+            subHeaderLocation: newProps
+        })
     }
 
     setSubHeaderKey = (key) => {
@@ -34,15 +44,36 @@ class App extends React.Component {
         })
     }
 
+    setHeaderCoverVisibility = (boolean) => {
+        this.setState({
+            withHeaderCover: boolean
+        })
+    }
+
+    setHeaderCoverSource = (image) => {
+        this.setState({
+            headerCoverSource: image
+        })
+    }
+
     render() {
         return (
             <Layout>
                 <Content>
-                    <Header {...this.props}
-                            Auth={Auth}
-                            subHeaderKey={this.state.subHeaderKey}
-                            setSubHeaderKey={this.setSubHeaderKey.bind(this)}
-                            setContentKey={this.setContentKey.bind(this)}
+                    <Header
+                        {...this.props}
+                        subHeaderLocation={this.state.subHeaderLocation}
+                        setSubHeaderLocation={this.setSubHeaderLocation.bind(this)}
+                        isAuth={Auth.isLoggedIn()}
+                        Crud={Crud}
+                        Auth={Auth}
+                        subHeaderKey={this.state.subHeaderKey}
+                        setSubHeaderKey={this.setSubHeaderKey.bind(this)}
+                        setContentKey={this.setContentKey.bind(this)}
+                        setHeaderCoverVisibility={this.setHeaderCoverVisibility.bind(this)}
+                        withHeaderCover={this.state.withHeaderCover}
+                        setHeaderCoverSource={this.setHeaderCoverSource.bind(this)}
+                        headerCoverSource={this.state.headerCoverSource}
                     />
                     <div className='main-container'>
                         <AppRouter
@@ -51,10 +82,14 @@ class App extends React.Component {
                             Helper={Helper}
                             setContentKey={this.setContentKey.bind(this)}
                             setSubHeaderKey={this.setSubHeaderKey.bind(this)}
+                            setSubHeaderLocation={this.setSubHeaderLocation.bind(this)}
+                            setHeaderCoverVisibility={this.setHeaderCoverVisibility.bind(this)}
+                            setHeaderCoverSource={this.setHeaderCoverSource.bind(this)}
                             {...this.state}
+                            {...this.props}
                         />
                     </div>
-                    <FooterClass />
+                    <FooterClass/>
                 </Content>
             </Layout>
         );

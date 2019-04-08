@@ -62,14 +62,14 @@ public class ChallengeServiceImpl implements ChallengeService {
 
 
     @Override
-    public Optional<Challenge> findChallengeById(Long id) {
-        Optional<Challenge> challengeOptional = this.challengeRepository.findById(id);
+    public Challenge findChallengeById(Long id) {
+        Challenge challenge = this.challengeRepository.findChallengeById(id);
 
-        if (!challengeOptional.isPresent()) {
+        if (challenge == null) {
             throw new ResourceNotFoundException("Group", "id", id);
         }
 
-        return challengeOptional;
+        return challenge;
     }
 
     @Override

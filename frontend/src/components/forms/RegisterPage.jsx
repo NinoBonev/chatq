@@ -79,6 +79,10 @@ class RegisterPage extends React.Component {
         callback();
     };
 
+    componentDidMount(){
+        this.props.setSubHeaderKey('signIn')
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
         const {loading} = this.state
@@ -205,6 +209,11 @@ class RegisterPage extends React.Component {
                                 <Col span={8} offset={8}>
                                     <Form.Item>
                                         <Button
+                                            style={{
+                                                border: 'none',
+                                                backgroundColor: 'paleturquoise',
+                                                color: 'white'
+                                            }}
                                             loading={loading}
                                             icon="right-square"
                                             type="primary"

@@ -19,11 +19,13 @@ const DashboardSubHeader = (props) => {
                 }}>
                             <DemoBox value={60}>
                                 <span  className='sub-header-link' onClick={() => {
-                                    props.history.push('/dashboard')
+                                    props.setContentKey('followedGroups')
                                 }}>My Flow</span>
                             </DemoBox>
                         </span>
-                <Divider type="vertical" />
+                <span>
+                    <Divider  type="vertical" />
+                </span>
                 <span style={{
                     marginLeft: '1%'
                 }}>

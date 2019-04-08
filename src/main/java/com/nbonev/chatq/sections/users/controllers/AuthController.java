@@ -5,6 +5,7 @@ import com.nbonev.chatq.payload.JwtAuthenticationResponse;
 import com.nbonev.chatq.sections.users.models.binding.UserLoginBindingModel;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.services.UserService;
+import com.nbonev.chatq.sections.users.utils.Constants;
 import com.nbonev.chatq.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,17 @@ public class AuthController {
     @PreAuthorize("!isAuthenticated()")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterBindingModel userRegisterBindingModel) throws IOException {
 
-        return this.userService.saveUser(userRegisterBindingModel);
+        if (this.userService.existsByUsername(userRegisterBindingModel.getUsername())){
+            return ResponseEntity.badRequest().body(new ApiResponse(false, Constants.USERNAME_TAKEN));
+        }
+
+        if (this.userService.existsByEmail(userRegisterBindingModel.getEmail())){
+            return ResponseEntity.badRequest().body(new ApiResponse(false, Constants.EMAIL_TAKEN));
+        }
+
+        this.userService.saveUser(userRegisterBindingModel);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, Constants.USER_CREATED_SUCCESS));
 
     }
 }

@@ -85,9 +85,10 @@ export default class AllUserStories extends React.Component {
         });
     }
 
-    showModal = (id) => {
+    showModal = (id, name) => {
         this.setState({
-            id,
+            storyName: name,
+            storyId: id,
             visible: true,
 
         });
@@ -96,14 +97,16 @@ export default class AllUserStories extends React.Component {
     handleOk = (e) => {
         this.setState({
             visible: false,
-            id: ''
+            storyId: '',
+            storyName: ''
         });
     };
 
     handleCancel = (e) => {
         this.setState({
             visible: false,
-            id: ''
+            storyId: '',
+            storyName: ''
         });
     };
 
@@ -281,7 +284,7 @@ export default class AllUserStories extends React.Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
-                    <StoryPage Crud={this.props.Crud} id={this.state.id}/>
+                    <StoryPage Crud={this.props.Crud} storyId={this.state.storyId} storyName={this.state.storyName}/>
                 </Modal>
             </div>
 

@@ -29,8 +29,8 @@ export default class CarouselClass extends React.Component {
 
         };
         return (
-            <Row>
-                <div>
+
+                <div style={{marginTop: 60}}>
                     <Carousel {...settings}>
                         <div className='one'>
                             {front}
@@ -43,7 +43,7 @@ export default class CarouselClass extends React.Component {
                         </div>
                     </Carousel>
                 </div>
-            </Row>
+
         )
     }
 }

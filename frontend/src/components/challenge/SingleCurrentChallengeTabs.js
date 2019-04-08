@@ -44,7 +44,7 @@ class SingleCurrentChallengeTabs extends React.Component{
     }
 
     setKey(key) {
-        this.setState({subHeaderKey: key});
+        this.setState({activeKey: key});
     }
 
     render(){
@@ -52,7 +52,7 @@ class SingleCurrentChallengeTabs extends React.Component{
 
         return(
             <div className='default-panel'>
-            <Tabs style={{marginLeft: 25}} onChange={this.setKey.bind(this)} activeKey={this.state.subHeaderKey}>
+            <Tabs style={{marginLeft: 25}} onChange={this.setKey.bind(this)} activeKey={this.state.activeKey}>
                 <TabPane tab="Challenge Info" key="1">
                     <SingleCurrentChallengeInfo {...this.props}/>
                 </TabPane>

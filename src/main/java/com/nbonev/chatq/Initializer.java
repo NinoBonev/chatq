@@ -152,11 +152,11 @@ public class Initializer implements CommandLineRunner {
                 this.groupRepository.save(gr);
             });
 
-            Optional<User> adminUser = userRepository.findByUsername("admin");
-            adminUser.ifPresent(us -> {
-                us.setStories(Collections.singleton(story2));
-                this.userRepository.save(us);
-            });
+            User adminUser = userRepository.findByUsername("admin");
+
+            adminUser.setStories(Collections.singleton(story2));
+            this.userRepository.save(adminUser);
+
 
             Story story3 = new Story(
                     "Story in Culture Group sample.",
@@ -177,15 +177,15 @@ public class Initializer implements CommandLineRunner {
                 this.groupRepository.save(gr);
             });
 
-            Optional<User> ninobonev = userRepository.findByUsername("ninobonev");
-            ninobonev.ifPresent(us -> {
-                Set<Story> stories = new LinkedHashSet<>();
-                stories.add(story1);
-                stories.add(story3);
+            User ninobonev = userRepository.findByUsername("ninobonev");
 
-                us.setStories(stories);
-                this.userRepository.save(us);
-            });
+            Set<Story> stories = new LinkedHashSet<>();
+            stories.add(story1);
+            stories.add(story3);
+
+            ninobonev.setStories(stories);
+            this.userRepository.save(ninobonev);
+
 
 
             StoryLine storyLine11 = new StoryLine("It is a long established fact that a reader will be distracted by the readable content of" +
@@ -412,17 +412,17 @@ public class Initializer implements CommandLineRunner {
                 this.storyRepository.save(story);
             });
 
-            Optional<User> nino = this.userRepository.findByUsername("ninobonev");
-            nino.ifPresent(userNino -> {
-                userNino.setComments(commentsFromUser);
-                this.userRepository.save(userNino);
-            });
+            User nino = this.userRepository.findByUsername("ninobonev");
 
-            Optional<User> vesy = this.userRepository.findByUsername("admin");
-            vesy.ifPresent(userVesy -> {
-                userVesy.setComments(commentsFromAdmin);
-                this.userRepository.save(userVesy);
-            });
+            nino.setComments(commentsFromUser);
+            this.userRepository.save(nino);
+
+
+            User vesy = this.userRepository.findByUsername("admin");
+
+            vesy.setComments(commentsFromAdmin);
+            this.userRepository.save(vesy);
+
 
         }
 

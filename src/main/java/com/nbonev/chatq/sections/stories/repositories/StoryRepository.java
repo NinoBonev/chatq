@@ -13,5 +13,7 @@ import java.util.Optional;
 @Repository
 public interface StoryRepository extends JpaRepository<Story, Long> {
 
-    Optional<Story> findByName(String name);
+    Story findByName(String name);
+
+    Story findStoryById(Long id);
 }

@@ -27,7 +27,7 @@ export default class AllChallengesPage extends React.Component {
     }
 
     setKey(key) {
-        this.setState({subHeaderKey: key});
+        this.setState({activeKey: key});
     }
 
     componentDidMount() {
@@ -61,7 +61,7 @@ export default class AllChallengesPage extends React.Component {
             <div>
                 <Row>
                     <div className='main-data-container'>
-                        <Tabs style={{marginLeft: 25}} onChange={this.setKey} activeKey={this.state.subHeaderKey}>
+                        <Tabs style={{marginLeft: 25}} onChange={this.setKey} activeKey={this.state.activeKey}>
                             <TabPane tab="Join a challenge " key="1">
                                 <AllCurrentChallengesTab {...this.props} challenges={activeChallengesSortedByDateCreate}/>
                             </TabPane>

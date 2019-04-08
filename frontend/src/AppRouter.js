@@ -30,7 +30,12 @@ import AdminAllGroupsPane from "./components/admin/AdminAllGroupsPane";
 
 
 const AppRouter = (props) => {
-    const {Crud, Auth, Helper, setSubHeaderKey, subHeaderKey, setContentKey, contentKey} = props;
+    const {Crud, Auth, Helper,
+        setSubHeaderKey, subHeaderKey,
+        setContentKey, contentKey,
+        setHeaderCoverVisibility, withHeaderCover,
+        subHeaderLocation, setSubHeaderLocation,
+        setHeaderCoverSource, headerCoverSource} = props;
 
     const isAuth = Auth.isLoggedIn();
     const isAdmin = Auth.isAdmin();
@@ -190,6 +195,13 @@ const AppRouter = (props) => {
 
             <Route exact path="/groups/:name" render={(props) =>
                 <SingleGroup
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
+                    setSubHeaderKey={setSubHeaderKey}
+                    subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
                     Auth={Auth}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
@@ -201,6 +213,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups' render={(props) =>
                 <AllGroups
+                    setHeaderCoverSource={setHeaderCoverSource}
                     setSubHeaderKey={setSubHeaderKey}
                     subHeaderKey={subHeaderKey}
                     isAuth={isAuth}
