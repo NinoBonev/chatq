@@ -65,6 +65,7 @@ class App extends React.Component {
                         subHeaderLocation={this.state.subHeaderLocation}
                         setSubHeaderLocation={this.setSubHeaderLocation.bind(this)}
                         isAuth={Auth.isLoggedIn()}
+                        isAdmin={Auth.isAdmin()}
                         Crud={Crud}
                         Auth={Auth}
                         subHeaderKey={this.state.subHeaderKey}

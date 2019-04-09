@@ -4,6 +4,7 @@ import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.models.binding.GroupCreateBindingModel;
 import com.nbonev.chatq.sections.groups.models.view.GroupViewModel;
 import com.nbonev.chatq.sections.groups.services.GroupService;
+import com.nbonev.chatq.sections.groups.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,7 +53,9 @@ public class GroupController {
     public ResponseEntity<ApiResponse> createGroup(
             @Valid @RequestBody GroupCreateBindingModel groupCreateBindingModel) throws IOException {
 
-        return this.groupService.createGroup(groupCreateBindingModel);
+        this.groupService.createGroup(groupCreateBindingModel);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, Constants.GROUP_CREATED_SUCCESS));
     }
 
     @PostMapping(path = "/admin/groups/archive/{id}")

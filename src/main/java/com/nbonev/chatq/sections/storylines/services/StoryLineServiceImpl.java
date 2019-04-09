@@ -44,13 +44,9 @@ public class StoryLineServiceImpl implements StoryLineService {
 
     @Override
     public Set<StoryLine> findAllStoryStorylinesById(Long id) {
-        Optional<Story> storyOptional = this.storyRepository.findById(id);
+        Story story = this.storyRepository.findStoryById(id);
 
-        if (!storyOptional.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
-
-        return storyOptional.get().getStoryLine();
+        return story.getStoryLine();
     }
 
     @Override

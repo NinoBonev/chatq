@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -39,16 +42,16 @@ public class UserServiceTest {
     private static final String ENCODED_PASSWORD = "Password_Encoded";
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepository mockedUserRepository;
 
     @Mock
-    private RoleRepository roleRepository;
+    private RoleRepository mockedRoleRepository;
 
     @Mock
-    private GroupRepository groupRepository;
+    private GroupRepository mockedGroupRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder mockedPasswordEncoder;
 
     private UserService userService;
 
@@ -62,8 +65,16 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        userService = new UserServiceImpl(userRepository, roleRepository, groupRepository,
-                passwordEncoder, new ModelMapper());
+        this.mockedUserRepository = Mockito.mock(UserRepository.class);
+        this.mockedRoleRepository = Mockito.mock(RoleRepository.class);
+        this.mockedGroupRepository = Mockito.mock(GroupRepository.class);
+        this.mockedPasswordEncoder = Mockito.mock(PasswordEncoder.class);
+
+        userService = new UserServiceImpl(this.mockedUserRepository,
+                this.mockedRoleRepository,
+                this.mockedGroupRepository,
+                this.mockedPasswordEncoder,
+                new ModelMapper());
 
         this.userRegisterNino = new UserRegisterBindingModel("Nino Bonev", "nbonev",
                 "nbonev@gmail.com", "1234",
@@ -81,28 +92,28 @@ public class UserServiceTest {
                 "vboneva@abv.bg", "1234",
                 "https://res.cloudinary.com/dar4inn2i/image/upload/v1554714081/g7jc3zkn4z0e3lgnf4sd.jpg");
 
-        when(this.userRepository.save(any()))
+        when(this.mockedUserRepository.save(any()))
                 .thenAnswer(a -> a.getArgument(0));
 
         Role userRole = new Role();
         userRole.setRole(RoleEnum.USER.getRoleName());
 
-        when(this.roleRepository.findByRole(RoleEnum.USER.getRoleName()))
+        when(this.mockedRoleRepository.findByRole(RoleEnum.USER.getRoleName()))
                 .thenAnswer(a -> userRole);
 
         Role adminRole = new Role();
         adminRole.setRole(RoleEnum.ADMIN.getRoleName());
 
-        when(this.roleRepository.findByRole(RoleEnum.ADMIN.getRoleName()))
+        when(this.mockedRoleRepository.findByRole(RoleEnum.ADMIN.getRoleName()))
                 .thenAnswer(a -> adminRole);
 
-        when(this.passwordEncoder.encode(any()))
+        when(this.mockedPasswordEncoder.encode(any()))
                 .thenAnswer(a -> ENCODED_PASSWORD);
 
-        when(this.userRepository.findByUsername(nino.getUsername()))
+        when(this.mockedUserRepository.findByUsername(nino.getUsername()))
                 .thenAnswer(a -> nino);
 
-        when(this.userRepository.findByUsername(vesy.getUsername()))
+        when(this.mockedUserRepository.findByUsername(vesy.getUsername()))
                 .thenAnswer(a -> vesy);
 
     }
@@ -150,5 +161,74 @@ public class UserServiceTest {
     public void testLoadUserByUsername_givenNotValidUser_shouldThrowUsernameNotFoundException() {
         //act
         this.userService.findUserByUsername("wrongUsername");
+    }
+
+    @Test
+    public void testGetters_givenValidUser_shouldMapGettersFieldsCorrectly() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertEquals("Username is not mapped correctly", "nbonev" ,loadedUser.getUsername());
+        Assert.assertEquals("Name is not mapped correctly", "Nino Bonev" , loadedUser.getName());
+        Assert.assertEquals("E-mail id not mapped correctly", "nbonev@gmail.com", loadedUser.getEmail());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowers() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowers());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingUsers() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowingUsers());
+    }
+
+    @Test
+    public void testStartFollowingUser_givenValidUsers_shouldAddUserToFollowingUsers() {
+        //act
+        this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
+        Set<User> testSet = new HashSet<>();
+        testSet.add(nino);
+
+        //assert
+        Assert.assertEquals("Followers are not being added correctly",
+               testSet,
+                vesy.getFollowingUsers());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingGropus() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowingGroups());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoComments() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertNull("Followers not null upon creation" ,loadedUser.getComments());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoStories() {
+        //act
+        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+
+        //assert
+        Assert.assertNull("Followers not null upon creation" ,loadedUser.getStories());
     }
 }

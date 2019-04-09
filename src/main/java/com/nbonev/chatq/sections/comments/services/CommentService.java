@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface CommentService {
 
-    ResponseEntity<ApiResponse> create(CommentCreateBindingModel commentCreateBindingModel) throws IOException;
+    Comment create(CommentCreateBindingModel commentCreateBindingModel) throws IOException;
 
     Comment findCommentById(Long id);
 

@@ -28,24 +28,18 @@ public class AccessService {
 
     public boolean isStoryOwner(Authentication authentication, Long id) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        Optional<Story> story = this.storyService.findStoryById(id);
+        Story story = this.storyService.findStoryById(id);
 
-        if (!story.isPresent()) {
-            throw new ResourceNotFoundException("Story", "id", id);
-        }
 
-        return story.get().getUser().getId().equals(userPrincipal.getId());
+        return story.getUser().getId().equals(userPrincipal.getId());
     }
 
     public boolean isStoryOwnerOrAdmin(Authentication authentication, Long id) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        Optional<Story> story = this.storyService.findStoryById(id);
+        Story story = this.storyService.findStoryById(id);
 
-        if (!story.isPresent()) {
-            throw new ResourceNotFoundException("Story", "id", id);
-        }
 
         return authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals("ROLE_ADMIN"))
-        || story.get().getUser().getId().equals(userPrincipal.getId());
+        || story.getUser().getId().equals(userPrincipal.getId());
     }
 }

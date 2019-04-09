@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public interface GroupService {
 
-    ResponseEntity<ApiResponse> createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException;
+    Group createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException;
 
     List<Group> findAllGroups();
 

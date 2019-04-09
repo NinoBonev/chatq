@@ -33,15 +33,13 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
+    public Challenge createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
 
         challengeCreateBindingModel.uploadAndSetCover();
         challengeCreateBindingModel.setStatus(ChallengeStatus.OPEN.getStatusName());
 
         Challenge challenge = this.modelMapper.map(challengeCreateBindingModel, Challenge.class);
-        this.challengeRepository.save(challenge);
-
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.CHALLENGE_CREATE_SUCCESS));
+        return this.challengeRepository.save(challenge);
     }
 
     @Override
@@ -74,15 +72,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ChallengeViewModel getChallengeDTOById(Long id) {
+        Challenge challenge = this.findChallengeById(id);
 
-        Optional<Challenge> challengeOptional = this.challengeRepository.findById(id);
-
-        if (!challengeOptional.isPresent()) {
-            throw new ResourceNotFoundException("Group", "id", id);
-        }
-
-        ChallengeViewModel challengeViewModel = this.modelMapper.map(challengeOptional.get(), ChallengeViewModel.class);
-        challengeViewModel.setStoriesById(challengeOptional.get().getStories().stream().map(Story::getId).collect(Collectors.toSet()));
+        ChallengeViewModel challengeViewModel = this.modelMapper.map(challenge, ChallengeViewModel.class);
+        challengeViewModel.setStoriesById(challenge.getStories().stream().map(Story::getId).collect(Collectors.toSet()));
 
         return challengeViewModel;
 
@@ -90,41 +83,29 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public void archiveChallenge(Long id) {
-        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+        Challenge challenge = this.findChallengeById(id);
 
-        if (!optionalChallenge.isPresent()) {
-            throw new ResourceNotFoundException("Challenge", "id", id);
-        }
+        challenge.setStatus(ChallengeStatus.ARCHIVED.getStatusName());
 
-        optionalChallenge.get().setStatus(ChallengeStatus.ARCHIVED.getStatusName());
-
-        this.challengeRepository.save(optionalChallenge.get());
+        this.challengeRepository.save(challenge);
     }
 
     @Override
     public void closeChallenge(Long id) {
-        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+        Challenge challenge = this.findChallengeById(id);
 
-        if (!optionalChallenge.isPresent()) {
-            throw new ResourceNotFoundException("Challenge", "id", id);
-        }
+        challenge.setStatus(ChallengeStatus.CLOSED.getStatusName());
 
-        optionalChallenge.get().setStatus(ChallengeStatus.CLOSED.getStatusName());
-
-        this.challengeRepository.save(optionalChallenge.get());
+        this.challengeRepository.save(challenge);
     }
 
     @Override
     public void openChallenge(Long id) {
-        Optional<Challenge> optionalChallenge = this.challengeRepository.findById(id);
+        Challenge challenge = this.findChallengeById(id);
 
-        if (!optionalChallenge.isPresent()) {
-            throw new ResourceNotFoundException("Challenge", "id", id);
-        }
+        challenge.setStatus(ChallengeStatus.OPEN.getStatusName());
 
-        optionalChallenge.get().setStatus(ChallengeStatus.OPEN.getStatusName());
-
-        this.challengeRepository.save(optionalChallenge.get());
+        this.challengeRepository.save(challenge);
     }
 
 }

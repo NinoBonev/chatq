@@ -40,58 +40,45 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> create(CommentCreateBindingModel commentCreateBindingModel) throws IOException {
+    public Comment create(CommentCreateBindingModel commentCreateBindingModel) throws IOException {
         Comment comment = modelMapper.map(commentCreateBindingModel, Comment.class);
+        User user = this.userRepository.findUserById(commentCreateBindingModel.getUserId());
+        Story story = this.storyRepository.findStoryById(commentCreateBindingModel.getStoryId());
 
+        comment.setUser(user);
+        comment.setStory(story);
 
-        Optional<User> userOptional = this.userRepository.findById(commentCreateBindingModel.getUserId());
-        if (!userOptional.isPresent()) {
-            throw new ResourceNotFoundException("User", "id", commentCreateBindingModel.getUserId());
-        }
+        Comment created = this.commentRepository.save(comment);
 
-        Optional<Story> storyOptional = this.storyRepository.findById(commentCreateBindingModel.getStoryId());
+        user.addComment(comment);
+        this.userRepository.save(user);
 
-        if (!storyOptional.isPresent()) {
-            throw new ResourceNotFoundException("Story", "id", commentCreateBindingModel.getStoryId());
-        }
+        story.addComment(comment);
+        this.storyRepository.save(story);
 
-        comment.setUser(userOptional.get());
-        comment.setStory(storyOptional.get());
-        this.commentRepository.save(comment);
-
-        userOptional.get().addComment(comment);
-        this.userRepository.save(userOptional.get());
-
-        storyOptional.get().addComment(comment);
-        this.storyRepository.save(storyOptional.get());
-
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.COMMENT_CREATED_SUCEESS));
+        return created;
     }
 
     @Override
     public Comment findCommentById(Long id) {
-        Optional<Comment> optionalComment = this.commentRepository.findById(id);
+        Comment comment = this.commentRepository.findCommentById(id);
 
-        if (!optionalComment.isPresent()) {
+        if (comment == null) {
             throw new ResourceNotFoundException("Comment", "id", id);
         }
 
-        return optionalComment.get();
+        return comment;
 
     }
 
     @Override
     public CommentViewModel getCommentViewDTOById(Long id) {
-        Optional<Comment> optionalComment = this.commentRepository.findById(id);
+        Comment comment = this.findCommentById(id);
 
-        if (!optionalComment.isPresent()) {
-            throw new ResourceNotFoundException("Comment", "id", id);
-        }
-
-        CommentViewModel commentViewModel = this.modelMapper.map(optionalComment.get(), CommentViewModel.class);
-        commentViewModel.setStoryId(optionalComment.get().getStory().getId());
-        commentViewModel.setUserId(optionalComment.get().getUser().getId());
-        commentViewModel.setCreatedBy(optionalComment.get().getUser().getUsername());
+        CommentViewModel commentViewModel = this.modelMapper.map(comment, CommentViewModel.class);
+        commentViewModel.setStoryId(comment.getStory().getId());
+        commentViewModel.setUserId(comment.getUser().getId());
+        commentViewModel.setCreatedBy(comment.getUser().getUsername());
 
         return commentViewModel;
     }

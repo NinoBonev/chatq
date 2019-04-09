@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void startFollowingGroup(String username, String group_name) {
         User user = this.userRepository.findByUsername(username);
-        Group group = this.groupRepository.findByName(group_name);
+        Group group = this.groupRepository.findGroupByName(group_name);
 
         user.startFollowingGroup(group);
 
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void stopFollowingGroup(String username, String group_name) {
         User user = this.userRepository.findByUsername(username);
-        Group group = this.groupRepository.findByName(group_name);
+        Group group = this.groupRepository.findGroupByName(group_name);
 
         user.stopFollowingGroup(group);
 
@@ -116,6 +116,17 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             throw new ResourceNotFoundException("User", "username", username);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        User user = this.userRepository.findUserById(id);
+
+        if (user == null) {
+            throw new ResourceNotFoundException("User", "id", id);
         }
 
         return user;

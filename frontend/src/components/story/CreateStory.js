@@ -156,8 +156,6 @@ class CreateStoryForm extends React.Component {
         if (createdBy) {
             let {fields} = this.state;
 
-            console.log(fields);
-
             let payload = {
                 name: fields.name.value,
                 challenge: fields.challenge.value,

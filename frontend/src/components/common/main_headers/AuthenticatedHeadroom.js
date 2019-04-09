@@ -37,6 +37,23 @@ export default class AuthenticatedHeadroom extends React.Component {
             }}>Challenges</span></Menu.Item>
         </Menu>)
 
+        const adminMenu = (
+            <Menu>
+                <Menu.Item key="1"><span onClick={() => {
+                    this.props.history.push('/admin/challenges/create')
+                }}>Add Challenge</span></Menu.Item>
+                <Menu.Item key="2"><span onClick={() => {
+                    this.props.history.push('/admin/groups/create')
+                }}>Add Group</span></Menu.Item>
+                <Menu.Item key="1"><span onClick={() => {
+                    this.props.history.push('/admin/groups/all')
+                }}>All Groups</span></Menu.Item>
+                <Menu.Item key="2"><span onClick={() => {
+                    this.props.history.push('/admin/users/all')
+                }}>All Users</span></Menu.Item>
+            </Menu>
+        )
+
         return (
             <Headroom className='headroom'>
                 <Row style={{height: 60}} type="flex" align="middle">
@@ -79,6 +96,17 @@ export default class AuthenticatedHeadroom extends React.Component {
 
                             </DemoBox>
                         </span>
+                    {this.props.isAdmin && <span style={{
+                        marginLeft: '2%'
+                    }}>
+                            <DemoBox value={60}>
+                                <Dropdown overlay={adminMenu} trigger={['hover']}>
+                                    <span className='header-menu-item'
+                                          style={{userSelect: 'none'}}>Admin</span>
+                                </Dropdown>
+
+                            </DemoBox>
+                        </span>}
                     <span style={{
                         position: 'absolute',
                         right: '21%',

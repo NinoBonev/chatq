@@ -10,5 +10,5 @@ import java.util.Optional;
  * Created by Nino Bonev - 27.3.2019 г., 18:48
  */
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
+        Comment findCommentById(Long id);
 }

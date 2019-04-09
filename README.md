@@ -1,6 +1,6 @@
 # Chatq Social Network SPA
 
-[![Logo](https://res.cloudinary.com/dar4inn2i/image/upload/v1552651172/contest.jpg)]
+![Logo](https://res.cloudinary.com/dar4inn2i/image/upload/v1552651172/contest.jpg)
 
 ### Description
 Chatq is your point of inspirational. A place to share photos and make stories out of them.
@@ -15,17 +15,29 @@ where people can search for pure inspiration and
 be a part of that, by creating their own story. So here we are now!
 ### Tech
 
-Fantasy Tour de France uses a number of open source projects to work:
-* [MongoDB](https://www.mongodb.com) - Free and open-source cross-platform document-oriented database
-* [Mongoose](http://mongoosejs.com/index.html) - Elegant MongoDB object modeling for NodeJS
-* [NodeJS](https://nodejs.org/en/) - Evented I/O for the backend
-* [ExpressJS](https://expressjs.com) - Fast, unopinionated, minimalist web framework for NodeJS
+Chatq uses a number of open source projects to work:
+* [Java](https://www.mongodb.com) - Free and open-source programming language and computing platform
+* [Spring MVC](https://spring.io/) - End-to-end support for reactive & servlet based apps on the JVM
+* [MySQL](https://www.mysql.com/) - MySQL is an open source database platform
 * [JSONWebToken](https://jwt.io) - Used for authorization
 * [ReactJS](https://reactjs.org) - A JavaScript library for building user interfaces
-* [Ant.Design](https://ant.design/) - A React UI library antd that contains a set of high quality components and demos for building rich, interactive user interfaces.
-* [Cloudinary](https://cloudinary.com/) - Cloudinary is the media management platform for web and mobile developers. An end-to-end solution for all your image and video needs.
+* [Ant.Design](https://ant.design/) - A React UI library antd that contains a set of high quality components and demos for building rich, interactive user interfaces
+* [AWS](https://aws.amazon.com/) - Amazon Web Services (AWS) is a secure cloud services platform, offering compute power, database storage, content delivery and other functionality to help businesses scale and grow
+* [Cloudinary](https://cloudinary.com/) - Cloudinary is the media management platform for web and mobile developers. An end-to-end solution for all your image and video needs
 
-The goal of this project is to show the core concepts of building SPA with ExpressJS and ReactJS and using file storage cloud API (in my case Cloudinary). In this project I've used:
+The goal of this project is to show the core concepts of building SPA with Java-Spring-Boot and ReactJS.
+  The project is using file storage cloud API for all the photos being uploaded (Cloudinary)
+  and is also been hosted in Amazon Web Service. The hosted instance [public IP](http://35.177.244.23/)
+   and can also be found on [www.chatq.social](www.chatq.social)
+    
+In this project I've used:
+
+* Java SE 11
+* Java Spring Framework
+* Java-Spring-Boot
+* Java-Spring-Security
+* Java-Spring-Data
+
 
 * React Regular Components
 * React Higher Order Components
@@ -36,29 +48,16 @@ The goal of this project is to show the core concepts of building SPA with Expre
 ### Installation
 
 Chatq requires
-* [MongoDB](https://www.mongodb.com/download-center#community) v3.6+
+* [Java](https://www.oracle.com/technetwork/java/javase/downloads/index.html)  SE 11+
 * [NodeJS](https://nodejs.org/en/) v8+
 
-Install MongoDB and start the database (port: 27017)
-
-```sh
-$ cd back-end
-$ start-mongodb
-```
-
-Install the dependencies and start the server (port: 8000)
-
-```sh
-$ cd back-end
-$ npm install
-$ npm start
-```
+Open th project as a Java Maven Project
 
 Install the dependencies and start the client (port: 3000)
 
 ```sh
 $ cd..
-$ cd front-end
+$ cd frontend
 $ npm install
 $ npm start
 ```
@@ -91,11 +90,6 @@ $ npm start
     - Delete users stories
     - Delete users
 
-### Authors
+### Author
 
-* [Nino Bonev](https://github.com/NinoBonev/Gotcha)
-
-### License
-----
-
-MIT
+* [Nino Bonev](https://github.com/NinoBonev/gotcha)

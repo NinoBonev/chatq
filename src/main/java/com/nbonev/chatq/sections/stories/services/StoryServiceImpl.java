@@ -53,16 +53,18 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public Story create(StoryCreateBindingModel storyCreateBindingModel,
                                               LinkedHashSet<StoryLineCreateBindingModel> storyLineCreateBindingModels) throws IOException {
-        System.out.println(storyCreateBindingModel.toString());
+
         storyCreateBindingModel.uploadAndSetCover();
 
         Story story = modelMapper.map(storyCreateBindingModel, Story.class);
-        this.storyRepository.save(story);
+        Story saved = this.storyRepository.save(story);
+
+        Long id = saved.getId();
 
         User user = this.userRepository.findByUsername(storyCreateBindingModel.getUser().getUsername());
 
         if (storyCreateBindingModel.getGroup() != null) {
-            Group group = this.groupRepository.findByName(storyCreateBindingModel.getGroup().getName());
+            Group group = this.groupRepository.findGroupByName(storyCreateBindingModel.getGroup().getName());
 
             user.addStory(story);
             this.userRepository.save(user);
@@ -91,7 +93,7 @@ public class StoryServiceImpl implements StoryService {
             storyLines.add(storyLine);
         }
 
-        Story updatedStory = this.storyRepository.findByName(storyCreateBindingModel.getName());
+        Story updatedStory = this.findStoryById(id);
 
         updatedStory.setStoryLine(storyLines);
         return this.storyRepository.save(updatedStory);

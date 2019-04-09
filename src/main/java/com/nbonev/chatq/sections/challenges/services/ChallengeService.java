@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public interface ChallengeService {
 
-    ResponseEntity<ApiResponse> createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException;
+    Challenge createChallenge(ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException;
 
     List<Challenge> findAllChallenges();
 

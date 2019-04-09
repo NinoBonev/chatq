@@ -96,10 +96,11 @@ export default class Dashboard extends React.Component {
 
                 for (let challengeId of newRes.challengesById) {
                     this.props.Crud.getStoryById(challengeId).then((story) => {
+
                         story.username = newRes.username;
                         story.avatar = newRes.avatar;
 
-                        this.props.Crud.getChallengeById(story.challenge).then((challenge) => {
+                        this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
                             if (moment(challenge.deadlineDate).isBefore(moment.now())) {
                                 this.setState(prevState => ({
                                     storiesFromPeople: [...prevState.storiesFromPeople, story]

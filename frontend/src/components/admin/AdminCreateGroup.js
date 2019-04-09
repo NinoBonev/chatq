@@ -129,7 +129,7 @@ class AdminCreateGroup extends React.Component {
                                         {getFieldDecorator('name', {
                                             initialValue: this.state.name,
                                             rules: [{
-                                                min: 4,
+                                                min: 6,
                                                 max: 100,
                                                 required: true, message: 'The name of the groups should be between 4 and 100 symbols'}],
                                         })(

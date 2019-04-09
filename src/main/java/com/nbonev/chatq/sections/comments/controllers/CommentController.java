@@ -4,6 +4,7 @@ import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.comments.models.binding.CommentCreateBindingModel;
 import com.nbonev.chatq.sections.comments.models.view.CommentViewModel;
 import com.nbonev.chatq.sections.comments.services.CommentService;
+import com.nbonev.chatq.sections.comments.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,8 @@ public class CommentController {
     public ResponseEntity<ApiResponse> createComment(
             @Valid @RequestBody CommentCreateBindingModel commentCreateBindingModel) throws IOException {
 
-        return this.commentService.create(commentCreateBindingModel);
+        this.commentService.create(commentCreateBindingModel);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, Constants.COMMENT_CREATED_SUCEESS));
     }
 }

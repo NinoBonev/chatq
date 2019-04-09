@@ -21,6 +21,8 @@ public interface UserService {
 
     User findUserByUsername(String username);
 
+    User findUserById(Long id);
+
     UserViewModel getUserViewDTOByUsername(String username);
 
     List<UserViewModel> getAllUsersViewDTOs();

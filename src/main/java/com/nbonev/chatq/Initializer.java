@@ -128,11 +128,10 @@ public class Initializer implements CommandLineRunner {
 
             this.storyRepository.save(story1);
 
-            Optional<Group> gr1 = groupRepository.findByName("Social");
-            gr1.ifPresent(gr -> {
-                gr.setStories(Collections.singleton(story1));
-                this.groupRepository.save(gr);
-            });
+            Group gr1 = groupRepository.findGroupByName("Social");
+
+            gr1.setStories(Collections.singleton(story1));
+            this.groupRepository.save(gr1);
 
             Story story2 = new Story(
                     "Story in Nature Group sample.",
@@ -146,11 +145,11 @@ public class Initializer implements CommandLineRunner {
 
             this.storyRepository.save(story2);
 
-            Optional<Group> gr2 = groupRepository.findByName("Nature");
-            gr2.ifPresent(gr -> {
-                gr.setStories(Collections.singleton(story2));
-                this.groupRepository.save(gr);
-            });
+            Group gr2 = groupRepository.findGroupByName("Nature");
+
+            gr2.setStories(Collections.singleton(story2));
+            this.groupRepository.save(gr2);
+
 
             User adminUser = userRepository.findByUsername("admin");
 
@@ -171,11 +170,11 @@ public class Initializer implements CommandLineRunner {
 
             this.storyRepository.save(story3);
 
-            Optional<Group> gr3 = groupRepository.findByName("Culture");
-            gr3.ifPresent(gr -> {
-                gr.setStories(Collections.singleton(story3));
-                this.groupRepository.save(gr);
-            });
+            Group gr3 = groupRepository.findGroupByName("Culture");
+
+            gr3.setStories(Collections.singleton(story3));
+            this.groupRepository.save(gr3);
+
 
             User ninobonev = userRepository.findByUsername("ninobonev");
 
@@ -185,8 +184,6 @@ public class Initializer implements CommandLineRunner {
 
             ninobonev.setStories(stories);
             this.userRepository.save(ninobonev);
-
-
 
             StoryLine storyLine11 = new StoryLine("It is a long established fact that a reader will be distracted by the readable content of" +
                     " a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of" +
@@ -247,26 +244,22 @@ public class Initializer implements CommandLineRunner {
             Set<Comment> commentsFromUser = new HashSet<>();
             Set<Comment> commentsFromAdmin = new HashSet<>();
 
-            Optional<Story> storyOptional_1 = storyRepository.findByName("Story in Social Group sample.");
-            storyOptional_1.ifPresent(story -> {
-                Set<StoryLine> storyLines = new HashSet<>();
-                Set<Comment> comments = new HashSet<>();
+            Story story_1 = storyRepository.findByName("Story in Social Group sample.");
 
-                comments.add(comment1);
-                commentsFromUser.add(comment1);
+            Set<StoryLine> storyLines_1 = new HashSet<>();
+            Set<Comment> comments_1 = new HashSet<>();
+            comments_1.add(comment1);
+            commentsFromUser.add(comment1);
+            comments_1.add(comment2);
+            commentsFromAdmin.add(comment2);
+            storyLines_1.add(storyLine11);
+            storyLines_1.add(storyLine12);
+            storyLines_1.add(storyLine13);
+            storyLines_1.add(storyLine14);
 
-                comments.add(comment2);
-                commentsFromAdmin.add(comment2);
-
-                storyLines.add(storyLine11);
-                storyLines.add(storyLine12);
-                storyLines.add(storyLine13);
-                storyLines.add(storyLine14);
-
-                story.setComments(comments);
-                story.setStoryLine(storyLines);
-                this.storyRepository.save(story);
-            });
+            story_1.setComments(comments_1);
+            story_1.setStoryLine(storyLines_1);
+            this.storyRepository.save(story_1);
 
             StoryLine storyLine21 = new StoryLine("It is a long established fact that a reader will be distracted by the readable content of" +
                     " a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of" +
@@ -324,26 +317,25 @@ public class Initializer implements CommandLineRunner {
             this.storyLineRepository.save(storyLine23);
             this.storyLineRepository.save(storyLine24);
 
-            Optional<Story> storyOptional_2 = storyRepository.findByName("Story in Nature Group sample.");
-            storyOptional_2.ifPresent(story -> {
-                Set<StoryLine> storyLines = new HashSet<>();
-                Set<Comment> comments = new HashSet<>();
+            Story story_2 = storyRepository.findByName("Story in Nature Group sample.");
 
-                comments.add(comment3);
-                commentsFromUser.add(comment3);
+            Set<StoryLine> storyLines_2 = new HashSet<>();
+            Set<Comment> comments_2 = new HashSet<>();
 
-                comments.add(comment4);
-                commentsFromAdmin.add(comment4);
+            comments_2.add(comment3);
+            commentsFromUser.add(comment3);
 
-                storyLines.add(storyLine21);
-                storyLines.add(storyLine22);
-                storyLines.add(storyLine23);
-                storyLines.add(storyLine24);
+            comments_2.add(comment4);
+            commentsFromAdmin.add(comment4);
 
-                story.setComments(comments);
-                story.setStoryLine(storyLines);
-                this.storyRepository.save(story);
-            });
+            storyLines_2.add(storyLine21);
+            storyLines_2.add(storyLine22);
+            storyLines_2.add(storyLine23);
+            storyLines_2.add(storyLine24);
+
+            story_2.setComments(comments_2);
+            story_2.setStoryLine(storyLines_2);
+            this.storyRepository.save(story_2);
 
             StoryLine storyLine31 = new StoryLine("It is a long established fact that a reader will be distracted by the readable content of" +
                     " a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of" +
@@ -394,23 +386,20 @@ public class Initializer implements CommandLineRunner {
             this.storyLineRepository.save(storyLine33);
             this.storyLineRepository.save(storyLine34);
 
-            Optional<Story> storyOptional_3 = storyRepository.findByName("Story in Culture Group sample.");
-            storyOptional_3.ifPresent(story -> {
-                Set<StoryLine> storyLines = new HashSet<>();
-                Set<Comment> comments = new HashSet<>();
+            Story story_3 = storyRepository.findByName("Story in Culture Group sample.");
 
-                comments.add(comment5);
-                commentsFromUser.add(comment5);
+            Set<StoryLine> storyLines_3 = new HashSet<>();
+            Set<Comment> comments_3 = new HashSet<>();
+            comments_3.add(comment5);
+            commentsFromUser.add(comment5);
 
-                storyLines.add(storyLine31);
-                storyLines.add(storyLine32);
-                storyLines.add(storyLine33);
-                storyLines.add(storyLine34);
-
-                story.setComments(comments);
-                story.setStoryLine(storyLines);
-                this.storyRepository.save(story);
-            });
+            storyLines_3.add(storyLine31);
+            storyLines_3.add(storyLine32);
+            storyLines_3.add(storyLine33);
+            storyLines_3.add(storyLine34);
+            story_3.setComments(comments_3);
+            story_3.setStoryLine(storyLines_3);
+            this.storyRepository.save(story_3);
 
             User nino = this.userRepository.findByUsername("ninobonev");
 
@@ -422,7 +411,6 @@ public class Initializer implements CommandLineRunner {
 
             vesy.setComments(commentsFromAdmin);
             this.userRepository.save(vesy);
-
 
         }
 

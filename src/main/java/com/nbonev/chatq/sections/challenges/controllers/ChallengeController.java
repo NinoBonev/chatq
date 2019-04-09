@@ -1,9 +1,12 @@
 package com.nbonev.chatq.sections.challenges.controllers;
 
+import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
+import com.nbonev.chatq.sections.challenges.entities.Challenge;
 import com.nbonev.chatq.sections.challenges.models.binding.ChallengeCreateBindingModel;
 import com.nbonev.chatq.sections.challenges.models.view.ChallengeViewModel;
 import com.nbonev.chatq.sections.challenges.services.ChallengeService;
+import com.nbonev.chatq.sections.challenges.utils.Constants;
 import com.nbonev.chatq.sections.stories.services.StoryService;
 import com.nbonev.chatq.sections.users.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +28,10 @@ import java.util.List;
 @RequestMapping("/")
 public class ChallengeController {
     private final ChallengeService challengeService;
-    private final StoryService storyService;
-    private final UserService userService;
 
     @Autowired
-    public ChallengeController(ChallengeService challengeService, StoryService storyService, UserService userService) {
+    public ChallengeController(ChallengeService challengeService) {
         this.challengeService = challengeService;
-        this.storyService = storyService;
-        this.userService = userService;
     }
 
     @GetMapping(path = "/challenges", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,9 +50,12 @@ public class ChallengeController {
 
     @PostMapping("/admin/challenges/create_challenge")
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
-    public ResponseEntity<ApiResponse> createStory(@Valid @RequestBody ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> createChallenge(@Valid @RequestBody ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
 
-        return this.challengeService.createChallenge(challengeCreateBindingModel);
+        this.challengeService.createChallenge(challengeCreateBindingModel);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, Constants.CHALLENGE_CREATE_SUCCESS));
     }
 
     @PostMapping(path = "/admin/challenges/archive/{id}")
