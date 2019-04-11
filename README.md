@@ -37,8 +37,6 @@ In this project I've used:
 * Java-Spring-Boot
 * Java-Spring-Security
 * Java-Spring-Data
-
-
 * React Regular Components
 * React Higher Order Components
 * React Stateless Functional Components where no state is needed
@@ -86,7 +84,7 @@ $ npm start
 
 - Admin users
     - Create/Edit challenges
-    - Create/Edit categories
+    - Create/Edit groups
     - Delete users stories
     - Delete users
 

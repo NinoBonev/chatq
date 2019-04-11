@@ -105,12 +105,17 @@ class SingleGroup extends Component {
         let storiesSortedByDateCreate = this.state.stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         return (
-            <div>
+            <div style={{
+                marginTop: 70,
+                backgroundColor: 'white'
+            }}>
                 <Row gutter={16}>
                     <div>
                         <img className='header-image-cover' src={this.state.headerCoverSource} alt=""/>
                     </div>
-                    <div className='main-data-container'>
+                    <div style={{
+                        marginTop: 20
+                    }}>
                         <Col span={4}>
                             <InfiniteScroll
                                 initialLoad={false}

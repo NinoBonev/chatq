@@ -71,9 +71,9 @@ export default class AuthenticatedHeadroom extends React.Component {
                     }}>
                             <DemoBox value={60}>
                                 <Search
+                                    className='input-search'
                                     placeholder="People, groups, stories"
                                     onSearch={value => console.log(value)}
-                                    style={{width: 400}}
                                 />
                             </DemoBox>
                         </span>

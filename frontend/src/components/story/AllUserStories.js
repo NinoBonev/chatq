@@ -66,7 +66,7 @@ export default class AllUserStories extends React.Component {
             for (let challengeId of res.challengesById) {
                 this.props.Crud.getStoryById(challengeId).then((story) => {
                     this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
-                        if (this.props.isAdmin()) {
+                        if (this.props.isAdmin) {
                             this.setState(prevState => ({
                                 challenges: [...prevState.challenges, story]
                             }));

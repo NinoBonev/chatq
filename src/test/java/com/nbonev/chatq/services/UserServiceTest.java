@@ -15,13 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -34,10 +33,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Nino Bonev - 8.4.2019 г., 9:43
  */
-@RunWith(MockitoJUnitRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
-@EnableSpringDataWebSupport
+@RunWith(SpringRunner.class)
+@DataJpaTest
 public class UserServiceTest {
     private static final String ENCODED_PASSWORD = "Password_Encoded";
 
@@ -65,12 +62,7 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        this.mockedUserRepository = Mockito.mock(UserRepository.class);
-        this.mockedRoleRepository = Mockito.mock(RoleRepository.class);
-        this.mockedGroupRepository = Mockito.mock(GroupRepository.class);
-        this.mockedPasswordEncoder = Mockito.mock(PasswordEncoder.class);
-
-        userService = new UserServiceImpl(this.mockedUserRepository,
+        this.userService = new UserServiceImpl(this.mockedUserRepository,
                 this.mockedRoleRepository,
                 this.mockedGroupRepository,
                 this.mockedPasswordEncoder,
@@ -150,11 +142,11 @@ public class UserServiceTest {
     @Test
     public void testLoadUserByUsername_givenValidUser_shouldReturnUser() {
         //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+        User loadedUser = this.userService.findUserByUsername(vesy.getUsername());
 
         //assert
         Assert.assertNotNull("User is null when loaded by username", loadedUser);
-        Assert.assertEquals("Wrong user when loaded by username", nino.toString(), loadedUser.toString());
+        Assert.assertEquals("Wrong user when loaded by username", vesy.toString(), loadedUser.toString());
     }
 
     @Test(expected = ResourceNotFoundException.class)
@@ -193,9 +185,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testStartFollowingUser_givenValidUsers_shouldAddUserToFollowingUsers() {
+    public void testStartFollowingUser_givenValidUsers_shouldAddUserToFollowingUsers() throws IOException {
         //act
+        User nino = this.userService.saveUser(this.userRegisterNino);
+        User vesy = this.userService.saveUser(this.userRegisterNino);
+
         this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
+
         Set<User> testSet = new HashSet<>();
         testSet.add(nino);
 

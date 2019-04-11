@@ -4,7 +4,7 @@ import '../../resources/style/custom.css'
 
 export default class CarouselClass extends React.Component {
     render() {
-        let front = <Col align="center" style={{marginTop: 240}}>
+        let front = <Col span={16} align="center" style={{marginTop: 240}}>
             <div style={{
                 fontSize: 35,
                 color: 'white',
@@ -23,23 +23,41 @@ export default class CarouselClass extends React.Component {
             pauseOnHover: false,
             autoplaySpeed: 5000,
             slidesToShow: 1,
-            autoplay: true,
+            autoplay: false,
             slidesToScroll: 1,
             effect: 'fade',
 
         };
         return (
 
-                <div style={{marginTop: 60}}>
+                <div style={{marginTop: 70}}>
                     <Carousel {...settings}>
                         <div className='one'>
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                             {front}
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                         </div>
                         <div className='two'>
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                             {front}
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                         </div>
                         <div className='three'>
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                             {front}
+                            <Col span={4}>
+                                <div className='side-home' ></div>
+                            </Col>
                         </div>
                     </Carousel>
                 </div>
