@@ -1,5 +1,7 @@
 package com.nbonev.chatq.sections.groups.controllers;
 
+import com.nbonev.chatq.exception.BadRequestException;
+import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.models.binding.GroupCreateBindingModel;
 import com.nbonev.chatq.sections.groups.models.view.GroupViewModel;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,27 +36,50 @@ public class GroupController {
     @GetMapping(path = "/groups", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GroupViewModel> allGroups() {
+    public ResponseEntity<?> allGroups() {
+        List<GroupViewModel> groupViewModels = new ArrayList<>();
+        try {
+            groupViewModels = this.groupService.getAllGroupsDTO();
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        return this.groupService.getAllGroupsDTO();
+        return ResponseEntity.ok().body(new ApiResponse(true, groupViewModels));
     }
 
     @GetMapping(path = "/groups/{name}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public GroupViewModel getSingleGroup(@PathVariable("name") String name) {
+    public ResponseEntity<?> getSingleGroup(@PathVariable("name") String name) {
+        GroupViewModel groupViewModel;
 
-        return this.groupService.getGroupDTOByName(name);
+        try {
+            groupViewModel = this.groupService.getGroupDTOByName(name);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().body(new ApiResponse(true, groupViewModel));
+
     }
 
     @PostMapping(path = "/admin/groups/create_group")
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> createGroup(
+    public ResponseEntity<?> createGroup(
             @Valid @RequestBody GroupCreateBindingModel groupCreateBindingModel) throws IOException {
 
-        this.groupService.createGroup(groupCreateBindingModel);
+        try {
+            this.groupService.createGroup(groupCreateBindingModel);
+
+        } catch (BadRequestException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, Constants.GROUP_CREATED_SUCCESS));
     }
@@ -62,9 +88,15 @@ public class GroupController {
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> archiveGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<?> archiveGroup(@PathVariable("id") Long id) {
 
-        this.groupService.archiveGroup(id);
+        try {
+            this.groupService.archiveGroup(id);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Archive Group Message"));
     }
@@ -73,9 +105,15 @@ public class GroupController {
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> openGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<?> openGroup(@PathVariable("id") Long id) {
 
-        this.groupService.openGroup(id);
+        try {
+            this.groupService.openGroup(id);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Open Group Message"));
     }
@@ -84,9 +122,15 @@ public class GroupController {
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> closeGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<?> closeGroup(@PathVariable("id") Long id) {
 
-        this.groupService.closeGroup(id);
+        try {
+            this.groupService.closeGroup(id);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Close Group Message"));
     }

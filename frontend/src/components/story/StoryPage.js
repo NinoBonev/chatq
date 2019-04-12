@@ -44,13 +44,15 @@ export default class StoryPage extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
-        this.props.Crud.getStoryById(this.props.storyId).then((story) => {
-            console.log(story);
-            this.setState({
-                storyLines: story.storyLine,
-            });
+        this.props.Crud.getStoryById(this.props.storyId).then((res) => {
+            if (res.success){
+                this.setState({
+                    storyLines: res.body.storyLine,
+                });
+            }
+
         })
+
 
     }
 

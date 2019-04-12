@@ -24,19 +24,9 @@ export default class DashboardMyChallenges extends React.Component {
     }
 
     fetchAllStories() {
-        for (let story of this.props.myChallenges) {
-            this.props.Crud.getChallengeById(story.challengeId).then((challengeInfo) => {
-                story.deadlineDate = challengeInfo.deadlineDate
-                this.setState(prevState => (
-                    {
-                        challenges: [...prevState.challenges, story]
-                    }));
-
-
-            }).catch((err) => {
-                message.error("Error");
-            });
-        }
+        this.setState({
+            challenges: this.props.myChallenges
+        })
     }
 
     async handleDelete(id) {
@@ -51,8 +41,6 @@ export default class DashboardMyChallenges extends React.Component {
     }
 
     render() {
-        let myChallengesSortedByDateCreate = this.state.challenges.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         return (
             <Row gutter={16}>
                 <div className='main-data-container'>
@@ -67,7 +55,7 @@ export default class DashboardMyChallenges extends React.Component {
                         </div>
                     </Col>
                     <Col span={20}>
-                    {myChallengesSortedByDateCreate.length > 0 ? <div>{myChallengesSortedByDateCreate.map((chal) =>
+                    {this.state.challenges.length > 0 ? <div>{this.state.challenges.map((chal) =>
                         <Col span={8}>
                             <div className='cardZoomIn'>
                                 <Card

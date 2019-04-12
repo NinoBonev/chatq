@@ -2,6 +2,7 @@ package com.nbonev.chatq.sections.stories.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.nbonev.chatq.exception.BadRequestException;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.challenges.entities.Challenge;
@@ -49,22 +50,35 @@ public class StoryController {
 
     @GetMapping(path = "/story/{id}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public StoryViewModel getSingleStory(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getSingleStory(@PathVariable("id") Long id) {
+        StoryViewModel storyViewModel;
+        try {
+            storyViewModel = this.storyService.getStoryViewDTOById(id);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        return this.storyService.getStoryViewDTOById(id);
+        return ResponseEntity.ok().body(new ApiResponse(true, storyViewModel));
+
     }
 
     @PostMapping("/story/create")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> createStory(@Valid @RequestBody StoryCreatePayload storyCreatePayload) throws IOException {
+    public ResponseEntity<?> createStory(@Valid @RequestBody StoryCreatePayload storyCreatePayload) throws IOException {
 
         StoryCreateBindingModel storyCreateBindingModel = new StoryCreateBindingModel();
 
-        User user = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
-
+        User user;
+        try {
+            user = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
+        } catch (ResourceNotFoundException ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         //TODO ---> Send crop as parameter to upload
         storyCreateBindingModel.setName(storyCreatePayload.getName());
@@ -78,13 +92,28 @@ public class StoryController {
         storyCreateBindingModel.setUser(user);
 
         if (storyCreatePayload.getGroup() != null){
-            Group group = this.groupService.findGroupById(storyCreatePayload.getGroup());
+            Group group;
+            try {
+                group = this.groupService.findGroupById(storyCreatePayload.getGroup());
+            } catch (ResourceNotFoundException ex){
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+            } catch (BadRequestException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            }
 
             storyCreateBindingModel.setGroup(group);
         }
 
         if (storyCreatePayload.getChallenge() != null){
-            Challenge challenge = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
+            Challenge challenge;
+
+            try {
+                challenge = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
+            } catch (ResourceNotFoundException ex){
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+            } catch (BadRequestException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            }
 
             storyCreateBindingModel.setChallenge(challenge);
         }
@@ -95,9 +124,16 @@ public class StoryController {
                                 .getStoryLine(),
                         TypeFactory
                                 .defaultInstance()
-                                .constructCollectionType(LinkedHashSet.class, StoryLineCreateBindingModel.class));
+                                .constructCollectionType(LinkedHashSet.class,
+                                        StoryLineCreateBindingModel.class));
 
-        this.storyService.create(storyCreateBindingModel, storyLines);
+        try {
+            this.storyService.create(storyCreateBindingModel, storyLines);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, Constants.STORY_CREATED_SUCEESS));
 
@@ -106,9 +142,15 @@ public class StoryController {
     @PostMapping("/story/delete/{id}")
     @PreAuthorize("@accessService.isStoryOwnerOrAdmin(authentication, #id)")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> deleteStory(@PathVariable("id") Long id){
-        this.storyService.deleteStory(id);
+    public ResponseEntity<?> deleteStory(@PathVariable("id") Long id){
+
+        try {
+            this.storyService.deleteStory(id);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Delete Message"));
     }
@@ -116,10 +158,16 @@ public class StoryController {
     @PostMapping("/story/editInfo/{id}")
     @PreAuthorize("@accessService.isStoryOwner(authentication, #id)")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse> editStory(@PathVariable("id") Long id,
+    public ResponseEntity<?> editStory(@PathVariable("id") Long id,
                                                  @Valid @RequestBody StoryEditBindingModel storyEditBindingModel) throws IOException {
-        this.storyService.editStory(id, storyEditBindingModel);
+
+        try {
+            this.storyService.editStory(id, storyEditBindingModel);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BadRequestException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().body(new ApiResponse(true, "Edit Message"));
     }

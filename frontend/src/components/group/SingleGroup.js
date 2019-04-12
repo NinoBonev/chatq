@@ -27,52 +27,68 @@ class SingleGroup extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
         this._isMounted = true;
         this.props.setSubHeaderKey('singleGroup')
         this.props.setHeaderCoverVisibility(true)
         this.props.setSubHeaderLocation(this.props.match)
 
-        this.fetchCurrentGroup(this.props.location.state.groupName)
+
+        this.fetchCurrentGroup(this.props.match.params.name)
         this.fetchAllGroups()
+
+
     }
 
-    fetchAllGroups(){
+    fetchAllGroups() {
         this.props.Crud.getAllGroups().then((res) => {
-            for (const group of res) {
-                if (group.status === "OPEN"){
-                    this.setState(prevState => ({
-                        groups: [...prevState.groups,  group]
-                    }))
+            if (res.success) {
+                for (const group of res.body) {
+                    if (group.status === "OPEN") {
+                        this.setState(prevState => ({
+                            groups: [...prevState.groups, group]
+                        }))
+                    }
                 }
             }
         })
     }
 
-    fetchCurrentGroup(groupName){
+    fetchCurrentGroup(groupName) {
         this.setState({
             stories: [],
         });
         this.props.Crud.getGroupByName(groupName).then((res) => {
 
-            this.setState({
-                headerCoverSource: res.cover
-            })
-            if (this._isMounted) {
-                for (let str of res.storiesById) {
-                    this.props.Crud.getStoryById(str).then((story) => {
-                        this.props.Crud.getUserInfo(story.username).then((user) => {
-                            story.avatar = user.avatar;
+            if (res.success) {
+                this.setState({
+                    headerCoverSource: res.body.cover
+                })
 
-                            this.setState(prevState => ({
-                                stories: [...prevState.stories, story]
-                            }));
+                if (this._isMounted) {
+                    for (let str of res.body.storiesById) {
+                        this.props.Crud.getStoryById(str).then((res) => {
+                            if (res.success) {
+                                this.props.Crud.getUserInfo(res.body.username).then((user) => {
+                                    res.body.avatar = user.avatar;
+
+                                    this.setState(prevState => ({
+                                        stories: [...prevState.stories, res.body]
+                                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                    }));
+                                });
+                            }
+
+                        }).catch((err) => {
+                            message.error(err.body);
                         });
-                    })
+                    }
                 }
+            } else {
+                this.props.history.push('/')
+                message.error(res.body);
             }
-        }).catch((err) => {
-            message.error("Error");
-        });
+        })
     }
 
     handleInfiniteOnLoad = () => {
@@ -88,11 +104,15 @@ class SingleGroup extends Component {
             return;
         }
         this.props.Crud.getAllGroups().then((res) => {
-            data = data.concat(res);
-            this.setState({
-                data,
-                loading: false,
-            });
+            if (res.success) {
+                data = data.concat(res.body);
+                this.setState({
+                    data,
+                    loading: false,
+                });
+            }
+        }).catch((err) => {
+            message.error(err);
         });
     }
 
@@ -102,8 +122,6 @@ class SingleGroup extends Component {
     }
 
     render() {
-        let storiesSortedByDateCreate = this.state.stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         return (
             <div style={{
                 marginTop: 70,
@@ -132,9 +150,9 @@ class SingleGroup extends Component {
                                                 avatar={<Avatar
                                                     style={{marginLeft: 10}}
                                                     onClick={() => this.fetchCurrentGroup(item.name)}
-                                                    src={item.cover} />}
+                                                    src={item.cover}/>}
                                                 title={<span
-                                                          onClick={() => this.fetchCurrentGroup(item.name)}>
+                                                    onClick={() => this.fetchCurrentGroup(item.name)}>
                                                     {item.name}
                                                     </span>}
                                             />
@@ -144,7 +162,7 @@ class SingleGroup extends Component {
                                 >
                                     {this.state.loading && this.state.hasMore && (
                                         <div className="demo-loading-container">
-                                            <Spin />
+                                            <Spin/>
                                         </div>
                                     )}
                                 </List>
@@ -153,8 +171,7 @@ class SingleGroup extends Component {
                         <Col span={20}>
                             <ListAllGroupStories
                                 {...this.props}
-                                {...this.state}
-                                data={storiesSortedByDateCreate}/>
+                                {...this.state}/>
                         </Col>
                     </div>
                 </Row>

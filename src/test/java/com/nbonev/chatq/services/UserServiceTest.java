@@ -8,24 +8,22 @@ import com.nbonev.chatq.sections.roles.repositories.RoleRepository;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.repositories.UserRepository;
-import com.nbonev.chatq.sections.users.services.UserService;
 import com.nbonev.chatq.sections.users.services.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,8 +31,10 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Nino Bonev - 8.4.2019 г., 9:43
  */
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
+@ActiveProfiles("test")
+@EnableSpringDataWebSupport
 public class UserServiceTest {
     private static final String ENCODED_PASSWORD = "Password_Encoded";
 
@@ -50,7 +50,10 @@ public class UserServiceTest {
     @Mock
     private PasswordEncoder mockedPasswordEncoder;
 
-    private UserService userService;
+    @InjectMocks
+    private ModelMapper mockedModelMapper;
+
+    private UserServiceImpl userService;
 
     private UserRegisterBindingModel userRegisterNino;
 
@@ -66,7 +69,7 @@ public class UserServiceTest {
                 this.mockedRoleRepository,
                 this.mockedGroupRepository,
                 this.mockedPasswordEncoder,
-                new ModelMapper());
+                this.mockedModelMapper);
 
         this.userRegisterNino = new UserRegisterBindingModel("Nino Bonev", "nbonev",
                 "nbonev@gmail.com", "1234",
@@ -107,7 +110,6 @@ public class UserServiceTest {
 
         when(this.mockedUserRepository.findByUsername(vesy.getUsername()))
                 .thenAnswer(a -> vesy);
-
     }
 
     @Test
@@ -187,18 +189,15 @@ public class UserServiceTest {
     @Test
     public void testStartFollowingUser_givenValidUsers_shouldAddUserToFollowingUsers() throws IOException {
         //act
-        User nino = this.userService.saveUser(this.userRegisterNino);
-        User vesy = this.userService.saveUser(this.userRegisterNino);
+        User mainUserNino = this.userService.saveUser(userRegisterNino);
+        User followerUserVesy = this.userService.saveUser(userRegisterVesy);
 
-        this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
-
-        Set<User> testSet = new HashSet<>();
-        testSet.add(nino);
+        this.userService.startFollowingUser(mainUserNino.getUsername(), followerUserVesy.getUsername());
 
         //assert
         Assert.assertEquals("Followers are not being added correctly",
-               testSet,
-                vesy.getFollowingUsers());
+               mainUserNino.getFollowers(),
+                nino.getFollowers());
     }
 
     @Test

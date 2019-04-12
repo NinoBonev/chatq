@@ -27,7 +27,7 @@ class AllGroupStories extends React.Component {
     render() {
         return (
             <div>
-                {this.props.data.map((story) => <div>
+                {this.props.stories.map((story) => <div>
                     <Col span={8}>
                         <Card
                             style={{marginBottom: 20}}

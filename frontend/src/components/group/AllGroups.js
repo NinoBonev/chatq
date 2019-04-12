@@ -28,16 +28,17 @@ export default class AllGroups extends React.Component {
     fetchAllStories(){
         if (this._isMounted) {
             this.props.Crud.getAllGroups().then((res) => {
-                for (const group of res) {
-                    if (group.status === "OPEN"){
-                        this.setState(prevState => ({
-                            groups: [...prevState.groups,  group]
-                        }))
+                if (res.success) {
+                    for (const group of res.body) {
+                        if (group.status === "OPEN") {
+                            this.setState(prevState => ({
+                                groups: [...prevState.groups, group]
+                            }))
+                        }
                     }
                 }
-
             }).catch((err) => {
-                message.error("Error");
+                message.error(err);
             });
         }
     }
