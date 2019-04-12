@@ -66,7 +66,7 @@ public class User extends DateAudit {
     @JoinTable(name = "User_Following_Relations",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "following_id"))
-    private Set<User> followingUsers;
+    private Set<User> followingUsers = new HashSet<>();
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -80,25 +80,21 @@ public class User extends DateAudit {
                     name = "group_id",
                     referencedColumnName = "id")
     )
-    private Set<Group> followingGroups;
+    private Set<Group> followingGroups = new HashSet<>();
 
     @ManyToMany(mappedBy = "followingUsers",cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    private Set<User> followers;
+    private Set<User> followers = new HashSet<>();
 
     @JsonManagedReference(value="user-comments")
     @OneToMany(mappedBy = "user", targetEntity = Comment.class, cascade = CascadeType.REMOVE)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @JsonManagedReference(value="user-stories")
     @OneToMany(mappedBy = "user", targetEntity = Story.class, cascade = CascadeType.REMOVE)
-    private Set<Story> stories;
-
-//    @JsonManagedReference(value="user-stories")
-//    @OneToMany(mappedBy = "user", targetEntity = Story.class, cascade = CascadeType.REMOVE)
-//    private Set<Story> challenges;
+    private Set<Story> stories = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

@@ -4,9 +4,14 @@
 }
 
 .input-search input {
-    width: 400px;
+    width: 200px;
     background-color: white;
     opacity: 0.7;
+}
+
+.input-search input:focus {
+    width: 400px;
+    background-color: yellow;
 }
 
 .headroom {
@@ -60,7 +65,7 @@
 .sub-header {
     position: relative;
     height: 70px;
-    background-color: black;
+    background-color: paleturquoise;
     color: red;
 }
 

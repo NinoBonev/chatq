@@ -1,10 +1,13 @@
 package com.nbonev.chatq.services;
 
 import com.nbonev.chatq.exception.ResourceNotFoundException;
+import com.nbonev.chatq.sections.comments.entities.Comment;
+import com.nbonev.chatq.sections.groups.entities.Group;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
 import com.nbonev.chatq.sections.roles.entities.Role;
 import com.nbonev.chatq.sections.roles.enums.RoleEnum;
 import com.nbonev.chatq.sections.roles.repositories.RoleRepository;
+import com.nbonev.chatq.sections.stories.entities.Story;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.repositories.UserRepository;
@@ -23,7 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -63,6 +68,8 @@ public class UserServiceTest {
 
     private User vesy;
 
+    private User krasi;
+
     @Before
     public void setUp() {
         this.userService = new UserServiceImpl(this.mockedUserRepository,
@@ -87,11 +94,21 @@ public class UserServiceTest {
                 "vboneva@abv.bg", "1234",
                 "https://res.cloudinary.com/dar4inn2i/image/upload/v1554714081/g7jc3zkn4z0e3lgnf4sd.jpg");
 
+        this.krasi = new User("Krasi Yonkov", "krasko",
+                "krasi@abv.bg", "1234",
+                "https://res.cloudinary.com/dar4inn2i/image/upload/v1554714081/g7jc3zkn4z0e3lgnf4sd.jpg");
+
+
+
         when(this.mockedUserRepository.save(any()))
                 .thenAnswer(a -> a.getArgument(0));
 
         Role userRole = new Role();
         userRole.setRole(RoleEnum.USER.getRoleName());
+
+        Set<Role> userRoles = new HashSet<>();
+        userRoles.add(userRole);
+        this.nino.setAuthorities(userRoles);
 
         when(this.mockedRoleRepository.findByRole(RoleEnum.USER.getRoleName()))
                 .thenAnswer(a -> userRole);
@@ -99,8 +116,9 @@ public class UserServiceTest {
         Role adminRole = new Role();
         adminRole.setRole(RoleEnum.ADMIN.getRoleName());
 
-        when(this.mockedRoleRepository.findByRole(RoleEnum.ADMIN.getRoleName()))
-                .thenAnswer(a -> adminRole);
+        Set<Role> adminRoles = new HashSet<>();
+        adminRoles.add(adminRole);
+        this.vesy.setAuthorities(adminRoles);
 
         when(this.mockedPasswordEncoder.encode(any()))
                 .thenAnswer(a -> ENCODED_PASSWORD);
@@ -110,6 +128,9 @@ public class UserServiceTest {
 
         when(this.mockedUserRepository.findByUsername(vesy.getUsername()))
                 .thenAnswer(a -> vesy);
+
+        when(this.mockedUserRepository.findByUsername(krasi.getUsername()))
+                .thenAnswer(a -> krasi);
     }
 
     @Test
@@ -131,7 +152,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testSaveUser_givenValidUser_shouldMapAuthoritiesFieldRight() throws IOException {
+    public void testSaveUser_givenValidUser_shouldCreateNewUsersWithUserRoleWhenCreated() throws IOException {
         //act
         User createdUser = this.userService.saveUser(this.userRegisterNino);
         Iterator<Role> iterator = createdUser.getAuthorities().iterator();
@@ -139,6 +160,61 @@ public class UserServiceTest {
         //assert
         Assert.assertTrue("Wrong authorities number after user is created", iterator.hasNext());
         Assert.assertEquals("Wrong authorities after user is created", RoleEnum.USER.getRoleName(), iterator.next().getRole());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowers() throws IOException {
+        //act
+        Set<User> followers = new HashSet<>();
+        User createdUser = this.userService.saveUser(this.userRegisterNino);
+
+        //assert
+        Assert.assertEquals("Followers not empty when created" ,
+                createdUser.getFollowers(), followers);
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingUsers() throws IOException {
+        //act
+        Set<User> following = new HashSet<>();
+        User createdUser = this.userService.saveUser(this.userRegisterNino);
+
+        //assert
+        Assert.assertEquals("Followers not null upon creation" ,
+                following ,createdUser.getFollowingUsers());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingGropus() throws IOException {
+        //act
+        Set<Group> following = new HashSet<>();
+        User createdUser = this.userService.saveUser(this.userRegisterNino);
+
+        //assert
+        Assert.assertEquals("Followers not null upon creation",
+                following ,createdUser.getFollowingGroups());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoComments() throws IOException {
+        //act
+        Set<Comment> comments = new HashSet<>();
+        User createdUser = this.userService.saveUser(this.userRegisterNino);
+
+        //assert
+        Assert.assertEquals("Followers not null upon creation",
+                comments ,createdUser.getComments());
+    }
+
+    @Test
+    public void testSaveUser_givenValidUser_shouldCreateUserWithNoStories() throws IOException {
+        //act
+        Set<Story> stories = new HashSet<>();
+        User createdUser = this.userService.saveUser(this.userRegisterNino);
+
+        //assert
+        Assert.assertEquals("Followers not null upon creation",
+                stories ,createdUser.getStories());
     }
 
     @Test
@@ -158,7 +234,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetters_givenValidUser_shouldMapGettersFieldsCorrectly() {
+    public void testLoadUser_givenValidUser_shouldMapGettersFieldsCorrectly() {
         //act
         User loadedUser = this.userService.findUserByUsername(nino.getUsername());
 
@@ -169,61 +245,63 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowers() {
+    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_UserRole() throws IOException {
         //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+        User loadUser = this.userService.findUserByUsername(this.nino.getUsername());
+        Iterator<Role> iterator = loadUser.getAuthorities().iterator();
 
         //assert
-        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowers());
+        Assert.assertTrue("Wrong authorities number after user is created", iterator.hasNext());
+        Assert.assertEquals("Wrong authorities after user is created", RoleEnum.USER.getRoleName(), iterator.next().getRole());
     }
 
     @Test
-    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingUsers() {
+    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_AdminRole() throws IOException {
         //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+        User loadUser = this.userService.findUserByUsername(this.vesy.getUsername());
+        Iterator<Role> iterator = loadUser.getAuthorities().iterator();
 
         //assert
-        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowingUsers());
+        Assert.assertTrue("Wrong authorities number after user is created", iterator.hasNext());
+        Assert.assertEquals("Wrong authorities after user is created", RoleEnum.ADMIN.getRoleName(), iterator.next().getRole());
     }
 
     @Test
-    public void testStartFollowingUser_givenValidUsers_shouldAddUserToFollowingUsers() throws IOException {
+    public void testStartFollowingUser_shouldStartFollowingUsersCorrectly() throws IOException {
         //act
-        User mainUserNino = this.userService.saveUser(userRegisterNino);
-        User followerUserVesy = this.userService.saveUser(userRegisterVesy);
+        Set<User> followers = new HashSet<>();
+        followers.add(nino);
+        followers.add(krasi);
 
-        this.userService.startFollowingUser(mainUserNino.getUsername(), followerUserVesy.getUsername());
+        this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
+        this.userService.startFollowingUser(krasi.getUsername(), vesy.getUsername());
 
         //assert
         Assert.assertEquals("Followers are not being added correctly",
-               mainUserNino.getFollowers(),
-                nino.getFollowers());
+               vesy.getFollowers(),
+                followers);
     }
 
     @Test
-    public void testSaveUser_givenValidUser_shouldCreateUserWithNoFollowingGropus() {
+    public void testStopFollowingUser_shouldStopFollowingUsersCorrectly() throws IOException {
         //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+        Set<User> followers = new HashSet<>();
+        followers.add(nino);
+        followers.add(krasi);
+
+        this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
+        this.userService.startFollowingUser(krasi.getUsername(), vesy.getUsername());
 
         //assert
-        Assert.assertNull("Followers not null upon creation" ,loadedUser.getFollowingGroups());
-    }
+        Assert.assertEquals("Followers are not being added correctly",
+                vesy.getFollowers(),
+                followers);
 
-    @Test
-    public void testSaveUser_givenValidUser_shouldCreateUserWithNoComments() {
         //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
+        this.userService.stopFollowingUser(nino.getUsername(), vesy.getUsername());
 
         //assert
-        Assert.assertNull("Followers not null upon creation" ,loadedUser.getComments());
-    }
-
-    @Test
-    public void testSaveUser_givenValidUser_shouldCreateUserWithNoStories() {
-        //act
-        User loadedUser = this.userService.findUserByUsername(nino.getUsername());
-
-        //assert
-        Assert.assertNull("Followers not null upon creation" ,loadedUser.getStories());
+        followers.remove(nino);
+        Assert.assertEquals(followers, vesy.getFollowers());
     }
 }
