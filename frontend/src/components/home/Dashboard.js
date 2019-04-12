@@ -46,10 +46,14 @@ export default class Dashboard extends React.Component {
             });
 
             this.props.Crud.getUserInfo(username).then((res) => {
-                this.fetchAllMyStories(res.storiesById);
-                this.fetchAllMyChallenges(res.challengesById);
-                this.fetchAllStoriesFromFollowedUser(res.followingUsersByUsername)
-                this.fetchAllStoriesFromGroupsFollowed(res.followingGroupsByName);
+                if (res.success){
+                    this.fetchAllMyStories(res.body.storiesById);
+                    this.fetchAllMyChallenges(res.body.challengesById);
+                    this.fetchAllStoriesFromFollowedUser(res.body.followingUsersByUsername)
+                    this.fetchAllStoriesFromGroupsFollowed(res.body.followingGroupsByName);
+                } else {
+                    message.error(res.body)
+                }
             })
 
 
@@ -61,10 +65,12 @@ export default class Dashboard extends React.Component {
 
                 if (res.success){
                     this.setState(prevState => ({
-                        myStories: [...prevState.myStories, res.body].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        myStories: [...prevState.myStories, res.body]
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     }));
+                } else {
+                    message.error(res.body)
                 }
-
             });
         }
     }
@@ -76,7 +82,10 @@ export default class Dashboard extends React.Component {
                 if (res.success){
                     this.setState(prevState => ({
                         myChallenges: [...prevState.myChallenges, res.body]
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     }));
+                } else {
+                    message.error(res.body)
                 }
             });
         }
@@ -86,39 +95,49 @@ export default class Dashboard extends React.Component {
         for (let person of followingUsersByUsername) {
             this.props.Crud.getUserInfo(person).then((newRes) => {
 
-                for (let storyId of newRes.storiesById) {
-                    this.props.Crud.getStoryById(storyId).then((res) => {
+                if (newRes.success){
+                    for (let storyId of newRes.body.storiesById) {
+                        this.props.Crud.getStoryById(storyId).then((res) => {
 
-                        if (res.success){
-                            res.body.username = newRes.username;
-                            res.body.avatar = newRes.avatar;
+                            if (res.success){
+                                res.body.username = newRes.body.username;
+                                res.body.avatar = newRes.body.avatar;
 
-                            this.setState(prevState => ({
-                                storiesFromPeople: [...prevState.storiesFromPeople, res.body],
-                            }));
-                        }
+                                this.setState(prevState => ({
+                                    storiesFromPeople: [...prevState.storiesFromPeople, res.body]
+                                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+                                }));
+                            } else {
+                                message.error(res.body)
+                            }
 
-                    });
+                        });
+                    }
+
+                    for (let challengeId of newRes.body.challengesById) {
+                        this.props.Crud.getStoryById(challengeId).then((res) => {
+
+                            if (res.success) {
+                                res.body.username = newRes.body.username;
+                                res.body.avatar = newRes.body.avatar;
+
+                                this.props.Crud.getChallengeById(res.body.challengeId).then((challenge) => {
+                                    if (moment(challenge.deadlineDate).isBefore(moment.now())) {
+                                        this.setState(prevState => ({
+                                            storiesFromPeople: [...prevState.storiesFromPeople, res.body]
+                                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                        }));
+                                    }
+                                })
+                            } else {
+                                message.error(res.body)
+                            }
+                        })
+                    }
+                } else {
+                    message.error(newRes.body)
                 }
 
-                for (let challengeId of newRes.challengesById) {
-                    this.props.Crud.getStoryById(challengeId).then((res) => {
-
-                        if (res.success) {
-                            res.body.username = newRes.username;
-                            res.body.avatar = newRes.avatar;
-
-                            this.props.Crud.getChallengeById(res.body.challengeId).then((challenge) => {
-                                if (moment(challenge.deadlineDate).isBefore(moment.now())) {
-                                    this.setState(prevState => ({
-                                        storiesFromPeople: [...prevState.storiesFromPeople, res.body]
-                                    }));
-                                }
-                            })
-                        }
-
-                    })
-                }
             });
         }
     }
@@ -130,39 +149,36 @@ export default class Dashboard extends React.Component {
                 if (newRes.success){
                     for (let storyById of newRes.body.storiesById) {
                         this.props.Crud.getStoryById(storyById).then((res) => {
+
                             if (res.success){
                                 this.props.Crud.getUserInfo(res.body.username).then((user) => {
 
-                                    if (res.body.username !== this.props.Auth.getProfile().username) {
-                                        res.body.avatar = user.avatar;
-                                        res.body.username = user.username;
-                                        res.body.groupName = newRes.name;
-                                        res.body.groupId = newRes.body.id;
+                                    if (user.success){
+                                        if (res.body.username !== this.props.Auth.getProfile().username) {
+                                            res.body.avatar = user.body.avatar;
+                                            res.body.username = user.body.username;
+                                            res.body.groupName = newRes.body.name;
+                                            res.body.groupId = newRes.body.id;
 
-                                        this.setState(prevState => ({
-                                            storiesFromGroups: [...prevState.storiesFromGroups, res.body],
-                                        }));
+                                            this.setState(prevState => ({
+                                                storiesFromGroups: [...prevState.storiesFromGroups, res.body]
+                                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+                                            }));
 
+                                        }
+                                    } else {
+                                        message.error(user.body)
                                     }
-
                                 });
+                            } else {
+                                message.error(res.body)
                             }
-                        }).catch((err) => {
-                            message.error(err)
                         })
                     }
+                } else {
+                    message.error(newRes.body)
                 }
             });
-        }
-    }
-
-    async handleStoryDelete(id){
-        let res = await this.props.Crud.deleteStoryById(id)
-        if (res.success) {
-            message.success(res.body)
-            this.props.Crud.getUserInfo(this.state.username).then((res) => {
-                this.fetchAllMyStories(res.storiesById);
-            })
         }
     }
 
@@ -178,9 +194,6 @@ export default class Dashboard extends React.Component {
             })} className='Create' icon='create'>Create Story</Button>
         </div>
 
-        let myChallengesSortedByDateCreate = this.state.myChallenges
-
-
         let content = {
             followedGroups: <FollowedGroups
                 {...this.state}
@@ -193,7 +206,6 @@ export default class Dashboard extends React.Component {
             myStories: <MyStories
                 {...this.state}
                 {...this.props}
-                handleDelete={this.handleStoryDelete.bind(this)}
             />,
             myChallenges: <MyChallenges
                 {...this.state}

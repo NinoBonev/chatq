@@ -27,12 +27,10 @@ class SingleGroup extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
         this._isMounted = true;
         this.props.setSubHeaderKey('singleGroup')
         this.props.setHeaderCoverVisibility(true)
         this.props.setSubHeaderLocation(this.props.match)
-
 
         this.fetchCurrentGroup(this.props.match.params.name)
         this.fetchAllGroups()
@@ -50,6 +48,8 @@ class SingleGroup extends Component {
                         }))
                     }
                 }
+            } else {
+                message.error(res.body)
             }
         })
     }
@@ -68,24 +68,29 @@ class SingleGroup extends Component {
                 if (this._isMounted) {
                     for (let str of res.body.storiesById) {
                         this.props.Crud.getStoryById(str).then((res) => {
+
                             if (res.success) {
                                 this.props.Crud.getUserInfo(res.body.username).then((user) => {
-                                    res.body.avatar = user.avatar;
 
-                                    this.setState(prevState => ({
-                                        stories: [...prevState.stories, res.body]
-                                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                                    }));
+                                    if (user.success){
+                                        res.body.avatar = user.body.avatar;
+
+                                        this.setState(prevState => ({
+                                            stories: [...prevState.stories, res.body]
+                                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                        }));
+                                    } else {
+                                        message.error(user.body)
+                                    }
+
                                 });
+                            } else {
+                                message.error(res.body)
                             }
-
-                        }).catch((err) => {
-                            message.error(err.body);
-                        });
+                        })
                     }
                 }
             } else {
-                this.props.history.push('/')
                 message.error(res.body);
             }
         })
@@ -110,10 +115,10 @@ class SingleGroup extends Component {
                     data,
                     loading: false,
                 });
+            } else {
+                message.error(res.body)
             }
-        }).catch((err) => {
-            message.error(err);
-        });
+        })
     }
 
     componentWillUnmount() {
@@ -147,14 +152,11 @@ class SingleGroup extends Component {
                                     renderItem={item => (
                                         <List.Item className='all-groups-list-item' key={item.id}>
                                             <List.Item.Meta
+                                                onClick={() => this.fetchCurrentGroup(item.name)}
                                                 avatar={<Avatar
                                                     style={{marginLeft: 10}}
-                                                    onClick={() => this.fetchCurrentGroup(item.name)}
                                                     src={item.cover}/>}
-                                                title={<span
-                                                    onClick={() => this.fetchCurrentGroup(item.name)}>
-                                                    {item.name}
-                                                    </span>}
+                                                title={<span>{item.name}</span>}
                                             />
                                         </List.Item>
 

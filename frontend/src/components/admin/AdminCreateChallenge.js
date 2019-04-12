@@ -36,8 +36,6 @@ class AdminCreateChallenge extends React.Component {
             data.height = data.croppedImageUrl.height;
             data.width = data.croppedImageUrl.width;
 
-            console.log(data);
-
             this.setState({
                 loading: true
             })

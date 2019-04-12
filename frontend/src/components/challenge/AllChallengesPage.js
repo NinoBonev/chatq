@@ -34,40 +34,41 @@ export default class AllChallengesPage extends React.Component {
         this.props.setSubHeaderKey('allChallenges')
 
         this.props.Crud.getAllChallenges().then((res) => {
-            for (let challenge of res) {
+            if (res.success){
+                for (let challenge of res.body) {
                     let date = moment(challenge.deadlineDate).utc();
 
                     if (!date.isSameOrBefore(moment.now())) {
                         this.setState(prevState => ({
                             activeChallenges: [...prevState.activeChallenges, challenge]
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         }));
                     } else {
                         this.setState(prevState => ({
                             oldChallenges: [...prevState.oldChallenges, challenge]
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                         }));
                     }
                 }
-        }).catch((err) => {
-            message.error('Error');
-        });
+            } else {
+                message.error(res.body)
+            }
+        })
     }
 
 
     render() {
-        let activeChallengesSortedByDateCreate = this.state.activeChallenges.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        let oldChallengesSortedByDateCreate = this.state.oldChallenges.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         return (
             <div>
                 <Row>
                     <div className='main-data-container'>
                         <Tabs style={{marginLeft: 25}} onChange={this.setKey} activeKey={this.state.activeKey}>
                             <TabPane tab="Join a challenge " key="1">
-                                <AllCurrentChallengesTab {...this.props} challenges={activeChallengesSortedByDateCreate}/>
+                                <AllCurrentChallengesTab {...this.props} {...this.state}/>
                             </TabPane>
                             {this.props.isAuth ?
                                 <TabPane tab="Old challenges" key="2">
-                                    <AllOldChallengesTab {...this.props} challenges={oldChallengesSortedByDateCreate}/>
+                                    <AllOldChallengesTab {...this.props} {...this.state}/>
                                 </TabPane>
 
                                 :

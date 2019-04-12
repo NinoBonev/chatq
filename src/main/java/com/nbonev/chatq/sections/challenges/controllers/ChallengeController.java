@@ -1,6 +1,7 @@
 package com.nbonev.chatq.sections.challenges.controllers;
 
 import com.nbonev.chatq.exception.ResourceNotFoundException;
+import com.nbonev.chatq.payload.ApiError;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.challenges.entities.Challenge;
 import com.nbonev.chatq.sections.challenges.models.binding.ChallengeCreateBindingModel;
@@ -14,10 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,27 +39,52 @@ public class ChallengeController {
     }
 
     @GetMapping(path = "/challenges", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ChallengeViewModel> allChallenges() {
+    public ResponseEntity<ApiResponse> allChallenges() {
+        List<ChallengeViewModel> challengeViewModels;
 
-        return this.challengeService.getAllChallengesDTO();
+        try {
+            challengeViewModels = this.challengeService.getAllChallengesDTO();
+        } catch (ResourceNotFoundException ex) {
+            ApiError apiError = new ApiError(ex);
+            return apiError.getResourceNotFoundResponseEntity();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, challengeViewModels));
     }
 
     @GetMapping(path = "/challenges/{id}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public ChallengeViewModel getSingleGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse> getSingleGroup(@PathVariable("id") Long id) {
+        ChallengeViewModel challengeViewModel;
 
-        return this.challengeService.getChallengeDTOById(id);
+        try {
+            challengeViewModel = this.challengeService.getChallengeDTOById(id);
+        } catch (ResourceNotFoundException ex) {
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, challengeViewModel));
+
     }
 
     @PostMapping("/admin/challenges/create_challenge")
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse> createChallenge(@Valid @RequestBody ChallengeCreateBindingModel challengeCreateBindingModel) throws IOException {
+    @ResponseBody
+    public ResponseEntity<ApiResponse> createChallenge(@Valid @RequestBody
+                                                     ChallengeCreateBindingModel challengeCreateBindingModel,
+                                             BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors()){
+            ApiError apiError = new ApiError(bindingResult);
+            return apiError.getBadRequestResponseEntity();
+        }
 
         this.challengeService.createChallenge(challengeCreateBindingModel);
 
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.CHALLENGE_CREATE_SUCCESS));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(true, Constants.CHALLENGE_CREATE_SUCCESS));
     }
 
     @PostMapping(path = "/admin/challenges/archive/{id}")
@@ -64,8 +93,14 @@ public class ChallengeController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> archiveChallenge(@PathVariable("id") Long id) {
 
-        this.challengeService.archiveChallenge(id);
+        try {
+            this.challengeService.archiveChallenge(id);
+        } catch (ResourceNotFoundException ex) {
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
 
-        return ResponseEntity.ok().body(new ApiResponse(true, "Archive Challenge Message"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new ApiResponse(true, String.format(Constants.CHALLENGE_ARCHIVE_SUCCESS, id)));
     }
 }

@@ -26,21 +26,34 @@ class SingleCurrentChallengeTabs extends React.Component{
     componentDidMount() {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
 
-                for (let storyById of res.storiesById) {
+            if (res.success){
+                for (let storyById of res.body.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
-                        this.props.Crud.getUserInfo(story.username).then((user) => {
-                            story.avatar = user.avatar;
 
-                            this.setState(prevState => ({
-                                stories: [...prevState.stories, story]
-                            }));
-                        });
+                        if (story.success){
+                            this.props.Crud.getUserInfo(story.username).then((user) => {
+
+                                if (user.success){
+                                    story.body.avatar = user.body.avatar;
+
+                                    this.setState(prevState => ({
+                                        stories: [...prevState.stories, story.body]
+                                            .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                }));
+                                } else {
+                                    message.error(user.body)
+                                }
+                            });
+                        } else {
+                            message.error(story.body)
+                        }
                     })
-
                 }
-        }).catch((err) => {
-            message.error("Error");
-        });
+            } else {
+                message.error(res.body)
+            }
+
+        })
     }
 
     setKey(key) {
@@ -48,8 +61,6 @@ class SingleCurrentChallengeTabs extends React.Component{
     }
 
     render(){
-        let storiesSortedByDateCreate = this.state.stories.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         return(
             <div className='default-panel'>
             <Tabs style={{marginLeft: 25}} onChange={this.setKey.bind(this)} activeKey={this.state.activeKey}>
@@ -58,7 +69,7 @@ class SingleCurrentChallengeTabs extends React.Component{
                 </TabPane>
                 {this.props.isAdmin ?
                     <TabPane tab="See current stories" key="2">
-                        <ListAllGroupStories {...this.props} data={storiesSortedByDateCreate}/>
+                        <ListAllGroupStories {...this.props} {...this.state}/>
                     </TabPane>
 
                     :

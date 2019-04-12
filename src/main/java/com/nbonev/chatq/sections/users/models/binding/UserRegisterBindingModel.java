@@ -1,5 +1,6 @@
 package com.nbonev.chatq.sections.users.models.binding;
 
+import com.nbonev.chatq.sections.users.utils.Constants;
 import com.nbonev.chatq.util.cloudinary.ImageUpload;
 
 import javax.validation.constraints.Email;
@@ -15,21 +16,23 @@ import java.io.IOException;
 public class UserRegisterBindingModel {
 
     @NotBlank
-    @Size(min = 4, max = 40)
+    @Size(min = 4, max = 40, message = Constants.USER_NAME_VALIDATION)
     private String name;
 
     @NotBlank
-    @Size(min = 4, max = 15)
+    @Size(min = 4, max = 15, message = Constants.USER_USERNAME_VALIDATION)
     private String username;
 
     @NotBlank
-    @Size(max = 40)
-    @Email
+    @Size(max = 40, message = Constants.USER_EMAIL_SIZE_VALIDATION)
+    @Email(message = Constants.USER_EMAIL_FORMAT_VALIDATION)
     private String email;
 
     @NotBlank
+    @Size(min = 4, max = 20, message = Constants.USER_PASSWORD_SIZE_VALIDATION)
     private String password;
 
+    @NotBlank(message = Constants.USER_AVATAR_VALIDATION)
     private String avatar;
 
     public UserRegisterBindingModel() {

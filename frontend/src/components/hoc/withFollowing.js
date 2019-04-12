@@ -17,25 +17,28 @@ function withFollowing(WrappedComponent) {
             this._isMounted = true;
 
             this.props.Crud.getGroupByName(this.props.subHeaderLocation.params.name).then((res) => {
-                if (this._isMounted) {
-                    if (this.props.isAuth) {
-                        let following = false;
-                        let user = this.props.Auth.getProfile()
+                if (res.success){
+                    if (this._isMounted) {
+                        if (this.props.isAuth) {
+                            let following = false;
+                            let user = this.props.Auth.getProfile()
 
-                        if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(user.username) > -1) {
-                            following = true;
+                            if (res.body.followersByUsername !== undefined &&
+                                res.body.followersByUsername.indexOf(user.username) > -1) {
+                                following = true;
+                            }
+
+                            this.setState({
+                                group_name: res.body.name,
+                                username: user.username,
+                                following
+                            });
                         }
-
-                        this.setState({
-                            group_name: res.name,
-                            username: user.username,
-                            following
-                        });
                     }
+                } else {
+                    message.error(res.body)
                 }
-            }).catch((err) => {
-                message.error("Error");
-            });
+            })
         }
 
         componentWillUnmount() {
@@ -49,6 +52,8 @@ function withFollowing(WrappedComponent) {
                     this.setState({
                         following: true
                     });
+                } else {
+                    message.error(res.body)
                 }
             });
 
@@ -61,6 +66,8 @@ function withFollowing(WrappedComponent) {
                     this.setState({
                         following: false
                     });
+                } else {
+                    message.error(res.body)
                 }
             });
         };

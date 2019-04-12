@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {Carousel, Row, Col, Icon, Tabs} from 'antd';
+import {Carousel, Row, Col, Icon, Tabs, message} from 'antd';
 import BasicComments from '../comment/BasicCommentList'
 
 const {TabPane} = Tabs
@@ -49,11 +49,10 @@ export default class StoryPage extends React.Component {
                 this.setState({
                     storyLines: res.body.storyLine,
                 });
+            } else {
+                message.error(res.body)
             }
-
         })
-
-
     }
 
     render() {

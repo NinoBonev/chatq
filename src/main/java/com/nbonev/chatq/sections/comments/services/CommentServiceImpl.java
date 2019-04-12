@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment create(CommentCreateBindingModel commentCreateBindingModel) throws IOException {
+    public Comment create(CommentCreateBindingModel commentCreateBindingModel) {
         Comment comment = modelMapper.map(commentCreateBindingModel, Comment.class);
         User user = this.userRepository.findUserById(commentCreateBindingModel.getUserId());
         Story story = this.storyRepository.findStoryById(commentCreateBindingModel.getStoryId());

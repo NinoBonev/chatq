@@ -1,13 +1,27 @@
 package com.nbonev.chatq.sections.comments.models.binding;
 
+import com.nbonev.chatq.sections.comments.utils.Constants;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by Nino Bonev - 27.3.2019 г., 19:15
  */
 public class CommentCreateBindingModel {
 
+    @NotNull
+    @NotEmpty(message = Constants.COMMENT_VALUE_VALIDATION)
     private String value;
+
+    @NotNull
+    @NotEmpty(message = Constants.COMMENT_AVATAR_VALIDATION)
     private String avatar;
+
+    @NotNull(message = Constants.COMMENT_USER_ID_VALIDATION)
     private Long userId;
+
+    @NotNull(message = Constants.COMMENT_STORY_ID_VALIDATION)
     private Long storyId;
 
     public CommentCreateBindingModel() {

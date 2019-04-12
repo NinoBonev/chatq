@@ -1,5 +1,6 @@
 package com.nbonev.chatq.sections.groups.services;
 
+import com.nbonev.chatq.exception.BadRequestException;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.groups.entities.Group;
@@ -37,6 +38,26 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group createGroup(GroupCreateBindingModel groupCreateBindingModel) throws IOException {
+
+        if(groupCreateBindingModel.getName().length() < 4){
+            throw new BadRequestException("Name should be with minimum size of 4 symbols");
+        }
+
+        if(groupCreateBindingModel.getName().length() >= 100){
+            throw new BadRequestException("Name should be with maximum size of 100 symbols");
+        }
+
+        if(groupCreateBindingModel.getInfo().length() < 25){
+            throw new BadRequestException("Info should be with minimum size of 25 symbols");
+        }
+
+        if(groupCreateBindingModel.getInfo().length() >= 601){
+            throw new BadRequestException("Info should be with maximum size of 600 symbols");
+        }
+
+        if(groupCreateBindingModel.getCover().length() < 1){
+            throw new BadRequestException("Cover could not be empty");
+        }
 
         groupCreateBindingModel.uploadAndSetCover();
         groupCreateBindingModel.setStatus(GroupStatus.OPEN.getStatusName());

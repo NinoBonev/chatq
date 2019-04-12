@@ -36,10 +36,10 @@ export default class AllGroups extends React.Component {
                             }))
                         }
                     }
+                } else {
+                    message.error(res.body)
                 }
-            }).catch((err) => {
-                message.error(err);
-            });
+            })
         }
     }
 
@@ -51,6 +51,8 @@ export default class AllGroups extends React.Component {
                     groups: []
                 })
                 this.fetchAllStories();
+            } else {
+                message.error(res.body)
             }
         })
     }

@@ -45,67 +45,81 @@ class CreateStoryForm extends React.Component {
         }
 
         if (this.props.location.pathname === '/challenges/create_story') {
-            this.props.Crud.getAllChallenges().then((challenges) => {
-                let challenge = challenges.find(x => x.name === this.props.location.state);
+            this.props.Crud.getAllChallenges().then((res) => {
+                if (res.success){
+                    let challenge = res.body.find(x => x.name === this.props.location.state);
 
-                this.setState(({fields}) => ({
-                    fields: {
-                        ...fields,
-                        challenge: {status: challenge.status, label: challenge.name, value: challenge.id}
-                    },
-                }));
-            }).catch((err) => {
-                message.error('Error');
-            });
+                    this.setState(({fields}) => ({
+                        fields: {
+                            ...fields,
+                            challenge: {status: challenge.status, label: challenge.name, value: challenge.id}
+                        },
+                    }));
+                } else {
+                    message.error(res.body)
+                }
+            })
         }
 
         if (this.props.location.pathname === '/groups/create_story') {
             if (this.props.location.state !== undefined) {
-                this.props.Crud.getAllGroups().then((groups) => {
+                this.props.Crud.getAllGroups().then((res) => {
+                    if (res.success){
+                        let group = res.body.find(x => x.name === this.props.location.state);
 
-                    let group = groups.find(x => x.name === this.props.location.state);
-
-                    this.setState(({fields}) => ({
-                        fields: {...fields, group: {label: group.name, value: group.id}},
-                    }));
+                        this.setState(({fields}) => ({
+                            fields: {...fields, group: {label: group.name, value: group.id}},
+                        }));
+                    } else {
+                        message.error(res.body)
+                    }
                 });
             } else {
                 this.props.Crud.getAllGroups().then((res) => {
-                    for (const group of res) {
-                        let label = group.name;
-                        let value = group.id;
-                        let status = group.status;
+                    if (res.success){
+                        for (const group of res.body) {
+                            let label = group.name;
+                            let value = group.id;
+                            let status = group.status;
 
-                        this.setState(({fields}) => ({
-                            fields: {...fields, groups: [...fields.groups, {status, label, value}]},
-                        }));
+                            this.setState(({fields}) => ({
+                                fields: {...fields, groups: [...fields.groups, {status, label, value}]},
+                            }));
+                        }
+                    } else {
+                        message.error(res.body)
                     }
-                }).catch((err) => {
-                    message.error('Error');
-                });
+
+                })
             }
         }
 
         if (this.props.match.path === '/groups/edit_story/:id') {
 
             this.props.Crud.getStoryById(this.props.match.params.id).then((res) => {
-                this.setState(this.props.Helper.storyFormInitialState(res))
-            }).catch((err) => {
-                message.error('Error');
-            });
+                if (res.success){
+                    this.setState(this.props.Helper.storyFormInitialState(res.body))
+                } else {
+                    message.error(res.body)
+                }
+            })
         }
 
         if (this.props.match.path === '/challenges/edit_story/:id') {
             this.props.Crud.getStoryById(this.props.match.params.id).then((res) => {
-                this.props.Crud.getChallengeById(res.challengeId).then((challengeInfo) => {
-                    this.setState(this.props.Helper.storyFormInitialState(res));
-                });
-
-            }).catch((err) => {
-                message.error('Error');
-            });
+                if (res.success){
+                    this.props.Crud.getChallengeById(res.body.challengeId).then((challenge) => {
+                        if (challenge.success){
+                            this.setState(this.props.Helper.storyFormInitialState(res.body));
+                        } else {
+                            message.error(challenge.body)
+                        }
+                    });
+                } else {
+                    message.error(res.body)
+                }
+            })
         }
-
     }
 
     next() {
@@ -144,8 +158,10 @@ class CreateStoryForm extends React.Component {
         let res = await this.props.Crud.editStoryInfo(storyId, editProps);
         if (res.success) {
             message.destroy();
-            message.success('You have successfully edited your story');
+            message.success(res.body);
             this.props.history.push('/dashboard');
+        } else {
+            message.error(res.body)
         }
     };
 
@@ -176,8 +192,10 @@ class CreateStoryForm extends React.Component {
             let res = await this.props.Crud.createStory(payload);
             if (res.success) {
                 message.destroy();
-                message.success('You have successfully created a new story');
+                message.success(res.body);
                 this.props.history.push('/dashboard');
+            } else {
+                message.error(res.body)
             }
 
         }

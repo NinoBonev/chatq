@@ -3,6 +3,7 @@ package com.nbonev.chatq.sections.challenges.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nbonev.chatq.sections.audit.DateAudit;
+import com.nbonev.chatq.sections.challenges.utils.Constants;
 import com.nbonev.chatq.sections.stories.entities.Story;
 import com.nbonev.chatq.sections.users.entities.User;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,15 +28,17 @@ public class Challenge extends DateAudit {
     private long id;
 
     @NotBlank
+    @Size(min = 6, max = 300)
     private String name;
 
     @NotBlank
-    @Size(min = 10, max = 600)
+    @Size(min = 10, max = 12000)
     private String info;
 
     @NotBlank
     private String cover;
 
+    @NotBlank
     @DateTimeFormat
     private Instant deadlineDate;
 

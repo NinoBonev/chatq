@@ -22,6 +22,8 @@ class AdminAllUsersPane extends React.Component {
                     data: []
                 });
                 this.fetchAllStories()
+            } else {
+                message.error(res.body)
             }
         })
     }
@@ -34,25 +36,28 @@ class AdminAllUsersPane extends React.Component {
         this.props.Crud.getAllUsers().then((res) => {
             let count = 0
 
-            for (let user of res) {
-                let userData = {
-                    key: count++,
-                    id: user.id,
-                    name: user.name,
-                    avatar: user.avatar,
-                    email: user.email,
-                    username: user.username,
-                    groups_follow: user.followingGroupsByName.length,
-                    people_follow: user.followingUsersByUsername.length,
-                    followers: user.followersByUsername.length,
-                    stories_groups: user.storiesById.length,
-                    stories_challenges: user.challengesById.length
-                }
+            if (res.success){
+                for (let user of res.body) {
+                    let userData = {
+                        key: count++,
+                        id: user.id,
+                        name: user.name,
+                        avatar: user.avatar,
+                        email: user.email,
+                        username: user.username,
+                        groups_follow: user.followingGroupsByName.length,
+                        people_follow: user.followingUsersByUsername.length,
+                        followers: user.followersByUsername.length,
+                        stories_groups: user.storiesById.length,
+                        stories_challenges: user.challengesById.length
+                    }
 
-                this.setState(prevStete => ({
-                    data: [...prevStete.data, userData]
-                }))
+                    this.setState(prevStete => ({
+                        data: [...prevStete.data, userData]
+                    }))
+                }
             }
+
         });
     }
 

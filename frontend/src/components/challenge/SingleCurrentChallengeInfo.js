@@ -21,15 +21,18 @@ class SingleCurrentChallengeInfo extends Component {
 
     componentDidMount() {
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
+            if (res.success){
                 this.setState(prevState => ({
-                    name: res.name,
-                    cover: res.cover,
-                    info: res.info,
-                    deadlineDate: res.deadlineDate,
+                    name: res.body.name,
+                    cover: res.body.cover,
+                    info: res.body.info,
+                    deadlineDate: res.body.deadlineDate,
                 }));
-        }).catch((err) => {
-            message.error('Error');
-        });
+            } else {
+                message.error(res.body)
+            }
+
+        })
     }
 
     setKey(key) {

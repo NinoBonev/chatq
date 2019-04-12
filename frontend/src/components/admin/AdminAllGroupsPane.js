@@ -58,10 +58,10 @@ export default class AdminAllGroupsPane extends React.Component{
 
     fetchAllGroups(){
         this.props.Crud.getAllGroups().then((res) => {
-            console.log(res);
-            let count = 0
 
-            for (let group of res) {
+            let count = 0;
+
+            for (let group of res.body) {
                 let userData = {
                     key: count++,
                     id: group.id,
@@ -69,7 +69,7 @@ export default class AdminAllGroupsPane extends React.Component{
                     followers: group.followersByUsername.length,
                     stories: group.storiesById.length,
                     status: group.status
-                }
+                };
 
                 this.setState(prevStete => ({
                     data: [...prevStete.data, userData]

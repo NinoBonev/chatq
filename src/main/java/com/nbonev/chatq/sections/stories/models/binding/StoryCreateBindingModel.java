@@ -32,7 +32,10 @@ public class StoryCreateBindingModel {
     @NotEmpty(message = Constants.COVER_VALIDATION_MESSAGE)
     private String cover;
 
+    @NotNull
+    @NotEmpty(message = Constants.USER_VALIDATION_MESSAGE)
     private User user;
+
     private Group group;
     private Challenge challenge;
     private Set<StoryLine> storylines;

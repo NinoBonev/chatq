@@ -65,7 +65,15 @@ class AdminCreateGroup extends React.Component {
                 message.success(res.body)
                 this.props.history.push('/dashboard');
             } else {
-                message.error("Error during creating the group")
+                message.destroy();
+
+                this.setState({
+                    loading: false
+                });
+
+                for (const error of res.body) {
+                    message.error(error)
+                }
             }
         }
     }
@@ -129,9 +137,9 @@ class AdminCreateGroup extends React.Component {
                                         {getFieldDecorator('name', {
                                             initialValue: this.state.name,
                                             rules: [{
-                                                min: 6,
+                                                min: 4,
                                                 max: 100,
-                                                required: true, message: 'The name of the groups should be between 4 and 100 symbols'}],
+                                                required: true, message: 'The provided name size should be between 4 and 100 symbols'}],
                                         })(
                                             <Input placeholder="Name"/>
                                         )}
@@ -146,8 +154,8 @@ class AdminCreateGroup extends React.Component {
                                         {getFieldDecorator('info', {
                                             initialValue: this.state.info,
                                             rules: [{
-                                                min: 25,
-                                                required: true, message: 'The provided info should be min 25 symbols long'}],
+                                                min: 10,
+                                                required: true, message: 'The provided info size should be at least 10 symbols'}],
                                         })(
                                             <TextArea placeholder="Please add a few lines of info for the group"
                                                       autosize={{minRows: 4, maxRows: 8}}/>

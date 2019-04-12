@@ -24,7 +24,7 @@ class LoginPage extends React.Component {
             if (res.success){
                 this.props.history.push('/dashboard');
             } else {
-                message.error("Username or password are incorrect")
+                message.error(res.body)
             }
         }
     };

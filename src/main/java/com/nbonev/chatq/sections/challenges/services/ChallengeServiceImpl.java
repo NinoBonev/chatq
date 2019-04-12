@@ -64,7 +64,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         Challenge challenge = this.challengeRepository.findChallengeById(id);
 
         if (challenge == null) {
-            throw new ResourceNotFoundException("Group", "id", id);
+            throw new ResourceNotFoundException("Challenge", "id", id);
         }
 
         return challenge;

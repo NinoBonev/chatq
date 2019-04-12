@@ -32,57 +32,71 @@ export default class AllUserStories extends React.Component {
 
     fetchAllUserStories() {
         this.props.Crud.getUserInfo(this.props.match.params.name).then((res) => {
-            let user = this.props.Auth.getProfile();
+            console.log(res);
+            if (res.success){
+                let user = this.props.Auth.getProfile();
 
-            let followCurrentUser = false;
-            let notMyProfile = true;
+                let followCurrentUser = false;
+                let notMyProfile = true;
 
-            if (res.username === user.username) {
-                notMyProfile = false;
-            }
+                if (res.body.username === user.username) {
+                    notMyProfile = false;
+                }
 
-            if (res.followersByUsername !== undefined && res.followersByUsername.indexOf(user.username) > -1) {
-                followCurrentUser = true;
-            }
+                if (res.body.followersByUsername !== undefined && res.body.followersByUsername.indexOf(user.username) > -1) {
+                    followCurrentUser = true;
+                }
 
-            this.setState({
-                avatar: res.avatar,
-                user: res.username,
-                userId: res.id,
-                notMyProfile,
-                myUsername: user.username,
-                followCurrentUser
-            });
-
-
-            for (let storyId of res.storiesById) {
-                this.props.Crud.getStoryById(storyId).then((story) => {
-                    this.setState(prevState => ({
-                        stories: [...prevState.stories, story]
-                    }));
+                this.setState({
+                    avatar: res.body.avatar,
+                    user: res.body.username,
+                    userId: res.body.id,
+                    notMyProfile,
+                    myUsername: user.username,
+                    followCurrentUser
                 });
-            }
 
-            for (let challengeId of res.challengesById) {
-                this.props.Crud.getStoryById(challengeId).then((story) => {
-                    this.props.Crud.getChallengeById(story.challengeId).then((challenge) => {
-                        if (this.props.isAdmin) {
+
+                for (let storyId of res.body.storiesById) {
+                    this.props.Crud.getStoryById(storyId).then((story) => {
+
+                        if (story.success){
                             this.setState(prevState => ({
-                                challenges: [...prevState.challenges, story]
+                                stories: [...prevState.stories, story.body]
+                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
                             }));
                         } else {
-                            if (moment(challenge.deadlineDate).isBefore(moment.now())) {
-                                this.setState(prevState => ({
-                                    challenges: [...prevState.challenges, story]
-                                }));
-                            }
+                            message.error(story.body)
                         }
                     });
-                });
+                }
+
+                for (let challengeId of res.body.challengesById) {
+                    this.props.Crud.getStoryById(challengeId).then((story) => {
+
+                        if (story.success){
+                            this.props.Crud.getChallengeById(story.body.challengeId).then((challenge) => {
+                                if (challenge.success){
+                                    if (this.props.isAdmin) {
+                                        this.setState(prevState => ({
+                                            challenges: [...prevState.challenges, story.body]
+                                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                        }));
+                                    } else {
+                                        if (moment(challenge.body.deadlineDate).isBefore(moment.now())) {
+                                            this.setState(prevState => ({
+                                                challenges: [...prevState.challenges, story.body]
+                                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+                                            }));
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
             }
-        }).catch((err) => {
-            console.log(err);
-        });
+        })
     }
 
     showModal = (id, name) => {
@@ -117,6 +131,8 @@ export default class AllUserStories extends React.Component {
                 this.setState({
                     followCurrentUser: true
                 });
+            } else {
+                message.error(res.body)
             }
         });
 
@@ -129,6 +145,8 @@ export default class AllUserStories extends React.Component {
                 this.setState({
                     followCurrentUser: false
                 });
+            } else {
+                message.error(res.body)
             }
         });
     };
@@ -141,14 +159,13 @@ export default class AllUserStories extends React.Component {
                     stories: []
                 });
                 this.fetchAllUserStories();
+            } else {
+                message.error(res.body)
             }
         });
     }
 
     render() {
-        let storiesSortedByDateCreate = this.state.stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        let challengesSortedByDateCreate = this.state.challenges.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
         let followOptions = this.state.followCurrentUser ? <Col offset={1} span={22}>
             <div style={{marginBottom: 30, marginLeft: 30, fontStyle: 'italic', color: '#40a9ff'}}>
                 Don't want to follow this user anymore?
@@ -170,7 +187,7 @@ export default class AllUserStories extends React.Component {
                         <div align="center" style={{fontSize: 20, fontStyle: 'italic'}}>Stories submitted in groups:
                         </div>
                     </Col>
-                    {storiesSortedByDateCreate.length > 0 ? <div>
+                    {this.state.stories.length > 0 ? <div>
                             <Row gutter={8}>
                                 <Col span={6}>
                                     <div align='center'><Avatar size={200} src={this.state.avatar} alt=""/></div>
@@ -178,7 +195,7 @@ export default class AllUserStories extends React.Component {
                                         from <strong>{this.state.user}</strong></div>
                                     {this.state.notMyProfile ? followOptions : null}
                                 </Col>
-                                {storiesSortedByDateCreate.map((str) =>
+                                {this.state.stories.map((str) =>
                                     <Col span={6}>
                                         <Card
                                             style={{marginBottom: 20, marginTop: 20}}
@@ -227,9 +244,9 @@ export default class AllUserStories extends React.Component {
                             in challenges:
                         </div>
                     </Col>
-                    {challengesSortedByDateCreate.length > 0 ? <div>
+                    {this.state.challenges.length > 0 ? <div>
                             <Row gutter={8}>
-                                {challengesSortedByDateCreate.map((str) =>
+                                {this.state.challenges.map((str) =>
                                     <Col span={6}>
                                         <Card
                                             style={{marginBottom: 20, marginTop: 20}}

@@ -1,9 +1,11 @@
 package com.nbonev.chatq.sections.stories.controllers;
 
+import com.cloudinary.Api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nbonev.chatq.exception.BadRequestException;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
+import com.nbonev.chatq.payload.ApiError;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.challenges.entities.Challenge;
 import com.nbonev.chatq.sections.challenges.services.ChallengeService;
@@ -21,6 +23,7 @@ import com.nbonev.chatq.sections.users.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,34 +53,41 @@ public class StoryController {
 
     @GetMapping(path = "/story/{id}")
     @ResponseBody
-    public ResponseEntity<?> getSingleStory(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse> getSingleStory(@PathVariable("id") Long id) {
         StoryViewModel storyViewModel;
+
         try {
             storyViewModel = this.storyService.getStoryViewDTOById(id);
         } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadRequestException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
         }
 
-        return ResponseEntity.ok().body(new ApiResponse(true, storyViewModel));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, storyViewModel));
 
     }
 
     @PostMapping("/story/create")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    public ResponseEntity<?> createStory(@Valid @RequestBody StoryCreatePayload storyCreatePayload) throws IOException {
+    public ResponseEntity<ApiResponse> createStory(@Valid @RequestBody
+                                                           StoryCreatePayload storyCreatePayload,
+                                                   BindingResult bindingResult) throws IOException {
 
         StoryCreateBindingModel storyCreateBindingModel = new StoryCreateBindingModel();
-
         User user;
+
+        if (bindingResult.hasErrors()) {
+            ApiError error = new ApiError(bindingResult);
+            return error.getBadRequestResponseEntity();
+        }
+
         try {
             user = this.userService.findUserByUsername(storyCreatePayload.getUserByUsername());
-        } catch (ResourceNotFoundException ex){
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadRequestException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ResourceNotFoundException ex) {
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
         }
 
         //TODO ---> Send crop as parameter to upload
@@ -91,28 +101,27 @@ public class StoryController {
 
         storyCreateBindingModel.setUser(user);
 
-        if (storyCreatePayload.getGroup() != null){
+        if (storyCreatePayload.getGroup() != null) {
             Group group;
+
             try {
                 group = this.groupService.findGroupById(storyCreatePayload.getGroup());
-            } catch (ResourceNotFoundException ex){
-                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-            } catch (BadRequestException ex) {
-                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            } catch (ResourceNotFoundException ex) {
+                ApiError error = new ApiError(ex);
+                return error.getResourceNotFoundResponseEntity();
             }
 
             storyCreateBindingModel.setGroup(group);
         }
 
-        if (storyCreatePayload.getChallenge() != null){
+        if (storyCreatePayload.getChallenge() != null) {
             Challenge challenge;
 
             try {
                 challenge = this.challengeService.findChallengeById(storyCreatePayload.getChallenge());
-            } catch (ResourceNotFoundException ex){
-                return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-            } catch (BadRequestException ex) {
-                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            } catch (ResourceNotFoundException ex) {
+                ApiError error = new ApiError(ex);
+                return error.getResourceNotFoundResponseEntity();
             }
 
             storyCreateBindingModel.setChallenge(challenge);
@@ -127,48 +136,48 @@ public class StoryController {
                                 .constructCollectionType(LinkedHashSet.class,
                                         StoryLineCreateBindingModel.class));
 
-        try {
-            this.storyService.create(storyCreateBindingModel, storyLines);
-        } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadRequestException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        this.storyService.create(storyCreateBindingModel, storyLines);
 
-        return ResponseEntity.ok().body(new ApiResponse(true, Constants.STORY_CREATED_SUCEESS));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(true, Constants.STORY_CREATED_SUCCESS));
 
     }
 
     @PostMapping("/story/delete/{id}")
     @PreAuthorize("@accessService.isStoryOwnerOrAdmin(authentication, #id)")
     @ResponseBody
-    public ResponseEntity<?> deleteStory(@PathVariable("id") Long id){
+    public ResponseEntity<ApiResponse> deleteStory(@PathVariable("id") Long id) {
 
         try {
             this.storyService.deleteStory(id);
         } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadRequestException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
         }
 
-        return ResponseEntity.ok().body(new ApiResponse(true, "Delete Message"));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, String.format(Constants.STORY_DELETED_SUCCESS, id)));
     }
 
     @PostMapping("/story/editInfo/{id}")
     @PreAuthorize("@accessService.isStoryOwner(authentication, #id)")
     @ResponseBody
-    public ResponseEntity<?> editStory(@PathVariable("id") Long id,
-                                                 @Valid @RequestBody StoryEditBindingModel storyEditBindingModel) throws IOException {
+    public ResponseEntity<ApiResponse> editStory(@PathVariable("id") Long id,
+                                       @Valid @RequestBody StoryEditBindingModel storyEditBindingModel,
+                                       BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors()){
+            ApiError error = new ApiError(bindingResult);
+            return error.getBadRequestResponseEntity();
+        }
 
         try {
             this.storyService.editStory(id, storyEditBindingModel);
         } catch (ResourceNotFoundException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (BadRequestException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
         }
 
-        return ResponseEntity.ok().body(new ApiResponse(true, "Edit Message"));
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new ApiResponse(true, String.format(Constants.STORY_EDITED_SUCCESS, id)));
     }
 }

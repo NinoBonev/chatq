@@ -4,6 +4,7 @@ import com.nbonev.chatq.sections.groups.utils.Constants;
 import com.nbonev.chatq.sections.stories.entities.Story;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.util.cloudinary.ImageUpload;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -19,12 +20,12 @@ public class GroupCreateBindingModel {
 
     @NotNull
     @NotEmpty(message = Constants.NAME_VALIDATION_MESSAGE)
-    @Size(min = 6, max = 300)
+    @Size(min = 6, max = 300, message = Constants.NAME_VALIDATION_MESSAGE)
     private String name;
 
     @NotNull
     @NotEmpty(message = Constants.INFO_VALIDATION_MESSAGE)
-    @Size(min = 10, max = 12000)
+    @Size(min = 10, max = 12000, message = Constants.INFO_VALIDATION_MESSAGE)
     private String info;
 
     @NotNull

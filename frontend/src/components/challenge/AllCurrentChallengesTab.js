@@ -21,7 +21,7 @@ const AllCurrentChallengesTab = (props) => {
                             hideOnSinglePage: true,
                             pageSize: 3,
                         }}
-                        dataSource={props.challenges}
+                        dataSource={props.activeChallenges}
                         footer={<div><b>ant design</b> footer part</div>}
                         renderItem={item => (
                             <List.Item

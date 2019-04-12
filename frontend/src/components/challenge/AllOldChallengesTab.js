@@ -20,7 +20,7 @@ const AllOldChallengesTab = (props) => {
                         pageSize: 3,
 
                     }}
-                    dataSource={props.challenges}
+                    dataSource={props.oldChallenges}
                     footer={<div><b>ant design</b> footer part</div>}
                     renderItem={item => (
                         <List.Item

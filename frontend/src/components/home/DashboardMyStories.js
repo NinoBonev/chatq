@@ -28,16 +28,25 @@ export default class DashboardMyStories extends React.Component {
         })
     }
 
-    handleStoryDelete = (id) =>{
-        this.props.handleDelete(id).then(() => {
-            this.fetchAllStories()
-        })
-    }
+    handleStoryDelete(id){
+        this.props.Crud.deleteStoryById(id).then((res) => {
+            if (res.success) {
+                message.success(res.body);
 
-    componentWillUnmount(){
-        this.setState({
-            stories: []
-        });
+                this.props.Crud.getUserInfo(this.props.username).then((user) => {
+                    if (user.success){
+                        this.setState({
+                                stories: []
+                            });
+                        this.fetchAllStories()
+                    } else {
+                        message.error(user.body)
+                    }
+                })
+            } else {
+                message.error(res.body)
+            }
+        })
     }
 
 

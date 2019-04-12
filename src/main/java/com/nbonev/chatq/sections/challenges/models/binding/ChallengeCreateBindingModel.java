@@ -1,7 +1,11 @@
 package com.nbonev.chatq.sections.challenges.models.binding;
 
+import com.nbonev.chatq.sections.challenges.utils.Constants;
 import com.nbonev.chatq.util.cloudinary.ImageUpload;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.time.Instant;
 
@@ -12,10 +16,23 @@ import java.time.Instant;
 
 public class ChallengeCreateBindingModel {
 
+    @NotNull
+    @NotEmpty(message = Constants.NAME_VALIDATION_MESSAGE)
+    @Size(min = 6, max = 300, message = Constants.NAME_VALIDATION_MESSAGE)
     private String name;
+
+    @NotNull
+    @NotEmpty(message = Constants.INFO_VALIDATION_MESSAGE)
+    @Size(min = 10, max = 12000, message = Constants.INFO_VALIDATION_MESSAGE)
     private String info;
+
+    @NotNull
+    @NotEmpty(message = Constants.COVER_VALIDATION_MESSAGE)
     private String cover;
+
+    @NotNull(message = Constants.DEADLINE_VALIDATION_MESSAGE)
     private Instant deadlineDate;
+
     private String status;
     private Double x;
     private Double y;

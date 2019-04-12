@@ -8,8 +8,6 @@ import {Link} from 'react-router-dom';
 import BasicModal from "../story/BasicModal";
 
 const DashboardFollowedGroups = (props) => {
-    let storiesFromGroupsSortedByDateCreate = props.storiesFromGroups.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     return (
         <Row gutter={16}>
         <div className='main-data-container'>
@@ -41,7 +39,7 @@ const DashboardFollowedGroups = (props) => {
                             hideOnSinglePage: true,
                             pageSize: 3,
                         }}
-                        dataSource={storiesFromGroupsSortedByDateCreate}
+                        dataSource={props.storiesFromGroups}
                         footer={<div><b>ant design</b> footer part</div>}
                         renderItem={item => (
                             <List.Item

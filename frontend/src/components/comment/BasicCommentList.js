@@ -53,31 +53,37 @@ class BasicComments extends React.Component {
 
     async componentDidMount() {
         let user = this.props.Auth.getProfile()
-            this.setState({
-                userId: user.id,
-                avatar: user.avatar
-            })
+        this.setState({
+            userId: user.id,
+            avatar: user.avatar
+        })
 
 
         this.fetchAllComments()
     }
 
     fetchAllComments() {
-        this.props.Crud.getStoryById(this.props.storyId).then((story) => {
+        this.props.Crud.getStoryById(this.props.storyId).then((res) => {
 
-            let comments = story.comments
-            if (comments) {
-                for (let comment of comments) {
-                    this.props.Crud.getCommentById(comment.id).then((info) => {
-                            info.author = comment.createdBy
+            if (res.success) {
+                let {comments} = res.body
+                if (comments) {
+                    for (let comment of comments) {
+                        this.props.Crud.getCommentById(comment.id).then((info) => {
+                            if (info.success) {
+                                info.body.author = comment.createdBy
 
-                            this.setState(prevState => ({
-                                comments: [...prevState.comments, info]
+                                this.setState(prevState => ({
+                                    comments: [...prevState.comments, info.body]
+                                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                                }))
+                            }
 
-                        }))
-                    })
+                        })
+                    }
                 }
             }
+
         })
     }
 
@@ -107,6 +113,8 @@ class BasicComments extends React.Component {
                     })
                     this.fetchAllComments()
                 }, 1000);
+            } else {
+                message.error(res.body)
             }
         })
 
@@ -121,11 +129,9 @@ class BasicComments extends React.Component {
     render() {
         const {submitting} = this.state;
 
-        let commentsSortedByDateCreated = this.state.comments.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
         return (
             <div style={{marginLeft: 20}}>
-                {commentsSortedByDateCreated[0] && <BasicCommentList comments={commentsSortedByDateCreated}/>}
+                {this.state.comments[0] && <BasicCommentList comments={this.state.comments}/>}
                 {this.props.isAuth && <Comment
                     content={(
                         <Editor

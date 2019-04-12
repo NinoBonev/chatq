@@ -3,6 +3,11 @@ package com.nbonev.chatq.payload;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import com.nbonev.chatq.sections.stories.utils.Constants;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -12,14 +17,32 @@ import com.google.gson.stream.JsonReader;
 
 public class StoryCreatePayload {
 
+    @NotNull
+    @NotEmpty(message = Constants.COVER_VALIDATION_MESSAGE)
+    private String cover;
+
+    @NotNull
+    @NotEmpty(message = Constants.USER_VALIDATION_MESSAGE)
+    private String userByUsername;
+
+    @NotNull
+    @NotEmpty(message = Constants.INFO_VALIDATION_MESSAGE)
+    @Size(min = 25, max = 12000)
+    private String info;
+
+    @NotNull
+    @NotEmpty(message = Constants.NAME_VALIDATION_MESSAGE)
+    @Size(min = 6, max = 300)
+    private String name;
+
+    @NotNull
+    @NotEmpty(message = Constants.STORYLINE_VALIDATION_MESSAGE)
+    private String storyLine;
+
     private Long challenge;
     private Long group;
-    private String cover;
+
     private String crop;
-    private String userByUsername;
-    private String info;
-    private String name;
-    private String storyLine;
     private Double x;
     private Double y;
     private Double height;

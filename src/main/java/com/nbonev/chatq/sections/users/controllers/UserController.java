@@ -4,6 +4,8 @@ package com.nbonev.chatq.sections.users.controllers;
  * Created by Nino Bonev - 22.3.2019 г., 8:50
  */
 
+import com.nbonev.chatq.exception.ResourceNotFoundException;
+import com.nbonev.chatq.payload.ApiError;
 import com.nbonev.chatq.payload.ApiResponse;
 import com.nbonev.chatq.sections.users.models.view.UserViewModel;
 import com.nbonev.chatq.sections.users.services.UserService;
@@ -36,32 +38,52 @@ public class UserController {
 
     @GetMapping("/users/{username}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public UserViewModel getUserProfile(@PathVariable(value = "username") String username) {
+    public ResponseEntity<ApiResponse> getUserProfile(@PathVariable(value = "username") String username) {
+        UserViewModel userViewModel;
 
-        return this.userService.getUserViewDTOByUsername(username);
+        try {
+            userViewModel = this.userService.getUserViewDTOByUsername(username);
+        } catch (ResourceNotFoundException ex){
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, userViewModel));
     }
 
     @GetMapping("/admin/users/all")
     @PreAuthorize("@accessService.isInRoleAdmin(authentication)")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserViewModel> getAllUsersProfiles() {
+    public ResponseEntity<ApiResponse> getAllUsersProfiles() {
+        List<UserViewModel> userViewModels;
 
-        return this.userService.getAllUsersViewDTOs();
+        try {
+            userViewModels = this.userService.getAllUsersViewDTOs();
+        } catch (ResourceNotFoundException ex){
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(true, userViewModels));
     }
 
     @PostMapping("/{group_name}/{username}/start_follow_group")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> startFollowingGroup(
             @PathVariable(value = "username") String username,
             @PathVariable(value = "group_name") String group_name) {
 
-        this.userService.startFollowingGroup(username, group_name);
+        try {
+            this.userService.startFollowingGroup(username, group_name);
+        } catch (ResourceNotFoundException ex) {
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(true,
                         String.format(Constants.GROUP_START_FOLLOW_SUCCESS,
                                 group_name)));
@@ -70,14 +92,18 @@ public class UserController {
     @PostMapping("/{group_name}/{username}/stop_follow_group")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> stopFollowingGroup(
             @PathVariable(value = "username") String username,
             @PathVariable(value = "group_name") String group_name) {
 
-        this.userService.stopFollowingGroup(username, group_name);
+        try {
+            this.userService.stopFollowingGroup(username, group_name);
+        } catch (ResourceNotFoundException ex){
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(true,
                         String.format(Constants.GROUP_STOP_FOLLOW_SUCCESS,
                                 group_name)));
@@ -86,14 +112,18 @@ public class UserController {
     @PostMapping("/{myUsername}/{followed_username}/start_follow_user")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> startFollowingUser(
             @PathVariable(value = "myUsername") String myUsername,
             @PathVariable(value = "followed_username") String followed_username) {
 
-        this.userService.startFollowingUser(myUsername, followed_username);
+        try {
+            this.userService.startFollowingUser(myUsername, followed_username);
+        } catch (ResourceNotFoundException ex){
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(true,
                         String.format(Constants.USER_START_FOLLOW_SUCCESS,
                                 followed_username)));
@@ -102,14 +132,18 @@ public class UserController {
     @PostMapping("/{myUsername}/{followed_username}/stop_follow_user")
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> stopFollowingUser(
             @PathVariable(value = "myUsername") String myUsername,
             @PathVariable(value = "followed_username") String followed_username) {
 
-        this.userService.stopFollowingUser(myUsername, followed_username);
+        try {
+            this.userService.stopFollowingUser(myUsername, followed_username);
+        } catch (ResourceNotFoundException ex){
+            ApiError error = new ApiError(ex);
+            return error.getResourceNotFoundResponseEntity();
+        }
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(true,
                         String.format(Constants.USER_STOP_FOLLOW_SUCCESS,
                                 followed_username)));

@@ -17,9 +17,8 @@ class AllGroupStories extends React.Component {
 
             if (res.success) {
                 message.success(res.body)
-                this.props.history.push({
-                    pathname: '/'
-                })
+            } else {
+                message.error(res.body)
             }
         })
     }
