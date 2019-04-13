@@ -4,6 +4,7 @@
 
 import React, {Component} from 'react';
 import {Row, Col, Card, Statistic, Button, message} from 'antd';
+import Cover from '../../resources/history4.jpg'
 
 const {Meta} = Card;
 const Countdown = Statistic.Countdown;
@@ -20,8 +21,13 @@ class SingleCurrentChallengeInfo extends Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0,0);
+        this.props.setSubHeaderKey('singleChallenge');
+        this.props.setHeaderCoverVisibility(true)
+
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
             if (res.success){
+                this.props.setHeaderCoverSource(Cover)
                 this.setState(prevState => ({
                     name: res.body.name,
                     cover: res.body.cover,

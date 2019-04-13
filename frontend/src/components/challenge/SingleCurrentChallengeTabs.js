@@ -24,14 +24,20 @@ class SingleCurrentChallengeTabs extends React.Component{
     }
 
     componentDidMount() {
-        this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
+        this.props.setSubHeaderKey('singleChallenge');
 
+        this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
+            this.props.setHeaderCoverAvatar(res.body.cover)
+            this.props.setHeaderCoverGroupInfo(
+                res.body.name,
+                '',
+                '')
             if (res.success){
                 for (let storyById of res.body.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
 
                         if (story.success){
-                            this.props.Crud.getUserInfo(story.username).then((user) => {
+                            this.props.Crud.getUserInfo(story.body.username).then((user) => {
 
                                 if (user.success){
                                     story.body.avatar = user.body.avatar;
@@ -58,6 +64,15 @@ class SingleCurrentChallengeTabs extends React.Component{
 
     setKey(key) {
         this.setState({activeKey: key});
+    }
+
+    componentWillUnmount() {
+        this.props.setContentKey('')
+        this.props.setHeaderCoverVisibility(false);
+        this.props.setHeaderCoverAvatar('');
+        this.props.setSubHeaderKey('')
+        this.props.setSubHeaderLocation('')
+        this.props.clearHeaderCoverGroupInfo()
     }
 
     render(){

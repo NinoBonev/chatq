@@ -5,7 +5,7 @@
 import React from 'react'
 import {message} from "antd/lib/index";
 
-function withFollowing(WrappedComponent) {
+function withFollowingUser(WrappedComponent) {
     class Following extends React.Component {
         _isMounted = false;
 
@@ -15,24 +15,31 @@ function withFollowing(WrappedComponent) {
 
         componentDidMount() {
             this._isMounted = true;
-            this.props.Crud.getGroupByName(this.props.subHeaderLocation).then((res) => {
+            this.props.Crud.getUserInfo(this.props.subHeaderLocation).then((res) => {
 
                 if (res.success){
                     if (this._isMounted) {
                         if (this.props.isAuth) {
-                            let following = false;
-                            let user = this.props.Auth.getProfile()
+                            let user = this.props.Auth.getProfile();
 
-                            if (res.body.followersByUsername !== undefined &&
-                                res.body.followersByUsername.indexOf(user.username) > -1) {
-                                following = true;
+                            let followCurrentUser = false;
+                            let notMyProfile = true;
+
+                            if (res.body.username === user.username) {
+                                notMyProfile = false;
+                            }
+
+                            if (res.body.followersByUsername !== undefined && res.body.followersByUsername.indexOf(user.username) > -1) {
+                                followCurrentUser = true;
                             }
 
                             this.setState({
-                                group_name: res.body.name,
-                                username: user.username,
-                                following
+                                user: res.body.username,
+                                notMyProfile,
+                                myUsername: user.username,
+                                followCurrentUser
                             });
+
                         }
                     }
                 } else {
@@ -45,12 +52,12 @@ function withFollowing(WrappedComponent) {
             this._isMounted = false;
         }
 
-        startFollowing = (group_name, username) => {
-            this.props.Crud.startFollowGroup(group_name, username).then((res) => {
+        startFollowing = (myUsername, user) => {
+            this.props.Crud.startFollowUser(myUsername, user).then((res) => {
                 if (res.success) {
-                    message.success(res.body)
+                    message.success(res.body);
                     this.setState({
-                        following: true
+                        followCurrentUser: true
                     });
                 } else {
                     message.error(res.body)
@@ -59,12 +66,12 @@ function withFollowing(WrappedComponent) {
 
         };
 
-        stopFollowing = (group_name, username) => {
-            this.props.Crud.stopFollowGroup(group_name, username).then((res) => {
+        stopFollowing = (myUsername, user) => {
+            this.props.Crud.stopFollowUser(myUsername, user).then((res) => {
                 if (res.success) {
-                    message.success(res.body)
+                    message.success(res.body);
                     this.setState({
-                        following: false
+                        followCurrentUser: false
                     });
                 } else {
                     message.error(res.body)
@@ -86,4 +93,4 @@ function withFollowing(WrappedComponent) {
     return Following;
 }
 
-export default withFollowing;
+export default withFollowingUser;

@@ -11,7 +11,9 @@ const AboutSubHeader = (props) => {
                             marginLeft: '40%'
                         }}>
                             <DemoBox value={60}>
-                                <span className='sub-header-name'>About</span>
+                                <span className='sub-header-name' style={{
+                                    color: '#45b4bf'
+                                }}>About</span>
                             </DemoBox>
                         </span>
                 <span style={{

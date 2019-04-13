@@ -17,6 +17,10 @@ class SingleGroupSubHeaderClass extends React.Component {
         }
     }
 
+    componentDidMount(){
+        console.log(this.props);
+    }
+
     showInfo = () => {
         this.setState({
             infoVisible: true,
@@ -57,22 +61,23 @@ class SingleGroupSubHeaderClass extends React.Component {
     }
 
     render() {
-        let cover = this.props.headerCoverSource
-
         return (
             <div className='sub-header'>
-                <Row style={{height: 70}} type="flex" align="middle">
+                <Row style={{height: 50}} type="flex" align="middle">
                         <span style={{
                             marginLeft: '40%'
                         }}>
-                            <DemoBox value={60}>
-                                <span className='sub-header-name'>Group::Name</span>
+                            <DemoBox value={50}>
+                                <span className='sub-header-name' style={{
+                                    color: '#45b4bf'
+                                }}>
+                                   {this.props.subHeaderLocation}</span>
                             </DemoBox>
                         </span>
                     <span style={{
                         marginLeft: '2%'
                     }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-link' onClick={() => this.showInfo()}
                                 >Info</span>
                             </DemoBox>
@@ -80,38 +85,41 @@ class SingleGroupSubHeaderClass extends React.Component {
                     <span style={{
                         marginLeft: '1%'
                     }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-link' onClick={() => this.showRules()}>
                                     Rules</span>
                             </DemoBox>
                         </span>
                     {this.props.username &&
                     <span style={{
-                        marginLeft: '1%'
+                        marginLeft: '1%',
+                        marginBottom: 15
                     }}>
                             {this.props.following ?
-                                <span className='sub-header-link'>
+                                <span style={{
+                                    height: 50,
+                                }}>
                                         <Button type='primary'
                                                 style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'chocolate',
-                                                    color: 'white'
+                                                    border: '#45b4bf solid 1px',
+                                                    backgroundColor: 'white',
+                                                    color: '#45b4bf'
                                                 }}
-                                                onClick={() => this.props.stopFollowing(this.props.location.state.groupName,
+                                                onClick={() => this.props.stopFollowing(this.props.subHeaderLocation,
                                                     this.props.username)}
                                                icon='create'>
                                             Stop Following
                                         </Button>
                                     </span>
                                 :
-                                <span className='sub-header-link'>
+                                <span>
                                         <Button type='primary'
                                                 style={{
                                                     border: 'none',
-                                                    backgroundColor: 'chocolate',
+                                                    backgroundColor: '#45b4bf',
                                                     color: 'white'
                                                 }}
-                                                onClick={() => this.props.startFollowing(this.props.location.state.groupName,
+                                                onClick={() => this.props.startFollowing(this.props.subHeaderLocation,
                                                     this.props.username)}
                                                 icon='create'>
                                             Follow
@@ -121,14 +129,15 @@ class SingleGroupSubHeaderClass extends React.Component {
                         </span>}
                     {this.props.username &&
                     <span style={{
-                        marginLeft: '1%'
+                        marginLeft: '1%',
+                        marginBottom: 15
                     }}>
-                        <span className='sub-header-link'>
+                        <span>
                             <Button
                                     style={{
                                         border: 'none',
-                                        backgroundColor: 'white',
-                                        color: 'chocolate'
+                                        backgroundColor: '#202022',
+                                        color: 'white'
                                     }}
                                     onClick={() => this.props.history.push({
                                         pathname: '/groups/create_story',

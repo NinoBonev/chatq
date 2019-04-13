@@ -4,7 +4,7 @@
 
 
 import React from 'react';
-import {Row, Col, Card, Icon, Popconfirm, message} from 'antd';
+import {Row, Col, Card, Icon, Popconfirm, Button, message} from 'antd';
 import BasicModal from '../story/BasicModal'
 
 const {Meta} = Card;
@@ -19,6 +19,7 @@ export default class DashboardMyStories extends React.Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0,0);
         this.fetchAllStories()
     }
 
@@ -103,8 +104,15 @@ export default class DashboardMyStories extends React.Component {
                             </div>
 
                             :
-
-                            <h1 style={{top: 20}} align="center">Please add stories</h1>}
+                            <div>
+                                <h1 style={{top: 20}} align="center">You've not created any Chatq stories yet</h1>
+                                <div align="center" style={{marginTop: 20, fontSize: 16}}>Create your first story today</div>
+                                <div align="center" style={{marginTop: 10}}><Button onClick={() =>
+                                    this.props.history.push("/groups/create_story")
+                                }>Create story</Button>
+                                </div>
+                            </div>
+                        }
                     </Col>
                 </div>
                 <BasicModal {...this.props}/>

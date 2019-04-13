@@ -38,7 +38,6 @@ public class Challenge extends DateAudit {
     @NotBlank
     private String cover;
 
-    @NotBlank
     @DateTimeFormat
     private Instant deadlineDate;
 

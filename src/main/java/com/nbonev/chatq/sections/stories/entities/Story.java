@@ -56,11 +56,11 @@ public class Story extends DateAudit {
 
     @JsonManagedReference(value="story-storyline")
     @OneToMany(mappedBy = "story", targetEntity = StoryLine.class, cascade = CascadeType.REMOVE)
-    private Set<StoryLine> storylines;
+    private Set<StoryLine> storylines = new HashSet<>();
 
     @JsonManagedReference(value="story-comments")
     @OneToMany(mappedBy = "story", targetEntity = Comment.class, cascade = CascadeType.REMOVE)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     public Story() {
     }

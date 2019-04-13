@@ -6,12 +6,14 @@ const DemoBox = props => <p className={`height-${props.value}`}>{props.children}
 const DashboardSubHeader = (props) => {
     return(
         <div className='sub-header'>
-            <Row style={{height: 70}} type="flex" align="middle">
+            <Row style={{height: 50}} type="flex" align="middle">
                         <span style={{
                             marginLeft: '40%'
                         }}>
                             <DemoBox value={60}>
-                                <span  className='sub-header-name'>Dashboard</span>
+                                <span  className='sub-header-name' style={{
+                                    color: '#45b4bf'
+                                }}>Dashboard</span>
                             </DemoBox>
                         </span>
                 <span style={{

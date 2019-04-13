@@ -14,7 +14,7 @@ import WrappedRegistrationForm from './components/forms/RegisterPage';
 
 import CreateStoryForm from './components/story/CreateStory'
 import StoryPage from './components/story/StoryPage';
-import AllUserStories from './components/story/AllUserStories';
+import UserInfo from './components/story/UserInfo';
 
 import AllGroups from './components/group/AllGroups';
 import SingleGroup from './components/group/SingleGroup';
@@ -35,7 +35,10 @@ const AppRouter = (props) => {
         setContentKey, contentKey,
         setHeaderCoverVisibility, withHeaderCover,
         subHeaderLocation, setSubHeaderLocation,
-        setHeaderCoverSource, headerCoverSource} = props;
+        setHeaderCoverSource, setHeaderCoverAvatar,
+        setHeaderCoverUserInfo, setHeaderCoverGroupInfo,
+        clearHeaderCoverUserInfo, clearHeaderCoverGroupInfo
+    } = props;
 
     const isAuth = Auth.isLoggedIn();
     const isAdmin = Auth.isAdmin();
@@ -85,8 +88,17 @@ const AppRouter = (props) => {
                 <Dashboard
                     setContentKey={setContentKey}
                     contentKey={contentKey}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
                     setSubHeaderKey={setSubHeaderKey}
                     subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverUserInfo={setHeaderCoverUserInfo}
+                    clearHeaderCoverUserInfo={clearHeaderCoverUserInfo}
+                    clearHeaderCoverGroupInfo={clearHeaderCoverGroupInfo}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -129,8 +141,18 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges" render={(props) =>
                 <AllChallenges
+                    setContentKey={setContentKey}
+                    contentKey={contentKey}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
                     setSubHeaderKey={setSubHeaderKey}
                     subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
+                    clearHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -142,6 +164,18 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/current/:id" render={(props) =>
                 <SingleCurrentChallengeTabs
+                    setContentKey={setContentKey}
+                    contentKey={contentKey}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
+                    setSubHeaderKey={setSubHeaderKey}
+                    subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
+                    clearHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -153,6 +187,18 @@ const AppRouter = (props) => {
 
             <Route exact path="/challenges/old/:id" render={(props) =>
                 <SingleOldChallenge
+                    setContentKey={setContentKey}
+                    contentKey={contentKey}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
+                    setSubHeaderKey={setSubHeaderKey}
+                    subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
+                    clearHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -202,6 +248,9 @@ const AppRouter = (props) => {
                     withHeaderCover={withHeaderCover}
                     setHeaderCoverVisibility={setHeaderCoverVisibility}
                     setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverGroupInfo={setHeaderCoverGroupInfo}
+                    clearHeaderCoverGroupInfo={clearHeaderCoverGroupInfo}
                     Auth={Auth}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
@@ -213,9 +262,13 @@ const AppRouter = (props) => {
 
             <Route exact path='/groups' render={(props) =>
                 <AllGroups
-                    setHeaderCoverSource={setHeaderCoverSource}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
                     setSubHeaderKey={setSubHeaderKey}
                     subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -226,9 +279,19 @@ const AppRouter = (props) => {
             />
 
             <Route exact path='/users/:name' render={(props) =>
-                <AllUserStories
+                <UserInfo
+                    setContentKey={setContentKey}
+                    contentKey={contentKey}
+                    setSubHeaderLocation={setSubHeaderLocation}
+                    subHeaderLocation={subHeaderLocation}
                     setSubHeaderKey={setSubHeaderKey}
                     subHeaderKey={subHeaderKey}
+                    withHeaderCover={withHeaderCover}
+                    setHeaderCoverVisibility={setHeaderCoverVisibility}
+                    setHeaderCoverSource={setHeaderCoverSource}
+                    setHeaderCoverAvatar={setHeaderCoverAvatar}
+                    setHeaderCoverUserInfo={setHeaderCoverUserInfo}
+                    clearHeaderCoverUserInfo={clearHeaderCoverUserInfo}
                     isAuth={isAuth}
                     isAdmin={isAdmin}
                     Helper={Helper}
@@ -240,6 +303,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/challenges/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
                 <WrappedAdminCreateChallenge
+                    setSubHeaderKey={setSubHeaderKey}
                     Helper={Helper}
                     Auth={Auth}
                     Crud={Crud}
@@ -249,6 +313,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/groups/create' render={(props) => !isAdmin ? <Redirect to="/"/> :
                 <WrappedAdminCreateGroup
+                    setSubHeaderKey={setSubHeaderKey}
                     Helper={Helper}
                     Auth={Auth}
                     Crud={Crud}
@@ -258,6 +323,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/users/all' render={(props) => !isAdmin ? <Redirect to='/'/> :
                 <AdminAllUsersPane
+                    setSubHeaderKey={setSubHeaderKey}
                     isAdmin={isAdmin}
                     Helper={Helper}
                     Auth={Auth}
@@ -268,6 +334,7 @@ const AppRouter = (props) => {
 
             <Route exact path='/admin/groups/all' render={(props) => !isAdmin ? <Redirect to='/' /> :
                 <AdminAllGroupsPane
+                    setSubHeaderKey={setSubHeaderKey}
                     Auth={Auth}
                     Crud={Crud}
                     {...props}

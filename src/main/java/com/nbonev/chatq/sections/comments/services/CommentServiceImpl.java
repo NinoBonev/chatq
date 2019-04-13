@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setUser(user);
         comment.setStory(story);
 
-        Comment created = this.commentRepository.save(comment);
+        this.commentRepository.save(comment);
 
         user.addComment(comment);
         this.userRepository.save(user);
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
         story.addComment(comment);
         this.storyRepository.save(story);
 
-        return created;
+        return comment;
     }
 
     @Override

@@ -3,84 +3,101 @@
  */
 
 import React from 'react'
-import {Row, Col, List, Avatar, Skeleton, Tooltip} from 'antd';
+import {Row, Col, List, Avatar, Skeleton, Tooltip, Button} from 'antd';
 import {Link} from 'react-router-dom';
 
 import BasicModal from "../story/BasicModal";
 
-const DashboardFollowedPeople = (props) => {
-    return (
-        <Row gutter={16}>
-        <div className='main-data-container'>
-            <Col offset={1} span={2}>
-                <div align="right" style={{color: 'green'}}>
-                    Menu
-                </div>
-                <div align="right">
+export default class DashboardFollowedPeople extends React.Component{
+    constructor(props){
+        super(props)
+    }
+
+    componentDidMount(){
+        window.scrollTo(0, 0);
+    }
+
+    render(){
+        return (
+            <Row gutter={16}>
+                <div className='main-data-container'>
+                    <Col offset={1} span={2}>
+                        <div align="right" style={{color: 'green'}}>
+                            Menu
+                        </div>
+                        <div align="right">
                                 <span className='dashboard-side-menu-item'
                                       onClick={() => {
-                                          props.setContentKey('followedGroups')
+                                          this.props.setContentKey('followedGroups')
                                       }}
                                 >Groups</span>
-                </div>
-                <div align="right">
+                        </div>
+                        <div align="right">
                                 <span className='dashboard-side-menu-item'
                                       onClick={() => {
-                                          props.setContentKey('followedPeople')
+                                          this.props.setContentKey('followedPeople')
                                       }}
                                 >People</span>
+                        </div>
+                    </Col>
+                    <Col span={20}>
+                        {this.props.storiesFromPeople.length > 0 ?
+                            <List
+                                itemLayout="vertical"
+                                size="large"
+                                pagination={{
+                                    align: 'bottom',
+                                    hideOnSinglePage: true,
+                                    pageSize: 3,
+                                }}
+                                dataSource={this.props.storiesFromPeople}
+                                renderItem={item => (
+                                    <List.Item
+                                        extra={<div>
+                                            <div align="center">
+                                                <div style={{fontSize: 16}}>Created By</div>
+                                                <div><Tooltip placement="top"
+                                                              title={'Click to see all ' + item.username + ' stories'}><Link
+                                                    to={{pathname: `/users/${item.username}`}}>
+                                                    <Avatar size={55} src={item.avatar}/>
+                                                </Link></Tooltip></div>
+                                            </div>
+                                        </div>
+                                        }
+                                        key={item.name}
+                                    >
+                                        <Skeleton loading={false} active>
+                                            <List.Item.Meta
+                                                avatar={<div className='imageFadeOut'><img
+                                                    onClick={() => this.props.showModal(item.id, item.name)}
+                                                    src={item.cover} alt="" style={{height: 210}}/></div>}
+                                                title={<a style={{color: 'black'}}
+                                                          onClick={() => this.props.showModal(item.id, item.name)}>
+                                                    {item.name}
+                                                </a>}
+                                                description={item.info.substring(0, 200) !== item.info ?
+                                                    item.info.substring(0, 300) + '...'
+
+                                                    :
+                                                    item.info}
+                                            />
+                                        </Skeleton>
+                                    </List.Item>
+                                )}
+                            />
+                            :
+                            <div>
+                            <h1 style={{top: 20}} align="center">Seems that you are not following any people yet</h1>
+                            <div align="center" style={{marginTop: 20, fontSize: 16}}>Browse our groups so you can find people you want to follow</div>
+                            <div align="center" style={{marginTop: 10}}><Button onClick={() =>
+                                this.props.history.push("/groups")
+                            }>Groups</Button></div>
+                        </div>}
+                    </Col>
+                    <BasicModal {...this.props}/>
                 </div>
-            </Col>
-            <Col span={20}>
-                <List
-                    itemLayout="vertical"
-                    size="large"
-                    pagination={{
-                        align: 'bottom',
-                        hideOnSinglePage: true,
-                        pageSize: 3,
-                    }}
-                    dataSource={props.storiesFromPeople}
-                    footer={<div><b>ant design</b> footer part</div>}
-                    renderItem={item => (
-                        <List.Item
-                            extra={<div>
-                                <div align="center">
-                                    <div style={{fontSize: 16}}>Created By</div>
-                                    <div><Tooltip placement="top"
-                                                  title={'Click to see all ' + item.username + ' stories'}><Link
-                                        to={{pathname: `/users/${item.username}`}}>
-                                        <Avatar size={55} src={item.avatar}/>
-                                    </Link></Tooltip></div>
-                                </div>
-                            </div>
-                            }
-                            key={item.name}
-                        >
-                            <Skeleton loading={false} active>
-                                <List.Item.Meta
-                                    avatar={<div className='imageFadeOut'><img
-                                        onClick={() => props.showModal(item.id, item.name)}
-                                        src={item.cover} alt="" style={{height: 210}}/></div>}
-                                    title={<a style={{color: 'black'}}
-                                              onClick={() => props.showModal(item.id, item.name)}>
-                                        {item.name}
-                                    </a>}
-                                    description={item.info.substring(0, 200) !== item.info ?
-                                        item.info.substring(0, 300) + '...'
+            </Row>
+        )
+    }
 
-                                        :
-                                        item.info}
-                                />
-                            </Skeleton>
-                        </List.Item>
-                    )}
-                />
-            </Col>
-            <BasicModal {...props}/>
-        </div>
-        </Row>
-    )
 }
-
-export default DashboardFollowedPeople

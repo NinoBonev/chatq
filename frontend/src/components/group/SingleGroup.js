@@ -6,6 +6,7 @@ import React, {Component} from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import {Row, Col, Avatar, message, Spin, List} from 'antd';
 import AllGroupStories from './AllGroupStories';
+import Cover from '../../resources/history.jpg'
 
 import withModal from '../hoc/withModal'
 
@@ -27,15 +28,8 @@ class SingleGroup extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
-        this.props.setSubHeaderKey('singleGroup')
-        this.props.setHeaderCoverVisibility(true)
-        this.props.setSubHeaderLocation(this.props.match)
-
         this.fetchCurrentGroup(this.props.match.params.name)
         this.fetchAllGroups()
-
-
     }
 
     fetchAllGroups() {
@@ -57,14 +51,23 @@ class SingleGroup extends Component {
     fetchCurrentGroup(groupName) {
         this.setState({
             stories: [],
-        });
+        })
+        this.props.setSubHeaderLocation('')
+        this.props.setSubHeaderKey('loading')
         this.props.Crud.getGroupByName(groupName).then((res) => {
-
+            console.log(res);
             if (res.success) {
-                this.setState({
-                    headerCoverSource: res.body.cover
-                })
-
+                window.scrollTo(0,0);
+                this._isMounted = true;
+                this.props.setSubHeaderLocation(groupName)
+                this.props.setSubHeaderKey('singleGroup')
+                this.props.setHeaderCoverVisibility(true)
+                this.props.setHeaderCoverSource(Cover)
+                this.props.setHeaderCoverAvatar(res.body.cover)
+                this.props.setHeaderCoverGroupInfo(
+                    res.body.name,
+                    res.body.followersByUsername.length,
+                    res.body.storiesById.length)
                 if (this._isMounted) {
                     for (let str of res.body.storiesById) {
                         this.props.Crud.getStoryById(str).then((res) => {
@@ -122,55 +125,57 @@ class SingleGroup extends Component {
     }
 
     componentWillUnmount() {
-        this.props.setHeaderCoverVisibility(false)
+        this.props.setHeaderCoverVisibility(false);
+        this.props.setHeaderCoverAvatar('');
+        this.props.setSubHeaderKey('')
+        this.props.setSubHeaderLocation('')
+        this.props.clearHeaderCoverGroupInfo()
         this._isMounted = false;
     }
 
     render() {
         return (
-            <div style={{
-                marginTop: 70,
-                backgroundColor: 'white'
-            }}>
+            <div className='main-data-container'>
                 <Row gutter={16}>
                     <div>
-                        <img className='header-image-cover' src={this.state.headerCoverSource} alt=""/>
-                    </div>
-                    <div style={{
-                        marginTop: 20
-                    }}>
-                        <Col span={4}>
-                            <InfiniteScroll
-                                initialLoad={false}
-                                pageStart={0}
-                                loadMore={this.handleInfiniteOnLoad}
-                                hasMore={!this.state.loading && this.state.hasMore}
-                                useWindow={false}
-                            >
-                                <List
-                                    dataSource={this.state.groups}
-                                    renderItem={item => (
-                                        <List.Item className='all-groups-list-item' key={item.id}>
-                                            <List.Item.Meta
-                                                onClick={() => this.fetchCurrentGroup(item.name)}
-                                                avatar={<Avatar
-                                                    style={{marginLeft: 10}}
-                                                    src={item.cover}/>}
-                                                title={<span>{item.name}</span>}
-                                            />
-                                        </List.Item>
-
-                                    )}
+                        <Col span={4} offset={1}>
+                            <div align="center" style={{
+                                fontFamily: 'Helvetica',
+                                fontStyle: 22,
+                            }}><strong>All groups</strong></div>
+                            <div style={{marginTop: 10}}>
+                                <InfiniteScroll
+                                    initialLoad={false}
+                                    pageStart={0}
+                                    loadMore={this.handleInfiniteOnLoad}
+                                    hasMore={!this.state.loading && this.state.hasMore}
+                                    useWindow={false}
                                 >
-                                    {this.state.loading && this.state.hasMore && (
-                                        <div className="demo-loading-container">
-                                            <Spin/>
-                                        </div>
-                                    )}
-                                </List>
-                            </InfiniteScroll>
+                                    <List
+                                        dataSource={this.state.groups}
+                                        renderItem={item => (
+                                            <List.Item className='all-groups-list-item' key={item.id}>
+                                                <List.Item.Meta
+                                                    onClick={() => this.fetchCurrentGroup(item.name)}
+                                                    avatar={<Avatar
+                                                        style={{marginLeft: 10}}
+                                                        src={item.cover}/>}
+                                                    title={<span>{item.name}</span>}
+                                                />
+                                            </List.Item>
+
+                                        )}
+                                    >
+                                        {this.state.loading && this.state.hasMore && (
+                                            <div className="demo-loading-container">
+                                                <Spin/>
+                                            </div>
+                                        )}
+                                    </List>
+                                </InfiniteScroll>
+                            </div>
                         </Col>
-                        <Col span={20}>
+                        <Col span={19}>
                             <ListAllGroupStories
                                 {...this.props}
                                 {...this.state}/>

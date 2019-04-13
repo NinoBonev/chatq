@@ -23,7 +23,14 @@ class BasicSingleOldChallenge extends Component {
     }
 
     componentDidMount() {
+        this.props.setSubHeaderKey('singleChallenge');
+
         this.props.Crud.getChallengeById(this.props.match.params.id).then((res) => {
+            this.props.setHeaderCoverAvatar(res.body.cover)
+            this.props.setHeaderCoverGroupInfo(
+                res.body.name,
+                '',
+                '')
             if (res.success) {
                 for (let storyById of res.body.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
@@ -50,6 +57,15 @@ class BasicSingleOldChallenge extends Component {
                 message.error(res.body)
             }
         })
+    }
+
+    componentWillUnmount() {
+        this.props.setContentKey('')
+        this.props.setHeaderCoverVisibility(false);
+        this.props.setHeaderCoverAvatar('');
+        this.props.setSubHeaderKey('')
+        this.props.setSubHeaderLocation('')
+        this.props.clearHeaderCoverGroupInfo()
     }
 
     render() {

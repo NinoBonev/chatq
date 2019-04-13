@@ -8,6 +8,7 @@ import moment from 'moment';
 import Login from '../forms/LoginPage';
 import AllCurrentChallengesTab from './AllCurrentChallengesTab';
 import AllOldChallengesTab from './AllOldChallengesTab';
+import Cover from '../../resources/history4.jpg'
 
 const TabPane = Tabs.TabPane;
 
@@ -31,11 +32,16 @@ export default class AllChallengesPage extends React.Component {
     }
 
     componentDidMount() {
-        this.props.setSubHeaderKey('allChallenges')
+        window.scrollTo(0,0);
+        this.props.setSubHeaderKey('allChallenges');
+        this.props.setContentKey('activeChallenges');
+        this.props.setHeaderCoverVisibility(true)
 
         this.props.Crud.getAllChallenges().then((res) => {
             if (res.success){
+                this.props.setHeaderCoverSource(Cover)
                 for (let challenge of res.body) {
+                    console.log(challenge);
                     let date = moment(challenge.deadlineDate).utc();
 
                     if (!date.isSameOrBefore(moment.now())) {
@@ -56,26 +62,29 @@ export default class AllChallengesPage extends React.Component {
         })
     }
 
+    componentWillUnmount(){
+        this.props.setHeaderCoverVisibility(false)
+        this.props.setContentKey('')
+    }
+
 
     render() {
+        let content = {
+            activeChallenges: <AllCurrentChallengesTab
+                {...this.state}
+                {...this.props}
+            />,
+            pastChallenges: <AllOldChallengesTab
+                {...this.state}
+                {...this.props}
+            />,
+        };
+
         return (
             <div>
-                <Row>
-                    <div className='main-data-container'>
-                        <Tabs style={{marginLeft: 25}} onChange={this.setKey} activeKey={this.state.activeKey}>
-                            <TabPane tab="Join a challenge " key="1">
-                                <AllCurrentChallengesTab {...this.props} {...this.state}/>
-                            </TabPane>
-                            {this.props.isAuth ?
-                                <TabPane tab="Old challenges" key="2">
-                                    <AllOldChallengesTab {...this.props} {...this.state}/>
-                                </TabPane>
-
-                                :
-
-                                null
-                            }
-                        </Tabs>
+                <Row gutter={32}>
+                    <div className='dashboard-data-container'>
+                        {content[this.props.contentKey]}
                     </div>
                 </Row>
             </div>

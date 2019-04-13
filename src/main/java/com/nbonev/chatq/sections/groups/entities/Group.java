@@ -38,13 +38,13 @@ public class Group extends DateAudit {
 
     @JsonManagedReference(value="group-stories")
     @OneToMany(mappedBy = "group", targetEntity = Story.class, cascade = CascadeType.REMOVE)
-    private Set<Story> stories;
+    private Set<Story> stories = new HashSet<>();
 
     @ManyToMany(mappedBy = "followingGroups",cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    private Set<User> followers;
+    private Set<User> followers = new HashSet<>();
 
     private String status;
 

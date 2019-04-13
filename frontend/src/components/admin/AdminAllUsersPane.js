@@ -29,6 +29,7 @@ class AdminAllUsersPane extends React.Component {
     }
 
     componentDidMount() {
+        this.props.setSubHeaderKey('allUsers');
         this.fetchAllStories()
     }
 
@@ -59,6 +60,10 @@ class AdminAllUsersPane extends React.Component {
             }
 
         });
+    }
+
+    componentWillUnmount(){
+        this.props.setSubHeaderKey('');
     }
 
     render() {

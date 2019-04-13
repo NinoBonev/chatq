@@ -3,17 +3,17 @@
  */
 
 import React from 'react';
-import {List, Row, Skeleton, Avatar, Progress} from 'antd';
+import {List, Row, Col, Skeleton, Avatar, Progress} from 'antd';
 import {Link} from 'react-router-dom'
 import moment from 'moment';
 
-
-
 const AllCurrentChallengesTab = (props) => {
         return (
-            <div>
-                <Row gutter={16} style={{minHeight: 550, marginTop: 50, marginLeft: 100, marginRight: 150}}>
-                    <List
+            <div className='main-data-container'>
+                <Row gutter={16} >
+                    <Col span={20} offset={2} >
+                    {props.activeChallenges.length > 0 ? <List
+                            style={{backgroundColor: 'white'}}
                         itemLayout="horizontal"
                         size="large"
                         pagination={{
@@ -22,11 +22,10 @@ const AllCurrentChallengesTab = (props) => {
                             pageSize: 3,
                         }}
                         dataSource={props.activeChallenges}
-                        footer={<div><b>ant design</b> footer part</div>}
                         renderItem={item => (
                             <List.Item
                                 key={item.name}
-
+                                style={{margin: 10}}
                             >
                                 <Skeleton loading={false} active>
                                     <List.Item.Meta
@@ -44,7 +43,12 @@ const AllCurrentChallengesTab = (props) => {
                                 </Skeleton>
                             </List.Item>
                         )}
-                    />
+                    /> :
+                        <div align="center">
+                            <h1>We don't have any active challenges to show just now. Come again later.</h1>
+                        </div>
+                    }
+                    </Col>
                 </Row>
             </div>
         );

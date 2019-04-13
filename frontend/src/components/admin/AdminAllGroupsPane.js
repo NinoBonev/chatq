@@ -53,6 +53,7 @@ export default class AdminAllGroupsPane extends React.Component{
     }
 
     componentDidMount() {
+        this.props.setSubHeaderKey('allGroups');
         this.fetchAllGroups()
     }
 
@@ -76,6 +77,10 @@ export default class AdminAllGroupsPane extends React.Component{
                 }))
             }
         });
+    }
+
+    componentWillUnmount(){
+        this.props.setSubHeaderKey('');
     }
 
     render() {

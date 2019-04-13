@@ -30,6 +30,7 @@ class LoginPage extends React.Component {
     };
 
     componentDidMount(){
+        window.scrollTo(0,0);
         this.props.setSubHeaderKey('signIn')
         if (this.props.location.state) {
             message.info(this.props.location.state)
@@ -39,13 +40,13 @@ class LoginPage extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         return (
-            <div>
+            <div className='main-data-container'>
                 <Row type="flex" justify="space-around">
-                    <Col span={12}>
-                        <div className='main-data-container'>
+                    <Col style={{backgroundColor: 'white', height: 500}} span={16}>
+                        <div >
                             <Form onSubmit={this.handleSubmit.bind(this)}>
                                 <Row justify="center" align="bottom">
-                                    <Col span={10} offset={7} style={{marginTop: 50}}>
+                                    <Col span={8} offset={8} style={{marginTop: 50}}>
                                         <Form.Item>
                                             {getFieldDecorator('username', {
                                                 rules: [{required: true, message: 'Please input your username!'}],
@@ -55,7 +56,7 @@ class LoginPage extends React.Component {
                                             )}
                                         </Form.Item>
                                     </Col>
-                                    <Col span={10} offset={7}>
+                                    <Col span={8} offset={8}>
                                         <Form.Item>
                                             {getFieldDecorator('password', {
                                                 rules: [{required: true, message: 'Please input your Password!'}],
@@ -65,11 +66,11 @@ class LoginPage extends React.Component {
                                             )}
                                         </Form.Item>
                                     </Col>
-                                    <Col span={10} offset={7}>
+                                    <Col span={8} offset={8}>
                                         <Form.Item>
                                             <Button style={{
                                                 border: 'none',
-                                                backgroundColor: 'paleturquoise',
+                                                backgroundColor: '#45b4bf',
                                                 color: 'white'
                                             }} icon="login" type="primary" htmlType="submit"
                                                     className="login-form-button">

@@ -1,6 +1,7 @@
 import React from 'react'
 
-const AllGroups = <span className='sub-header-name'
-                    style={{fontStyle: 'italic'}}>"Today we have (todo:groups.count) between (todo:stories.count) groups"</span>
+const AllGroups = <span style={{fontStyle: 'italic'}}>
+    "In this sub_header a content about All Groups will be displayed"
+</span>
 
 export default AllGroups

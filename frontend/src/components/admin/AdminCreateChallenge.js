@@ -17,6 +17,11 @@ class AdminCreateChallenge extends React.Component {
     state = {
         loading: false
     }
+
+    componentDidMount(){
+        this.props.setSubHeaderKey('createChallenge');
+    }
+
     handleSubmit = async (e) => {
         e.preventDefault();
 

@@ -72,11 +72,6 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterBindingModel userRegisterBindingModel,
                                           BindingResult bindingResult) throws IOException {
 
-        if (bindingResult.hasErrors()){
-            ApiError error = new ApiError(bindingResult);
-            return error.getBadRequestResponseEntity();
-        }
-
         if (this.userService.existsByUsername(userRegisterBindingModel.getUsername())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, Constants.USERNAME_TAKEN));

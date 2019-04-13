@@ -16,7 +16,9 @@ class AllGroupsSubHeader extends React.Component{
                             marginLeft: '40%'
                         }}>
                             <DemoBox value={60}>
-                                <span className='sub-header-name'>Groups</span>
+                                <span className='sub-header-name' style={{
+                                    color: '#45b4bf'
+                                }}>Groups</span>
                             </DemoBox>
                         </span>
                     <span style={{

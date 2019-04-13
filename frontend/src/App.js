@@ -10,6 +10,8 @@ import AuthService from './utilities/AuthService'
 import CrudService from './utilities/CrudService';
 import HelperService from './utilities/HelperService';
 import Header from "./components/common/Header";
+import HeaderCoverUserInfo from './components/common/utils/HeaderCoverUserInfo'
+import HeaderCoverGroupInfo from './components/common/utils/HeaderCoverGroupInfo'
 
 const {Content} = Layout;
 const Auth = new AuthService();
@@ -19,9 +21,12 @@ const Helper = new HelperService();
 class App extends React.Component {
     state = {
         subHeaderKey: 'welcome',
-        contentKey: 'followedGroups',
+        contentKey: '',
         withHeaderCover: false,
         headerCoverSource: '',
+        headerCoverAvatar: '',
+        headerCoverUserInfo: '',
+        headerCoverGroupInfo: '',
         subHeaderLocation: '/'
     }
 
@@ -56,6 +61,47 @@ class App extends React.Component {
         })
     }
 
+    setHeaderCoverAvatar = (image) => {
+        this.setState({
+            headerCoverAvatar: image
+        })
+    }
+
+    setHeaderCoverUserInfo = (name, username, followers, following, followGroups, stories) => {
+        this.setState({
+            headerCoverUserInfo: <HeaderCoverUserInfo
+                name={name}
+                username={username}
+                followers={followers}
+                following={following}
+                followGroups={followGroups}
+                stories={stories}
+            />
+        })
+    }
+
+    clearHeaderCoverUserInfo(){
+        this.setState({
+            headerCoverUserInfo: ''
+        })
+    }
+
+    setHeaderCoverGroupInfo = (name, followers, stories) => {
+        this.setState({
+            headerCoverGroupInfo: <HeaderCoverGroupInfo
+                name={name}
+                followers={followers}
+                stories={stories}
+            />
+        })
+    }
+
+    clearHeaderCoverGroupInfo(){
+        this.setState({
+            headerCoverGroupInfo: ''
+        })
+    }
+
     render() {
         return (
             <Layout>
@@ -75,6 +121,14 @@ class App extends React.Component {
                         withHeaderCover={this.state.withHeaderCover}
                         setHeaderCoverSource={this.setHeaderCoverSource.bind(this)}
                         headerCoverSource={this.state.headerCoverSource}
+                        setHeaderCoverAvatar={this.setHeaderCoverAvatar.bind(this)}
+                        headerCoverAvatar={this.state.headerCoverAvatar}
+                        setHeaderCoverUserInfo={this.setHeaderCoverUserInfo.bind(this)}
+                        clearHeaderCoverUserInfo={this.clearHeaderCoverUserInfo.bind(this)}
+                        headerCoverUserInfo={this.state.headerCoverUserInfo}
+                        setHeaderCoverGroupInfo={this.setHeaderCoverGroupInfo.bind(this)}
+                        clearHeaderCoverGroupInfo={this.clearHeaderCoverGroupInfo.bind(this)}
+                        headerCoverGroupInfo={this.state.headerCoverGroupInfo}
                     />
                     <div className='main-container'>
                         <AppRouter
@@ -86,6 +140,11 @@ class App extends React.Component {
                             setSubHeaderLocation={this.setSubHeaderLocation.bind(this)}
                             setHeaderCoverVisibility={this.setHeaderCoverVisibility.bind(this)}
                             setHeaderCoverSource={this.setHeaderCoverSource.bind(this)}
+                            setHeaderCoverAvatar={this.setHeaderCoverAvatar.bind(this)}
+                            setHeaderCoverUserInfo={this.setHeaderCoverUserInfo.bind(this)}
+                            clearHeaderCoverUserInfo={this.clearHeaderCoverUserInfo.bind(this)}
+                            setHeaderCoverGroupInfo={this.setHeaderCoverGroupInfo.bind(this)}
+                            clearHeaderCoverGroupInfo={this.clearHeaderCoverGroupInfo.bind(this)}
                             {...this.state}
                             {...this.props}
                         />

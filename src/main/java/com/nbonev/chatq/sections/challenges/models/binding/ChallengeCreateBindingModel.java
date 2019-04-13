@@ -30,7 +30,6 @@ public class ChallengeCreateBindingModel {
     @NotEmpty(message = Constants.COVER_VALIDATION_MESSAGE)
     private String cover;
 
-    @NotNull(message = Constants.DEADLINE_VALIDATION_MESSAGE)
     private Instant deadlineDate;
 
     private String status;

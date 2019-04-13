@@ -4,7 +4,7 @@ const { Footer } = Layout
 
 const FooterClass = () => {
         return(
-            <Footer style={{textAlign: 'center', backgroundColor: '#f5f5f5'}}>
+            <Footer style={{textAlign: 'center', backgroundColor: '#202022', color: 'white'}}>
                 Nino Bonev ©2019 Created using React & Ant.Design
             </Footer>
         )

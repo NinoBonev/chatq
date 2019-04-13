@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import {Row, Col, Card, Icon, Popconfirm, message} from 'antd'
+import {Row, Col, Card, Icon, Popconfirm, Button, message} from 'antd'
 import BasicModal from '../story/BasicModal'
 import moment from 'moment'
 
@@ -18,8 +18,9 @@ export default class DashboardMyChallenges extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        await this.fetchAllStories()
+    componentDidMount() {
+        window.scrollTo(0,0);
+        this.fetchAllStories()
         this.setState({isLoading: false})
     }
 
@@ -98,8 +99,14 @@ export default class DashboardMyChallenges extends React.Component {
                     </div>
 
                     :
-
-                    <h1 style={{top: 20}} align="center">Please join some of our challenges</h1>}
+                    <div>
+                    <h1 style={{top: 20}} align="center">Seems that you are not involved into any challenges yet</h1>
+                        <div align="center" style={{marginTop: 20, fontSize: 16}}>Browse our challenges so you can find one that you like</div>
+                        <div align="center" style={{marginTop: 10}}><Button onClick={() =>
+                        this.props.history.push("/challenges")
+                    }>Challenges</Button>
+                        </div>
+                    </div>}
                     </Col>
                     <BasicModal {...this.props}/>
                 </div>

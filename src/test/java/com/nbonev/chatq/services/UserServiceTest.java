@@ -11,6 +11,7 @@ import com.nbonev.chatq.sections.stories.entities.Story;
 import com.nbonev.chatq.sections.users.entities.User;
 import com.nbonev.chatq.sections.users.models.binding.UserRegisterBindingModel;
 import com.nbonev.chatq.sections.users.repositories.UserRepository;
+import com.nbonev.chatq.sections.users.services.UserService;
 import com.nbonev.chatq.sections.users.services.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class UserServiceTest {
     @InjectMocks
     private ModelMapper mockedModelMapper;
 
-    private UserServiceImpl userService;
+    private UserService userService;
 
     private UserRegisterBindingModel userRegisterNino;
 
@@ -69,6 +70,8 @@ public class UserServiceTest {
     private User vesy;
 
     private User krasi;
+
+    private Group testGroup;
 
     @Before
     public void setUp() {
@@ -98,7 +101,9 @@ public class UserServiceTest {
                 "krasi@abv.bg", "1234",
                 "https://res.cloudinary.com/dar4inn2i/image/upload/v1554714081/g7jc3zkn4z0e3lgnf4sd.jpg");
 
-
+        this.testGroup = new Group("Test", "This is a test group for UnitTesting",
+                "https://res.cloudinary.com/dar4inn2i/image/upload/v1555079659/k9eg7rqfy0n3b5rvjsmg.jpg",
+                "OPEN");
 
         when(this.mockedUserRepository.save(any()))
                 .thenAnswer(a -> a.getArgument(0));
@@ -131,6 +136,9 @@ public class UserServiceTest {
 
         when(this.mockedUserRepository.findByUsername(krasi.getUsername()))
                 .thenAnswer(a -> krasi);
+
+        when(this.mockedGroupRepository.findGroupByName(testGroup.getName()))
+                .thenAnswer(a -> testGroup);
     }
 
     @Test
@@ -245,7 +253,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_UserRole() throws IOException {
+    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_UserRole() {
         //act
         User loadUser = this.userService.findUserByUsername(this.nino.getUsername());
         Iterator<Role> iterator = loadUser.getAuthorities().iterator();
@@ -256,7 +264,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_AdminRole() throws IOException {
+    public void testUserAuthorities_shouldMapAuthoritiesFieldRight_AdminRole() {
         //act
         User loadUser = this.userService.findUserByUsername(this.vesy.getUsername());
         Iterator<Role> iterator = loadUser.getAuthorities().iterator();
@@ -267,23 +275,28 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testStartFollowingUser_shouldStartFollowingUsersCorrectly() throws IOException {
+    public void testStartFollowingUser_shouldStartFollowingUsersCorrectly(){
         //act
         Set<User> followers = new HashSet<>();
         followers.add(nino);
-        followers.add(krasi);
+
+        Set<User> following = new HashSet<>();
+        following.add(vesy);
 
         this.userService.startFollowingUser(nino.getUsername(), vesy.getUsername());
-        this.userService.startFollowingUser(krasi.getUsername(), vesy.getUsername());
 
         //assert
         Assert.assertEquals("Followers are not being added correctly",
                vesy.getFollowers(),
                 followers);
+
+        Assert.assertEquals("Following is not being added correctly",
+                nino.getFollowingUsers(),
+                following);
     }
 
     @Test
-    public void testStopFollowingUser_shouldStopFollowingUsersCorrectly() throws IOException {
+    public void testStopFollowingUser_shouldStopFollowingUsersCorrectly(){
         //act
         Set<User> followers = new HashSet<>();
         followers.add(nino);
@@ -303,5 +316,51 @@ public class UserServiceTest {
         //assert
         followers.remove(nino);
         Assert.assertEquals(followers, vesy.getFollowers());
+    }
+
+    @Test
+    public void testStartFollowingGroup_shouldStartFollowingGroupCorrectly(){
+        //act
+        Set<User> users = new HashSet<>();
+        users.add(nino);
+
+        Set<Group> groups = new HashSet<>();
+        groups.add(testGroup);
+
+        this.userService.startFollowingGroup(nino.getUsername(), testGroup.getName());
+
+        //assert
+        Assert.assertEquals("Followers are not being added correctly",
+                testGroup.getFollowers(),
+                users);
+
+        Assert.assertEquals("Groups are not being added correctly",
+                nino.getFollowingGroups(),
+                groups);
+    }
+
+    @Test
+    public void testStopFollowingGroup_shouldStopFollowingGroupCorrectly() {
+        //act
+        Set<User> test = new HashSet<>();
+        test.add(nino);
+        test.add(vesy);
+
+        this.userService.startFollowingGroup(nino.getUsername(), testGroup.getName());
+        this.userService.startFollowingGroup(vesy.getUsername(), testGroup.getName());
+
+        //assert
+        Assert.assertEquals("Followers are not being added correctly",
+                testGroup.getFollowers(),
+                test);
+
+        //act
+        test.remove(nino);
+        this.userService.stopFollowingGroup(nino.getUsername(), testGroup.getName());
+
+        //assert
+        Assert.assertEquals("Followers are not being removed correctly",
+                testGroup.getFollowers(),
+                test);
     }
 }
