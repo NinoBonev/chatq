@@ -69,11 +69,11 @@ class LoginPage extends React.Component {
                                     <Col span={8} offset={8}>
                                         <Form.Item>
                                             <Button style={{
+                                                width: '100%',
                                                 border: 'none',
                                                 backgroundColor: '#45b4bf',
                                                 color: 'white'
-                                            }} icon="login" type="primary" htmlType="submit"
-                                                    className="login-form-button">
+                                            }} icon="login" type="primary" htmlType="submit">
                                                 Log in
                                             </Button>
                                             Or <a href="/register">register now!</a>

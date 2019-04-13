@@ -11,11 +11,11 @@ class UserSubHeaderClass extends React.Component{
     render(){
         return (
             <div className='sub-header'>
-                <Row style={{height: 70}} type="flex" align="middle">
+                <Row style={{height: 50}} type="flex" align="middle">
                         <span style={{
                             marginLeft: '30%'
                         }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-name' style={{
                                     color: '#45b4bf'
                                 }}>Browse all <span style={{
@@ -26,7 +26,7 @@ class UserSubHeaderClass extends React.Component{
                     <span style={{
                         marginLeft: '2%'
                     }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-link' onClick={() => {
                                     this.props.setContentKey('userStories')
                                 }}>Groups</span>
@@ -35,7 +35,7 @@ class UserSubHeaderClass extends React.Component{
                     <span style={{
                         marginLeft: '1%'
                     }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-link' onClick={() => {
                                     this.props.setContentKey('userChallenges')
                                 }}>Challenges</span>

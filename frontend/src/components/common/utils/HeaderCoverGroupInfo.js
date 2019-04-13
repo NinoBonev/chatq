@@ -12,17 +12,18 @@ const HeaderCoverGroupInfo = (props) => {
                         color: 'white',
                         fontFamily: 'Helvetica',
                         fontSize: 36,
-                        borderBottom: 'white solid 1px',
                     }}>{props.name}
                     </div>
                 </Row>
                 <Row >
                     <div style={{
+                        width: 210,
+                        backgroundColor: 'black',
+                        opacity: '0.6',
                         color: 'white',
                         fontFamily: 'Helvetica',
                         fontSize: 16,
-                        marginTop: 5
-                    }}><span>{props.stories} stories</span> --
+                    }}><span style={{marginLeft: 10}}>{props.stories} stories</span> --
                         <span> {props.followers} followers</span>
                     </div>
                 </Row>

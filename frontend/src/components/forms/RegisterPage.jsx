@@ -89,9 +89,6 @@ class RegisterPage extends React.Component {
 
         return (
             <Row gutter={16} type="flex" justify="center">
-                <Col span={12} offset={6} style={{marginTop:20, marginBottom: 25, fontSize: 40}}>
-                    Sign up to Chatq
-                </Col>
                 <Col className='gutter-register-box' span={12}>
                     <div className='gutter-box'>
                         <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -210,8 +207,9 @@ class RegisterPage extends React.Component {
                                     <Form.Item>
                                         <Button
                                             style={{
+                                                width: '100%',
                                                 border: 'none',
-                                                backgroundColor: 'paleturquoise',
+                                                backgroundColor: '#45b4bf',
                                                 color: 'white'
                                             }}
                                             loading={loading}

@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {Avatar, Icon, Card, Tooltip, Col, Modal, Popconfirm, message} from 'antd';
+import {Avatar, Icon, Card, Tooltip, Col, Row, Popconfirm, message} from 'antd';
 import {Link} from 'react-router-dom';
 import StoryPage from '../story/StoryPage'
 import BasicModal from "../story/BasicModal";
@@ -26,6 +26,7 @@ class AllGroupStories extends React.Component {
     render() {
         return (
             <div>
+                <Row gutter={16}>
                 {this.props.stories.map((story) => <div>
                     <Col span={8}>
                         <Card
@@ -59,6 +60,7 @@ class AllGroupStories extends React.Component {
                         </Card>
                     </Col>
                 </div>)}
+                </Row>
                 <BasicModal {...this.props}/>
             </div>
 

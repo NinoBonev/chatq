@@ -10,7 +10,7 @@ const DashboardSubHeader = (props) => {
                         <span style={{
                             marginLeft: '40%'
                         }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span  className='sub-header-name' style={{
                                     color: '#45b4bf'
                                 }}>Dashboard</span>
@@ -19,7 +19,7 @@ const DashboardSubHeader = (props) => {
                 <span style={{
                     marginLeft: '2%'
                 }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span  className='sub-header-link' onClick={() => {
                                     props.setContentKey('followedGroups')
                                 }}>My Flow</span>
@@ -31,7 +31,7 @@ const DashboardSubHeader = (props) => {
                 <span style={{
                     marginLeft: '1%'
                 }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span  className='sub-header-link' onClick={() => {
                                     props.setContentKey('myStories')
                                 }}>My Stories</span>
@@ -41,7 +41,7 @@ const DashboardSubHeader = (props) => {
                 <span style={{
                     marginLeft: '1%'
                 }}>
-                            <DemoBox value={60}>
+                            <DemoBox value={50}>
                                 <span className='sub-header-link' onClick={() => {
                                     props.setContentKey('myChallenges')
                                 }}>My Challenges</span>

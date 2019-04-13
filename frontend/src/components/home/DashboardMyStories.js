@@ -56,13 +56,8 @@ export default class DashboardMyStories extends React.Component {
             <Row gutter={16}>
                 <div className='main-data-container'>
                     <Col offset={1} span={2}>
-                        <div align="right" style={{color: 'green'}}>
+                        <div align="right" className='dashboard-side-menu-header'>
                             Menu
-                        </div>
-                        <div style={{
-                            marginTop: 10
-                        }}>
-                            Something
                         </div>
                     </Col>
                     <Col span={20}>

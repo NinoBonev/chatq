@@ -63,14 +63,11 @@ class AdminCreateChallenge extends React.Component {
 
         return (
             <Row type="flex" justify="space-around">
-                <Col span={12} offset={6} style={{marginBottom: 30, fontSize: 40}}>
-                    Create a new Chatq challenge
-                </Col>
                 <Col span={12}>
-                    <div className='login-form'>
+                    <div className='main-data-container'>
                         <Form onSubmit={this.handleSubmit}>
                             <Row justify="center" align="bottom">
-                                <Col span={18} offset={3} style={{marginTop: 50}}>
+                                <Col span={18} offset={3} style={{marginTop: 40}}>
                                     <Form.Item
                                         label="Name"
                                         labelCol={{span: 5}}
@@ -149,7 +146,12 @@ class AdminCreateChallenge extends React.Component {
                                             loading={loading}
                                             type="primary"
                                             htmlType="submit"
-                                            className="login-form-button">
+                                            style={{
+                                                width: '100%',
+                                                border: 'none',
+                                                backgroundColor: '#45b4bf',
+                                                color: 'white'
+                                            }}>
                                             {loading ? 'Uploading' : 'Create Challenge'}
                                         </Button>
                                     </Form.Item>

@@ -32,6 +32,7 @@ export default class AuthenticatedHeadroom extends React.Component {
             singleGroup: <SingleGroupSubHeader {...this.props} />,
             singleChallenge: <WithTextSubHeader showTextContent='singleChallenge' {...this.props} />,
 
+            createGroup: <WithTextSubHeader showTextContent='createGroup' {...this.props} />,
             createChallenge:  <WithTextSubHeader showTextContent='createChallenge' {...this.props} />,
             loading: <WithTextSubHeader showTextContent='loading' {...this.props}/>
         };

@@ -17,6 +17,8 @@ class AdminCreateGroup extends React.Component {
     state = this.props.Helper.groupFormInitialState()
 
     componentDidMount(){
+        this.props.setSubHeaderKey('createGroup');
+
         if (this.props.match.path === '/groups/edit/:id') {
             this.props.Crud.getGroupById(this.props.match.params.id).then((res) => {
                     this.setState(this.props.Helper.groupFormInitialState(res));
@@ -121,11 +123,8 @@ class AdminCreateGroup extends React.Component {
 
         return (
             <Row type="flex" justify="space-around">
-                <Col span={12} offset={6} style={{marginBottom: 30, fontSize: 40}}>
-                    Create a new Chatq group
-                </Col>
                 <Col span={12}>
-                    <div className='login-form'>
+                    <div className='main-data-container'>
                         <Form onSubmit={this.handleSubmit}>
                             <Row justify="center" align="bottom">
                                 <Col span={18} offset={3} style={{marginTop: 50}}>
@@ -204,7 +203,12 @@ class AdminCreateGroup extends React.Component {
                                                     loading={loading}
                                                     type="primary"
                                                     htmlType="submit"
-                                                    className="login-form-button">
+                                                    style={{
+                                                        width: '100%',
+                                                        border: 'none',
+                                                        backgroundColor: '#45b4bf',
+                                                        color: 'white'
+                                                    }}>
                                                     {loading ? 'Uploading' : 'Create Group'}
                                                 </Button>
                                             </Form.Item>

@@ -108,16 +108,29 @@
     color: #202022;
 }
 
+.dashboard-side-menu-header{
+    margin-top: 20px;
+    height: 40px;
+    background-color: #f6f8f9;
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    font-size: 18px;
+}
+
+.dashboard-side-menu-header:hover{
+    cursor: pointer;
+}
+
 .dashboard-side-menu-item{
     font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-    color: chocolate;
+    color: #45b4bf;
+    height: 25px;
+    background-color: #f6f8f9;
     font-size: 18px;
-    font-style: oblique;
     transition: transform .2s;
 }
 
 .dashboard-side-menu-item:hover {
-    opacity: 1.2;
+    color: #202022;
     cursor: pointer;
 }
 
@@ -184,13 +197,9 @@
 }
 
 .login-form {
-    margin: 90px 30px 0px;
+    margin: 70px 30px 0px;
     min-height: 450px;
     background: white;
-}
-
-.login-form-button {
-    width: 100%;
 }
 
 .trigger {
@@ -202,14 +211,14 @@
 }
 
 .gutter-register-box {
-    margin: 10px;
+    margin: 30px 10px;
     min-height: 650px;
     background: white;
     padding: 10px 0;
 }
 
 .gutter-register-side-box {
-    margin: 10px;
+    margin: 30px 10px;
     min-height: 650px;
     background: #e8e8e8;
     padding: 30px 0;

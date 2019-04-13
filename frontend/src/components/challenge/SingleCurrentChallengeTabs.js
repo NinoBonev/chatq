@@ -5,14 +5,14 @@
 import React from 'react'
 import {Tabs} from 'antd'
 import SingleCurrentChallengeInfo from './SingleCurrentChallengeInfo'
-import {message} from 'antd/lib/index';
+import {message, Row, Col} from 'antd/lib/index';
 import AllGroupStories from '../group/AllGroupStories';
 import withModal from "../hoc/withModal";
 
 const TabPane = Tabs.TabPane;
 const ListAllGroupStories = withModal(AllGroupStories)
 
-class SingleCurrentChallengeTabs extends React.Component{
+class SingleCurrentChallengeTabs extends React.Component {
     constructor(props) {
         super(props);
 
@@ -32,20 +32,20 @@ class SingleCurrentChallengeTabs extends React.Component{
                 res.body.name,
                 '',
                 '')
-            if (res.success){
+            if (res.success) {
                 for (let storyById of res.body.storiesById) {
                     this.props.Crud.getStoryById(storyById).then((story) => {
 
-                        if (story.success){
+                        if (story.success) {
                             this.props.Crud.getUserInfo(story.body.username).then((user) => {
 
-                                if (user.success){
+                                if (user.success) {
                                     story.body.avatar = user.body.avatar;
 
                                     this.setState(prevState => ({
                                         stories: [...prevState.stories, story.body]
-                                            .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
-                                }));
+                                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                    }));
                                 } else {
                                     message.error(user.body)
                                 }
@@ -75,23 +75,25 @@ class SingleCurrentChallengeTabs extends React.Component{
         this.props.clearHeaderCoverGroupInfo()
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div className='default-panel'>
-            <Tabs style={{marginLeft: 25}} onChange={this.setKey.bind(this)} activeKey={this.state.activeKey}>
-                <TabPane tab="Challenge Info" key="1">
-                    <SingleCurrentChallengeInfo {...this.props}/>
-                </TabPane>
-                {this.props.isAdmin ?
-                    <TabPane tab="See current stories" key="2">
-                        <ListAllGroupStories {...this.props} {...this.state}/>
+                <Tabs style={{marginLeft: 25}} onChange={this.setKey.bind(this)} activeKey={this.state.activeKey}>
+                    <TabPane tab="Challenge Info" key="1">
+                        <SingleCurrentChallengeInfo {...this.props}/>
                     </TabPane>
+                    {this.props.isAdmin ?
+                        <TabPane tab="See current stories" key="2">
+                            <div>
+                                <ListAllGroupStories {...this.props} {...this.state}/>
+                            </div>
+                        </TabPane>
 
-                    :
+                        :
 
-                    null
-                }
-            </Tabs>
+                        null
+                    }
+                </Tabs>
             </div>
         )
     }

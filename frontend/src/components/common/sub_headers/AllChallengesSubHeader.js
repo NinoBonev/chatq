@@ -10,6 +10,11 @@ export default class AllChallengesSubHeader extends React.Component {
     constructor(props) {
         super(props)
     }
+
+    componentDidMount(){
+        console.log(this.props);
+    }
+
     render() {
         return (
             <div className='sub-header'>
@@ -18,10 +23,9 @@ export default class AllChallengesSubHeader extends React.Component {
                             marginLeft: '40%'
                         }}>
                             <DemoBox value={60}>
-                                <span style={{
+                                <span className='sub-header-name' style={{
+                                    color: '#45b4bf',
                                     marginBottom: 3
-                                }} className='sub-header-name' style={{
-                                    color: '#45b4bf'
                                 }}>Challenges</span>
                             </DemoBox>
                         </span>
@@ -34,7 +38,7 @@ export default class AllChallengesSubHeader extends React.Component {
                                 }}>Active Challenges</span>
                             </DemoBox>
                         </span>
-                    {this.props.Auth.isLoggedIn && <span style={{
+                    {this.props.Auth.isLoggedIn() && <span style={{
                         marginLeft: '1%'
                     }}>
                            <DemoBox value={60}>

@@ -7,6 +7,7 @@ import AllGroups from "../utils/AllGroups";
 import AllUsers from "../utils/AllUsers";
 import SingleChallenge from "../utils/SingleChallenge";
 import CreateChallenge from "../utils/CreateChallenge";
+import CreateGroup from '../utils/CreateGroup'
 import Loading from "../utils/Loading";
 
 const DemoBox = props => <p className={`height-${props.value}`}>{props.children}</p>;
@@ -17,6 +18,7 @@ const content = {
     allUsers: AllUsers,
     singleChallenge: SingleChallenge,
     createChallenge: CreateChallenge,
+    createGroup: CreateGroup,
     loading: Loading
 }
 
