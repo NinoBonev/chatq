@@ -4,7 +4,7 @@
 
 import RequestService from './RequestService';
 
-let Request = new RequestService();
+let Request = new RequestService("chatq.social");
 
 class CrudService {
     constructor() {
