@@ -6,7 +6,7 @@ import decode from 'jwt-decode';
 
 import RequestService from './RequestService';
 
-let Request = new RequestService("chatq.social");
+let Request = new RequestService();
 
 class AuthService {
     constructor() {

@@ -56,7 +56,7 @@ public class Story extends DateAudit {
 
     @JsonManagedReference(value="story-storyline")
     @OneToMany(mappedBy = "story", targetEntity = StoryLine.class, cascade = CascadeType.REMOVE)
-    private Set<StoryLine> storylines = new HashSet<>();
+    private LinkedHashSet<StoryLine> storylines = new LinkedHashSet<>();
 
     @JsonManagedReference(value="story-comments")
     @OneToMany(mappedBy = "story", targetEntity = Comment.class, cascade = CascadeType.REMOVE)
@@ -107,11 +107,11 @@ public class Story extends DateAudit {
         this.cover = cover;
     }
 
-    public Set<StoryLine> getStoryLine() {
+    public LinkedHashSet<StoryLine> getStoryLine() {
         return storylines;
     }
 
-    public void setStoryLine(Set<StoryLine> storylines) {
+    public void setStoryLine(LinkedHashSet<StoryLine> storylines) {
         this.storylines = storylines;
     }
 

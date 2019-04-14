@@ -246,7 +246,7 @@ public class Initializer implements CommandLineRunner {
 
             Story story_1 = storyRepository.findByName("Story in Social Group sample.");
 
-            Set<StoryLine> storyLines_1 = new HashSet<>();
+            LinkedHashSet<StoryLine> storyLines_1 = new LinkedHashSet<>();
             Set<Comment> comments_1 = new HashSet<>();
             comments_1.add(comment1);
             commentsFromUser.add(comment1);
@@ -319,7 +319,7 @@ public class Initializer implements CommandLineRunner {
 
             Story story_2 = storyRepository.findByName("Story in Nature Group sample.");
 
-            Set<StoryLine> storyLines_2 = new HashSet<>();
+            LinkedHashSet<StoryLine> storyLines_2 = new LinkedHashSet<>();
             Set<Comment> comments_2 = new HashSet<>();
 
             comments_2.add(comment3);
@@ -388,7 +388,7 @@ public class Initializer implements CommandLineRunner {
 
             Story story_3 = storyRepository.findByName("Story in Culture Group sample.");
 
-            Set<StoryLine> storyLines_3 = new HashSet<>();
+            LinkedHashSet<StoryLine> storyLines_3 = new LinkedHashSet<>();
             Set<Comment> comments_3 = new HashSet<>();
             comments_3.add(comment5);
             commentsFromUser.add(comment5);

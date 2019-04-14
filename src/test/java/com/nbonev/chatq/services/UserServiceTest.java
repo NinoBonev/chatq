@@ -3,6 +3,7 @@ package com.nbonev.chatq.services;
 import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.sections.comments.entities.Comment;
 import com.nbonev.chatq.sections.groups.entities.Group;
+import com.nbonev.chatq.sections.groups.enums.GroupStatus;
 import com.nbonev.chatq.sections.groups.repositories.GroupRepository;
 import com.nbonev.chatq.sections.roles.entities.Role;
 import com.nbonev.chatq.sections.roles.enums.RoleEnum;
@@ -103,7 +104,7 @@ public class UserServiceTest {
 
         this.testGroup = new Group("Test", "This is a test group for UnitTesting",
                 "https://res.cloudinary.com/dar4inn2i/image/upload/v1555079659/k9eg7rqfy0n3b5rvjsmg.jpg",
-                "OPEN");
+                GroupStatus.OPEN.getStatusName());
 
         when(this.mockedUserRepository.save(any()))
                 .thenAnswer(a -> a.getArgument(0));

@@ -1,5 +1,6 @@
 package com.nbonev.chatq.services;
 
+import com.nbonev.chatq.exception.ResourceNotFoundException;
 import com.nbonev.chatq.sections.comments.entities.Comment;
 import com.nbonev.chatq.sections.comments.models.binding.CommentCreateBindingModel;
 import com.nbonev.chatq.sections.comments.repositories.CommentRepository;
@@ -20,9 +21,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -75,6 +78,17 @@ public class CommentServiceTest {
                 "https://res.cloudinary.com/dar4inn2i/image/upload/v1553985890/heriptrsvk3feo51cst4.jpg");
         this.story.setId(2L);
 
+        this.comment = new Comment("New Comment",
+                "https://res.cloudinary.com/dar4inn2i/image/upload/v1553985890/heriptrsvk3feo51cst4.jpg",
+                nino, story);
+        this.comment.setId(3L);
+
+        when(this.mockedCommentRepository.save(any()))
+                .thenAnswer(a -> a.getArgument(0));
+
+        when(this.mockedCommentRepository.findCommentById(comment.getId()))
+                .thenAnswer(a -> comment);
+
         when(this.mockedUserRepository.findUserById(nino.getId()))
                 .thenAnswer(a -> nino);
 
@@ -87,11 +101,72 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void testSaveUser_givenValidUser_shouldNotReturnNull() throws IOException {
+    public void testSaveComment_givenValidComment_shouldNotReturnNull() throws IOException {
         //act
         Comment createdComment = this.commentService.create(this.newComment);
 
         //assert
         Assert.assertNotNull("Comment is null after creation", createdComment);
+    }
+
+    @Test
+    public void testSaveComment_givenValidComment_shouldAddCommentToStory() throws IOException {
+        //act
+        Comment createdComment = this.commentService.create(this.newComment);
+
+        //assert
+        Assert.assertEquals("Comment is null added correctly to story",
+                createdComment.getStory(), story);
+    }
+
+    @Test
+    public void testSaveComment_givenValidComment_shouldAddCommentToUser() throws IOException {
+        //act
+        Comment createdComment = this.commentService.create(this.newComment);
+
+        //assert
+        Assert.assertEquals("Comment is null added correctly to story",
+                createdComment.getUser(), nino);
+    }
+
+    @Test
+    public void testSaveComment_givenValidComment_shouldAddCommentValueProperly() throws IOException {
+        //act
+        Comment createdComment = this.commentService.create(this.newComment);
+
+        //assert
+        Assert.assertEquals("Comment is null added correctly to story",
+                createdComment.getValue(), newComment.getValue());
+    }
+
+    @Test
+    public void testLoadCommentById_givenValidComment_shouldReturnComment() {
+        //act
+        Comment loadedComment = this.commentService.findCommentById(this.comment.getId());
+
+        //assert
+        Assert.assertNotNull("User is null when loaded by username", loadedComment);
+        Assert.assertEquals("Wrong user when loaded by username", loadedComment.toString(), comment.toString());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testLoadCommentById_givenNotValidComment_shouldReturnResourceNotFoundException() {
+        //act
+        this.commentService.findCommentById(12L);
+    }
+
+    @Test
+    public void testLoadComment_givenValidComment_shouldMapGettersFieldsCorrectly() {
+        //act
+        Comment loadedComment = this.commentService.findCommentById(this.comment.getId());
+
+        //assert
+        Assert.assertEquals("Comment value is not mapped correctly",
+                "New Comment" ,loadedComment.getValue());
+        Assert.assertEquals("Avatar is not mapped correctly",
+                "https://res.cloudinary.com/dar4inn2i/image/upload/v1553985890/heriptrsvk3feo51cst4.jpg",
+                loadedComment.getAvatar());
+        Assert.assertEquals("Story not mapped correctly", story, loadedComment.getStory());
+        Assert.assertEquals("User not mapped correctly", nino, loadedComment.getUser());
     }
 }
