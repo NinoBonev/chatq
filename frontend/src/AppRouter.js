@@ -4,6 +4,7 @@
 
 import React from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
+import withAppStateHandler from './withAppStateHandler'
 
 import HomePage from './components/home/HomePage';
 import Dashboard from './components/home/Dashboard';
@@ -28,7 +29,6 @@ import AdminAllUsersPane from './components/admin/AdminAllUsersPane'
 import WrappedAdminCreateGroup from './components/admin/AdminCreateGroup';
 import AdminAllGroupsPane from "./components/admin/AdminAllGroupsPane";
 
-
 const AppRouter = (props) => {
     const {Crud, Auth, Helper,
         setSubHeaderKey, subHeaderKey,
@@ -52,6 +52,8 @@ const AppRouter = (props) => {
                     subHeaderKey={subHeaderKey}
                     Auth={Auth}
                     Crud={Crud}
+                    isAuth={isAuth}
+                    isAdmin={isAdmin}
                     {...props}
                 />
             }/>
@@ -68,8 +70,16 @@ const AppRouter = (props) => {
             }/>
 
             <Route exact path='/about' render={(props) => <About
+                setContentKey={setContentKey}
+                contentKey={contentKey}
                 setSubHeaderKey={setSubHeaderKey}
                 subHeaderKey={subHeaderKey}
+                withHeaderCover={withHeaderCover}
+                setHeaderCoverVisibility={setHeaderCoverVisibility}
+                setHeaderCoverSource={setHeaderCoverSource}
+                setHeaderCoverAvatar={setHeaderCoverAvatar}
+                clearHeaderCoverUserInfo={clearHeaderCoverUserInfo}
+                clearHeaderCoverGroupInfo={clearHeaderCoverGroupInfo}
                 Auth={Auth}
                 isAdmin={isAdmin}
                 {...props}

@@ -178,14 +178,8 @@ public class StoryServiceTest {
         when(this.mockedStoryRepository.findStoryById(story.getId()))
                 .thenAnswer(a -> story);
 
-        when(this.mockedStoryRepository.findByName(story.getName()))
-                .thenAnswer(a -> story);
-
         when(this.mockedUserRepository.findByUsername(nino.getUsername()))
                 .thenAnswer(a -> nino);
-
-        when(this.mockedGroupRepository.findGroupByName(travel.getName()))
-                .thenAnswer(a -> travel);
 
     }
 

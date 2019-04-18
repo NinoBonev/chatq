@@ -4,9 +4,10 @@ import CarouselClass from "./Carousel";
 
 class HomePage extends React.Component {
 
-    componentDidMount(){
+    async componentDidMount(){
         window.scrollTo(0,0);
-        this.props.setSubHeaderKey('home')
+        await this.props.setSubHeaderKey('home');
+        console.log(this.props);
     }
 
     render() {

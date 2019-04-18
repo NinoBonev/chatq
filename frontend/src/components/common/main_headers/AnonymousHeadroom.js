@@ -1,6 +1,6 @@
 import React from 'react'
 import Headroom from 'react-headroom'
-import Logo from '../../../resources/logo_imatag-10.1039d119047f.png'
+import Logo from '../../../resources/Logo/ChatqLogoWhite.png'
 import {Affix, Menu, Row, Input, Popover, Col, Avatar} from 'antd'
 
 import AboutSubHeader from '../sub_headers/AboutSubHeader'
@@ -44,7 +44,7 @@ export default class AnonymousHeadroom extends React.Component {
                             marginLeft: '10%'
                         }}>
                             <DemoBox value={50}>
-                                <img style={{height: 40}} src={Logo} alt="" onClick={() => {
+                                <img style={{height: 30}} src={Logo} alt="" onClick={() => {
                                     this.props.history.push('/')
                                 }}/>
                             </DemoBox>

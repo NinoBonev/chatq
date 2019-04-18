@@ -4,13 +4,26 @@
 
 import React from 'react';
 import {Row, Col} from 'antd'
-import Header from "./Header";
+import HeaderCover from '../../resources/12.jpg'
+import Avatar from '../../resources/Logo/1.jpg'
 
 //Add about info ----> The idea behind Gotcha ---> Open groups and Challenges
 class About extends React.Component {
 
     componentDidMount() {
         this.props.setSubHeaderKey('about')
+        this.props.setContentKey('aboutWhat')
+        this.props.setHeaderCoverVisibility(true)
+        this.props.setHeaderCoverSource(HeaderCover)
+        this.props.setHeaderCoverAvatar(Avatar)
+    }
+
+    componentWillUnmount() {
+        this.props.setHeaderCoverVisibility(false)
+        this.props.setHeaderCoverAvatar('')
+        this.props.setHeaderCoverSource('')
+        this.props.setContentKey('')
+        this.props.setSubHeaderKey('')
     }
 
     render() {
@@ -19,11 +32,6 @@ class About extends React.Component {
                 <Row>
                     <div>
                         <Col className='' offset={2} span={20}>
-                            <div align="center">
-                                <img width='60%'
-                                     src='https://res.cloudinary.com/dar4inn2i/image/upload/v1552651172/contest.jpg'
-                                     alt=""/>
-                            </div>
                             <div align="center"
                                  style={{marginTop: 30, fontStyle: 'italic', fontSize: 24, color: '#595959'}}>Chatq is
                                 your

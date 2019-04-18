@@ -26,8 +26,8 @@ export default class Dashboard extends React.Component {
     }
 
     componentDidMount() {
-        this.props.clearHeaderCoverGroupInfo()
         window.scrollTo(0, 0);
+        this.props.clearHeaderCoverGroupInfo()
         this.props.setSubHeaderKey('dashboard')
         this.props.setContentKey('followedGroups')
         this.props.setHeaderCoverVisibility(true)
